@@ -256,9 +256,8 @@ Encoder <- nn_module(
 #'   \code{\link{KVCacheEntry}}
 #'
 #' @export
-SetTransformer <- nn_module(
-
-  classname = "SetTransformer",
+set_transformer <- nn_module(
+  "SetTransformer",
 
   initialize = function(
     num_blocks,
