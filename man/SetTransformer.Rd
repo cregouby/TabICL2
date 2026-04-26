@@ -2,9 +2,10 @@
 % Please edit documentation in R/encoders.R
 \name{SetTransformer}
 \alias{SetTransformer}
+\alias{set_transformer}
 \title{SetTransformer}
 \usage{
-SetTransformer(
+set_transformer(
   num_blocks,
   d_model,
   nhead,
