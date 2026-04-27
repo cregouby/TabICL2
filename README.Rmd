@@ -1,49 +1,41 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # TabICL2
 
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/cregouby/tabicl2/workflows/R-CMD-check/badge.svg)](https://github.com/cregouby/tabicl2/actions)
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/tabicl2)](https://CRAN.R-project.org/package=tabicl2)
-[![](https://cranlogs.r-pkg.org/badges/tabicl2)](https://cran.r-project.org/package=tabicl2)
-[![Discord](https://img.shields.io/discord/837019024499277855?logo=discord)](https://discord.com/invite/s3D5cKhBkx)
+[![R build status](https://github.com/cregouby/tabicl2/workflows/R-CMD-check/badge.svg)](https://github.com/cregouby/tabicl2/actions) [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![CRAN status](https://www.r-pkg.org/badges/version/tabicl2)](https://CRAN.R-project.org/package=tabicl2) [![](https://cranlogs.r-pkg.org/badges/tabicl2)](https://cran.r-project.org/package=tabicl2) [![Discord](https://img.shields.io/discord/837019024499277855?logo=discord)](https://discord.com/invite/s3D5cKhBkx)
 
 <!-- badges: end -->
 
-**TabICL2** is an R implementation of a transformer-based foundation
-model for tabular data using **in-context learning**. Unlike traditional
-supervised learning that requires model fine-tuning, TabICL learns
-patterns from labeled examples in-context—similar to how GPT processes
-text, but for tabular data—to make predictions without additional
-training.
+**TabICL2** is an R implementation of a transformer-based foundation model for tabular data using **in-context learning**. Unlike traditional supervised learning that requires model fine-tuning, TabICL learns patterns from labeled examples in-context—similar to how GPT processes text, but for tabular data—to make predictions without additional training.
 
 ## Key Features
 
-- **In-Context Learning**: Make predictions on new data by learning from
-  labeled examples in the prompt, without fine-tuning
-- **Universal Architecture**: Single model handles both classification
-  and regression tasks
-- **Scalable Classification**: Hierarchical classification automatically
-  handles datasets with thousands of classes
-- **Efficient Inference**: KV-caching and representation caching for
-  fast batch predictions
-- **Memory Management**: Automatic offloading to CPU or disk for
-  large-scale inference
-- **Distribution-Aware Embeddings**: Column embeddings capture
-  statistical properties of features using set transformers
-- **Flexible Attention**: Scalable softmax (SSMax) variants prevent
-  attention saturation on long sequences
+- **In-Context Learning**: Make predictions on new data by learning from labeled examples in the prompt, without fine-tuning
+- **Universal Architecture**: Single model handles both classification and regression tasks
+- **Scalable Classification**: Hierarchical classification automatically handles datasets with thousands of classes
+- **Efficient Inference**: KV-caching and representation caching for fast batch predictions
+- **Memory Management**: Automatic offloading to CPU or disk for large-scale inference
+- **Distribution-Aware Embeddings**: Column embeddings capture statistical properties of features using set transformers
+- **Flexible Attention**: Scalable softmax (SSMax) variants prevent attention saturation on long sequences
 
 ## Installation
 
-You can install the development version of TabICL2 from
-[GitHub](https://github.com/) with:
+You can install the development version of TabICL2 from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("pak")
@@ -54,7 +46,7 @@ pak::pak("cregouby/TabICL2")
 
 ### Classification Example
 
-``` r
+```{r classification_example, eval=FALSE}
 library(tabicl2)
 library(torch)
 
@@ -96,7 +88,7 @@ print(predicted_classes)
 
 ### Regression Example
 
-``` r
+```{r regression_example, eval=FALSE}
 library(tabicl2)
 library(torch)
 
@@ -134,10 +126,9 @@ predictions <- QuantileToDistribution(quantile_preds, y_train)
 
 ### KV Caching for Fast Inference
 
-When making multiple predictions on the same training context, use
-caching to avoid redundant computation:
+When making multiple predictions on the same training context, use caching to avoid redundant computation:
 
-``` r
+```{r caching_example, eval=FALSE}
 # Store cache on first forward pass
 model$forward_with_cache(
   X = X_train,              # Training data only
@@ -159,15 +150,15 @@ for (test_batch in test_batches) {
 model$clear_cache()
 ```
 
-**Cache Modes:** - `"kv"`: Cache key-value projections (fastest, more
-memory) - `"repr"`: Cache row representations only (~24x less memory for
-ICL part)
+**Cache Modes:**
+- `"kv"`: Cache key-value projections (fastest, more memory)
+- `"repr"`: Cache row representations only (~24x less memory for ICL part)
 
 ### Memory-Efficient Inference
 
 For large-scale inference, configure automatic offloading:
 
-``` r
+```{r inference_config, eval=FALSE}
 # Configure inference settings
 inf_config <- InferenceConfig(
   auto_batch = TRUE,          # Automatic batching
@@ -183,17 +174,17 @@ predictions <- model$inference_forward(
 )
 ```
 
-**Offload Options:** - `OFFLOAD_GPU`: Keep all on GPU (fastest) -
-`OFFLOAD_CPU`: Offload to CPU pinned memory - `OFFLOAD_DISK`: Offload to
-memory-mapped files - `OFFLOAD_AUTO`: Automatically choose based on
-available memory
+**Offload Options:**
+- `OFFLOAD_GPU`: Keep all on GPU (fastest)
+- `OFFLOAD_CPU`: Offload to CPU pinned memory
+- `OFFLOAD_DISK`: Offload to memory-mapped files
+- `OFFLOAD_AUTO`: Automatically choose based on available memory
 
 ### Hierarchical Classification
 
-TabICL automatically handles datasets with more classes than
-`max_classes` using hierarchical classification:
+TabICL automatically handles datasets with more classes than `max_classes` using hierarchical classification:
 
-``` r
+```{r hierarchical_example, eval=FALSE}
 # Model with max_classes = 10
 model <- TabICL(max_classes = 10, num_quantiles = 10, ...)
 
@@ -211,8 +202,7 @@ TabICL processes tabular data through three sequential stages:
 
 ### 1. Column-wise Embedding (`ColEmbedding`)
 
-Creates distribution-aware embeddings for each column using set
-transformers with induced self-attention:
+Creates distribution-aware embeddings for each column using set transformers with induced self-attention:
 
 - Maps scalar cells to high-dimensional embeddings
 - Captures statistical regularities within columns
@@ -222,8 +212,7 @@ transformers with induced self-attention:
 
 ### 2. Row-wise Interaction (`RowInteraction`)
 
-Captures interactions between features within each row using standard
-transformer blocks:
+Captures interactions between features within each row using standard transformer blocks:
 
 - Applies rotary position embeddings (RoPE) to encode feature positions
 - Uses learnable CLS tokens to aggregate feature information
@@ -231,11 +220,9 @@ transformer blocks:
 
 ### 3. Dataset-wise In-Context Learning (`ICLearning`)
 
-Learns from labeled training examples in-context to predict on test
-examples:
+Learns from labeled training examples in-context to predict on test examples:
 
-- Input sequence:
-  `[train_row_1, ..., train_row_n, test_row_1, ..., test_row_m]`
+- Input sequence: `[train_row_1, ..., train_row_n, test_row_1, ..., test_row_m]`
 - Training rows are augmented with label embeddings
 - Uses transformer architecture with scalable softmax
 - For classification: outputs logits/probabilities for each class
@@ -243,7 +230,7 @@ examples:
 
 ## How It Works
 
-``` r
+```r
 # Training mode: Learn to predict from in-context examples
 model$train()
 loss <- compute_loss(model(X_batch, y_train_batch), y_true)
@@ -253,47 +240,34 @@ model$eval()
 predictions <- model(X_new, y_context)
 ```
 
-**Key Insight**: The model is trained on many different tabular
-datasets. At inference time, it uses the labeled examples you provide
-(the “context”) to understand the current task and make predictions on
-unlabeled test rows—no fine-tuning required.
+**Key Insight**: The model is trained on many different tabular datasets. At inference time, it uses the labeled examples you provide (the "context") to understand the current task and make predictions on unlabeled test rows—no fine-tuning required.
 
 ## Training vs Inference
 
-- **Training mode** (`model$train()`): Learns to perform in-context
-  learning across diverse tabular datasets
-- **Evaluation mode** (`model$eval()`): Uses learned in-context learning
-  ability to make predictions
+- **Training mode** (`model$train()`): Learns to perform in-context learning across diverse tabular datasets
+- **Evaluation mode** (`model$eval()`): Uses learned in-context learning ability to make predictions
 
-The model must be pre-trained on a large corpus of tabular datasets
-before it can perform effective in-context learning at inference time.
+The model must be pre-trained on a large corpus of tabular datasets before it can perform effective in-context learning at inference time.
 
 ## Performance Tips
 
-1.  **Use caching** when making multiple predictions with the same
-    training context
-2.  **Enable auto_batch** for variable-length sequences in the same
-    batch
-3.  **Configure offloading** when GPU memory is limited
-4.  **Use gradient checkpointing** (`recompute = TRUE`) during training
-    to save memory
-5.  **Adjust temperature** (`softmax_temperature`) to calibrate
-    prediction confidence
+1. **Use caching** when making multiple predictions with the same training context
+2. **Enable auto_batch** for variable-length sequences in the same batch
+3. **Configure offloading** when GPU memory is limited
+4. **Use gradient checkpointing** (`recompute = TRUE`) during training to save memory
+5. **Adjust temperature** (`softmax_temperature`) to calibrate prediction confidence
 
 ## References
 
-- **TabPFN**: [Tabular Data Prior-Fitted
-  Networks](https://github.com/automl/TabPFN)
-- **Set Transformers**: [Lee et al.,
-  2019](https://arxiv.org/abs/1810.00825)
-- **In-Context Learning**: Learning from examples in the prompt without
-  parameter updates
+- **TabPFN**: [Tabular Data Prior-Fitted Networks](https://github.com/automl/TabPFN)
+- **Set Transformers**: [Lee et al., 2019](https://arxiv.org/abs/1810.00825)
+- **In-Context Learning**: Learning from examples in the prompt without parameter updates
 
 ## Citation
 
 If you use TabICL2 in your research, please cite:
 
-``` bibtex
+```bibtex
 @software{tabicl2,
   title = {TabICL2: Transformer-based In-Context Learning for Tabular Data},
   author = {Your Name},
@@ -305,3 +279,4 @@ If you use TabICL2 in your research, please cite:
 ## License
 
 See LICENSE file for details.
+
