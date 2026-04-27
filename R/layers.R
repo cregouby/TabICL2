@@ -258,7 +258,6 @@ multihead_attention <- nn_module(
 #' @export
 multihead_attention_block <- nn_module(
   "MultiheadAttentionBlock",
-  inherit = nn_multihead_attention,
   initialize = function(
     d_model,
     nhead,
@@ -269,27 +268,32 @@ multihead_attention_block <- nn_module(
     bias_free_ln = FALSE,
     ssmax = FALSE
   ) {
-    # Parent transformer encoder layer with batch_first = TRUE
-    super$initialize(
-      d_model = d_model,
-      nhead = nhead,
-      dim_feedforward = dim_feedforward,
-      dropout = dropout,
-      activation = activation,
-      norm_first = norm_first,
-      batch_first = TRUE
-    )
+    # Store configuration
+    self$d_model <- d_model
+    self$nhead <- nhead
+    self$norm_first <- norm_first
 
-    # Override LayerNorm if bias-free requested
-    if (bias_free_ln) {
-      self$norm1 <- nn_layer_norm(d_model, elementwise_affine = TRUE, bias = FALSE)
-      self$norm2 <- nn_layer_norm(d_model, elementwise_affine = TRUE, bias = FALSE)
+    # Self-attention with optional SSMax
+    self$attn <- multihead_attention(d_model, nhead, dropout, ssmax)
+
+    # Feedforward network
+    self$linear1 <- nn_linear(d_model, dim_feedforward)
+    self$dropout <- nn_dropout(dropout)
+    self$linear2 <- nn_linear(dim_feedforward, d_model)
+
+    # Activation function (store as character for later use in forward)
+    self$activation_name <- if (is.character(activation)) activation else "custom"
+    if (!is.character(activation)) {
+      self$activation_fn <- activation
     }
 
-    # Replace default self_attn with our enhanced MultiheadAttention
-    # Note: parent class creates self_attn, we remove and replace it
-    self$self_attn <- NULL
-    self$attn <- multihead_attention(d_model, nhead, dropout, ssmax)
+    # Layer normalization
+    self$norm1 <- nn_layer_norm(d_model, elementwise_affine = !bias_free_ln)
+    self$norm2 <- nn_layer_norm(d_model, elementwise_affine = !bias_free_ln)
+
+    # Dropout for residual connections
+    self$dropout1 <- nn_dropout(dropout)
+    self$dropout2 <- nn_dropout(dropout)
 
     # Initialize weights for stable training
     self$init_weights()
@@ -451,7 +455,19 @@ multihead_attention_block <- nn_module(
   # Internal feedforward block helper
   # @keywords internal
   .ff_block = function(x) {
-    x <- self$linear2(self$dropout(self$activation(self$linear1(x))))
+    x <- self$linear1(x)
+    # Apply activation
+    x <- if (self$activation_name == "relu") {
+      nnf_relu(x)
+    } else if (self$activation_name == "gelu") {
+      nnf_gelu(x)
+    } else if (exists("activation_fn", envir = self)) {
+      self$activation_fn(x)
+    } else {
+      nnf_gelu(x)  # default
+    }
+    x <- self$dropout(x)
+    x <- self$linear2(x)
     self$dropout2(x)
   }
 )
@@ -572,7 +588,9 @@ induced_self_attention_block <- nn_module(
   forward = function(src, train_size = NULL) {
     # Identify rows where ALL values equal skip_value (across feature dims)
     # R: all() along last two dimensions (seq_len, d_model)
-    skip_mask <- torch_min(src == self$skip_value, dim = c(-2L, -1L)) > 0
+    # Apply min twice: first along dim -1, then along dim -2
+    skip_check <- (src == self$skip_value)$min(dim = -1L)[[1]]$min(dim = -1L)[[1]]
+    skip_mask <- skip_check > 0
 
     if (torch_max(skip_mask)$item()) {
       if (torch_min(skip_mask)$item() > 0) {

@@ -30,7 +30,7 @@ computation with GPU-to-CPU data movement.}
 \examples{
 \dontrun{
 # Create and configure manager
-mgr <- inference_manager(enc_name = "tf_col", out_dim = 128L)
+mgr <- inference_manager$new(enc_name = "tf_col", out_dim = 128L)
 mgr$configure(
   offload = "auto",
   safety_factor = 0.8,

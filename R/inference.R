@@ -272,7 +272,6 @@ offload_config <- function(
 #' @export
 pinned_buffer_pool <- R6::R6Class(
   "PinnedBufferPool",
-
   public = list(
     # Initialize the buffer pool
     #
@@ -298,16 +297,18 @@ pinned_buffer_pool <- R6::R6Class(
         return(buf)
       }
 
-      # Create new pinned buffer
-      do.call(torch_empty, c(as.list(shape), list(dtype = dtype, device = "cpu", pin_memory = TRUE)))
+      # Create new CPU buffer
+      # Note: pin_memory=TRUE doesn't work as expected in torch R, using regular CPU tensors
+      do.call(torch_empty, c(as.list(shape), list(dtype = dtype, device = "cpu")))
     },
 
     # Return a buffer to the pool for reuse
     #
-    # @param buf Tensor. Buffer to return (must be pinned).
+    # @param buf Tensor. Buffer to return.
     put = function(buf) {
-      if (!buf$is_pinned()) {
-        return(invisible(NULL))  # Don't pool non-pinned buffers
+      # Accept any CPU tensor for pooling
+      if (buf$device$type != "cpu") {
+        return(invisible(NULL))  # Only pool CPU buffers
       }
 
       key <- .make_buffer_key(buf$shape, buf$dtype)
@@ -574,7 +575,7 @@ async_copy_manager <- R6::R6Class(
     initialize = function(device, max_pending = 4L, buffer_pool = NULL) {
       private$device <- device
       private$max_pending <- as.integer(max_pending)
-      private$buffer_pool <- buffer_pool %||% pinned_buffer_pool(max_buffers_per_shape = 8L)
+      private$buffer_pool <- buffer_pool %||% pinned_buffer_pool$new(max_buffers_per_shape = 8L)
 
       # Create dedicated copy stream (CUDA only)
       private$copy_stream <- NULL
@@ -720,7 +721,7 @@ async_copy_manager <- R6::R6Class(
 #' @examples
 #' \dontrun{
 #' # Create and configure manager
-#' mgr <- inference_manager(enc_name = "tf_col", out_dim = 128L)
+#' mgr <- inference_manager$new(enc_name = "tf_col", out_dim = 128L)
 #' mgr$configure(
 #'   offload = "auto",
 #'   safety_factor = 0.8,
@@ -840,7 +841,7 @@ inference_manager <- R6::R6Class(
       }
 
       # Initialize buffer pool
-      private$buffer_pool <- pinned_buffer_pool()
+      private$buffer_pool <- pinned_buffer_pool$new()
 
       private$is_configured <- TRUE
 

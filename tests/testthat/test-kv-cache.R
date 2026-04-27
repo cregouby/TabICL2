@@ -480,13 +480,13 @@ test_that("tabicl_cache_concat: single cache passes through", {
 })
 
 
-test_that(".element_size returns correct byte sizes", {
+test_that("tensor$element_size() returns correct byte sizes", {
   t32 <- torch_ones(2L)
-  expect_equal(.element_size(t32), 4L)  # float32 = 4 bytes
+  expect_equal(t32$element_size(), 4L)  # float32 = 4 bytes
 
   t64 <- torch_ones(2L, dtype = torch_float64())
-  expect_equal(.element_size(t64), 8L)
+  expect_equal(t64$element_size(), 8L)
 
   t16 <- torch_ones(2L, dtype = torch_float16())
-  expect_equal(.element_size(t16), 2L)
+  expect_equal(t16$element_size(), 2L)
 })

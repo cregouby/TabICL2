@@ -161,7 +161,7 @@ col_embedding <- nn_module(
     }
 
     # Inference manager for caching
-    self$inference_mgr <- inference_manager(enc_name = "tf_col", out_dim = embed_dim)
+    self$inference_mgr <- inference_manager$new(enc_name = "tf_col", out_dim = embed_dim)
   },
 
   # Map feature shuffle pattern from reference table to another table
