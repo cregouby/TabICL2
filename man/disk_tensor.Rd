@@ -15,10 +15,17 @@ available RAM by using disk space.
 R6 doesn't support \code{[} overloading directly; use \verb{$get()} instead.
 Write to the tensor (automatically persists to disk)
 }
+\section{Methods}{
+
+\describe{
+\item{\code{flush()}}{Flush changes to disk}
+}
+}
+
 \examples{
 \dontrun{
 # Create a disk-backed tensor
-dt <- disk_tensor(c(1000L, 128L), torch_float(), "/tmp/my_tensor.mmap")
+dt <- disk_tensor$new(c(1000L, 128L), torch_float(), "/tmp/my_tensor.mmap")
 
 # Write data (automatically persists to disk)
 dt[1:100, ..] <- torch_randn(100L, 128L)

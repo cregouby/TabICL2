@@ -79,6 +79,7 @@ memory_estimator <- list(
 #' }
 #'
 #' @keywords internal
+#' @noRd
 memory_estimator$estimate_peak_mem <- function(batch_size, seq_len, enc_name,
                                                 include_inputs = TRUE, in_dim = NULL) {
   if (!enc_name %in% names(memory_estimator$coefficients)) {
@@ -124,6 +125,7 @@ memory_estimator$estimate_peak_mem <- function(batch_size, seq_len, enc_name,
 #' @return Integer. Estimated batch size that fits within target memory constraints.
 #'
 #' @keywords internal
+#' @noRd
 memory_estimator$estimate_batch_size <- function(seq_len, target_memory, enc_name,
                                                   include_inputs = TRUE, in_dim = NULL) {
   if (target_memory <= 0) {
@@ -253,12 +255,15 @@ offload_config <- function(
 #'
 #' @param max_buffers_per_shape Integer. Maximum number of buffers to keep pooled
 #'   for each unique (shape, dtype) combination (default: `4L`).
+#' @param shape Integer vector. Shape of the tensor.
+#' @param dtype torch.dtype. Data type of the tensor.
+#' @param buf Tensor. Buffer to return (must be pinned).
 #'
 #' @return A `PinnedBufferPool` object.
 #'
 #' @examples
 #' \dontrun{
-#' pool <- pinned_buffer_pool(max_buffers_per_shape = 8L)
+#' pool <- pinned_buffer_pool$new(max_buffers_per_shape = 8L)
 #' buf <- pool$get(c(100L, 128L), torch_float())
 #' # ... use buffer ...
 #' pool$put(buf)  # Return to pool for reuse
@@ -356,12 +361,17 @@ pinned_buffer_pool <- R6::R6Class(
 #' @param cleanup Logical. Whether to delete the file when object is garbage
 #'   collected (default: `TRUE`).
 #'
+#' @section Methods:
+#' \describe{
+#'   \item{`flush()`}{Flush changes to disk}
+#' }
+#'
 #' @return A `DiskTensor` object.
 #'
 #' @examples
 #' \dontrun{
 #' # Create a disk-backed tensor
-#' dt <- disk_tensor(c(1000L, 128L), torch_float(), "/tmp/my_tensor.mmap")
+#' dt <- disk_tensor$new(c(1000L, 128L), torch_float(), "/tmp/my_tensor.mmap")
 #'
 #' # Write data (automatically persists to disk)
 #' dt[1:100, ..] <- torch_randn(100L, 128L)
@@ -542,6 +552,12 @@ disk_tensor <- R6::R6Class(
 #' @param max_pending Integer. Maximum pending async copies before blocking
 #'   (default: `4L`).
 #' @param buffer_pool PinnedBufferPool or NULL. Pool of pinned buffers.
+#'
+#' @section Methods:
+#' \describe{
+#'   \item{`reset_bytes_counter()`}{Reset the bytes written counter}
+#'   \item{`clear()`}{Clear pending copies without completing them}
+#' }
 #'
 #' @return An `AsyncCopyManager` object.
 #'

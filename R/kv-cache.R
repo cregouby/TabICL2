@@ -469,7 +469,7 @@ tabicl_cache_concat <- function(caches, dim = 1L) {
 
   TabICLCache$new(
     col_cache = if (length(col_caches) > 0L) {
-      kv_cache_concat(col_caches, dim = dim)
+      kv_cache_concat(lapply(col_caches, function(c) c$col_cache), dim = dim)
     } else {
       KVCache$new()
     },
@@ -479,7 +479,7 @@ tabicl_cache_concat <- function(caches, dim = 1L) {
       NULL
     },
     icl_cache = if (length(icl_caches) > 0L) {
-      kv_cache_concat(icl_caches, dim = dim)
+      kv_cache_concat(lapply(icl_caches, function(c) c$icl_cache), dim = dim)
     } else {
       KVCache$new()
     },

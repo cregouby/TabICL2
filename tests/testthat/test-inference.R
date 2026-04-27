@@ -9,7 +9,7 @@ test_that("memory_estimator estimates batch size correctly", {
 })
 
 test_that("pinned_buffer_pool reuses buffers", {
-  pool <- pinned_buffer_pool(max_buffers_per_shape = 2L)
+  pool <- pinned_buffer_pool$new(max_buffers_per_shape = 2L)
   
   # Get two buffers with same shape/dtype
   buf1 <- pool$get(c(10L, 20L), torch_float())
@@ -31,7 +31,7 @@ test_that("pinned_buffer_pool reuses buffers", {
 })
 
 test_that("inference_manager validates configuration", {
-  mgr <- inference_manager(enc_name = "tf_col", out_dim = 64L)
+  mgr <- inference_manager$new(enc_name = "tf_col", out_dim = 64L)
   
   # Must configure before use
   expect_error(

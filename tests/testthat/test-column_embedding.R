@@ -24,7 +24,7 @@ test_that("col_embedding initializes and forwards correctly", {
 })
 
 test_that("ColEmbedding forward preserves shapes", {
-  emb <- ColEmbedding$new(
+  emb <- col_embedding(
     embed_dim = 16L, num_blocks = 1L, nhead = 2L,
     dim_feedforward = 32L, num_inds = 8L
   )

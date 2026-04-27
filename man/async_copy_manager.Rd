@@ -11,6 +11,14 @@ Uses a dedicated CUDA stream for device-to-host (D2H) transfers, allowing
 GPU computation to overlap with data movement.
 }
 \section{Methods}{
+
+\describe{
+\item{\code{reset_bytes_counter()}}{Reset the bytes written counter}
+\item{\code{clear()}}{Clear pending copies without completing them}
+}
+}
+
+\section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-AsyncCopyManager-new}{\code{async_copy_manager$new()}}

@@ -14,7 +14,7 @@ of repeated allocation and deallocation.
 }
 \examples{
 \dontrun{
-pool <- pinned_buffer_pool(max_buffers_per_shape = 8L)
+pool <- pinned_buffer_pool$new(max_buffers_per_shape = 8L)
 buf <- pool$get(c(100L, 128L), torch_float())
 # ... use buffer ...
 pool$put(buf)  # Return to pool for reuse
@@ -56,6 +56,15 @@ for each unique (shape, dtype) combination (default: \code{4L}).}
 \if{html}{\out{<div class="r">}}\preformatted{pinned_buffer_pool$get(shape, dtype)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{shape}}{Integer vector. Shape of the tensor.}
+
+\item{\code{dtype}}{torch.dtype. Data type of the tensor.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PinnedBufferPool-put"></a>}}
@@ -65,6 +74,13 @@ for each unique (shape, dtype) combination (default: \code{4L}).}
 \if{html}{\out{<div class="r">}}\preformatted{pinned_buffer_pool$put(buf)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{buf}}{Tensor. Buffer to return (must be pinned).}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PinnedBufferPool-clear"></a>}}

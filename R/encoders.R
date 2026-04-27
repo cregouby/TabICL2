@@ -282,7 +282,7 @@ set_transformer <- nn_module(
     self$blocks <- nn_module_list(lapply(
       seq_len(num_blocks),
       function(.) {
-        InducedSelfAttentionBlock(
+        induced_self_attention_block(
           d_model        = d_model,
           nhead          = nhead,
           dim_feedforward = dim_feedforward,
