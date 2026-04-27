@@ -45,54 +45,6 @@ result <- mgr(
 }
 
 }
-\keyword{AMP}
-\keyword{Allocate}
-\keyword{Compute}
-\keyword{Create}
-\keyword{Estimate}
-\keyword{Execute}
-\keyword{GPU}
-\keyword{Main}
-\keyword{Move}
-\keyword{Prepare}
-\keyword{according}
-\keyword{and}
-\keyword{automatic}
-\keyword{available}
-\keyword{based}
-\keyword{batch}
-\keyword{batches}
-\keyword{batching}
-\keyword{buffer}
-\keyword{by}
-\keyword{call}
-\keyword{device}
-\keyword{execution}
-\keyword{forward}
-\keyword{function}
-\keyword{if}
-\keyword{inference}
-\keyword{inputs}
-\keyword{internal}
-\keyword{iterator}
-\keyword{memory}
-\keyword{mode}
-\keyword{moving}
-\keyword{multi-dimensional}
-\keyword{needed}
-\keyword{no_grad}
-\keyword{number}
-\keyword{of}
-\keyword{on}
-\keyword{optional}
-\keyword{output}
-\keyword{safe}
-\keyword{size}
-\keyword{tensor}
-\keyword{tensors}
-\keyword{to}
-\keyword{total}
-\keyword{with}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -126,12 +78,13 @@ result <- mgr(
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{enc_name}}{Character. Encoder name for memory estimation.}
+\item{\code{enc_name}}{Character. Name of encoder for memory estimation:
+\code{"tf_col"}, \code{"tf_row"}, or \code{"tf_icl"}.}
 
-\item{\code{out_dim}}{Integer. Output dimension.}
+\item{\code{out_dim}}{Integer. Output dimension of the model.}
 
-\item{\code{out_no_seq}}{Logical. Remove sequence dimension from output.
-Configure inference parameters}
+\item{\code{out_no_seq}}{Logical. Whether to remove the sequence dimension from
+output tensor (default: \code{FALSE}).}
 }
 \if{html}{\out{</div>}}
 }
@@ -164,55 +117,6 @@ Configure inference parameters}
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{min_batch_size}}{Integer. Minimum batch size before error (default: \code{1L}).}
-
-\item{\code{safety_factor}}{Numeric. Factor (0-1) for conservative memory usage (default: \code{0.8}).}
-
-\item{\code{offload}}{Character or logical. Offload mode: \code{"auto"}, \code{"gpu"}, \code{"cpu"},
-\code{"disk"}, \code{TRUE} (cpu), or \code{FALSE} (gpu) (default: \code{"auto"}).}
-
-\item{\code{auto_offload_threshold}}{Numeric. GPU memory threshold for auto offload
-(default: \code{0.5}).}
-
-\item{\code{device}}{Character or torch.device. Device for computation (default: auto-detect).}
-
-\item{\code{use_amp}}{Logical. Use automatic mixed precision (default: \code{TRUE}).}
-
-\item{\code{use_fa3}}{Logical. Use Flash Attention 3 (default: \code{TRUE}).}
-
-\item{\code{verbose}}{Logical. Show progress bars and logging (default: \code{FALSE}).}
-
-\item{\code{disk_offload_dir}}{Character or NULL. Directory for disk offloading.}
-
-\item{\code{disk_min_free_mb}}{Numeric. Minimum free disk space in MB (default: \code{1024}).}
-
-\item{\code{disk_flush_mb}}{Numeric. Flush memmap after this many MB (default: \code{8192}).}
-
-\item{\code{disk_cleanup}}{Logical. Auto-cleanup disk files (default: \code{TRUE}).}
-
-\item{\code{disk_file_prefix}}{Character. Prefix for disk file names.}
-
-\item{\code{disk_dtype}}{torch.dtype or NULL. Override dtype for disk storage.}
-
-\item{\code{cpu_safety_factor}}{Numeric. CPU memory safety margin (default: \code{0.85}).}
-
-\item{\code{disk_safety_factor}}{Numeric. Disk space safety margin (default: \code{0.95}).}
-
-\item{\code{max_pinned_memory_mb}}{Numeric. Max pinned memory in MB (default: \code{32768}).}
-
-\item{\code{use_async}}{Logical. Use async D2H copy (default: \code{TRUE}).}
-
-\item{\code{async_depth}}{Integer. Max pending async copies (default: \code{4L}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible \code{self}.
-Get available CPU memory in MB
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-get_available_cpu_memory"></a>}}
@@ -222,10 +126,6 @@ Get available CPU memory in MB
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$get_available_cpu_memory()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Numeric. Available CPU memory in MB.
-Get available GPU memory in MB
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-get_available_gpu_memory"></a>}}
@@ -235,10 +135,6 @@ Get available GPU memory in MB
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$get_available_gpu_memory()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Numeric. Available GPU memory in MB, or 0.0 if CUDA unavailable.
-Get available disk space at path in MB
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-get_available_disk_space"></a>}}
@@ -248,17 +144,6 @@ Get available disk space at path in MB
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$get_available_disk_space(path)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character or NULL. Path to check.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Numeric. Available disk space in MB, or 0.0 if unavailable.
-Estimate tensor size in MB
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.estimate_tensor_mb"></a>}}
@@ -268,20 +153,6 @@ Estimate tensor size in MB
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$.estimate_tensor_mb(shape, dtype, repet = 1L)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{shape}}{Integer vector. Tensor shape.}
-
-\item{\code{dtype}}{torch.dtype. Tensor dtype.}
-
-\item{\code{repet}}{Integer. Multiplier for size estimation (default: \code{1L}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Numeric. Estimated size in MB.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-estimate_safe_batch_size"></a>}}
@@ -296,23 +167,6 @@ Numeric. Estimated size in MB.
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{seq_len}}{Integer. Sequence length.}
-
-\item{\code{include_inputs}}{Logical. Include input tensor memory (default: \code{TRUE}).}
-
-\item{\code{in_dim}}{Integer or NULL. Input dimension.}
-
-\item{\code{max_bs}}{Integer. Maximum batch size cap (default: \code{50000L}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-List with \code{available_mem} (numeric) and \code{safe_bs} (integer).
-Resolve actual offload mode based on available resources
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.resolve_offload_mode"></a>}}
@@ -327,22 +181,6 @@ Resolve actual offload mode based on available resources
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{output_mb}}{Numeric. Output size in MB.}
-
-\item{\code{gpu_free_mb}}{Numeric. Free GPU memory in MB.}
-
-\item{\code{cpu_free_mb}}{Numeric. Free CPU memory in MB.}
-
-\item{\code{disk_free_mb}}{Numeric. Free disk space in MB.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-List with \code{mode} (character) and \code{reason} (OffloadReason).
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.allocate_output_buffer"></a>}}
@@ -352,20 +190,6 @@ List with \code{mode} (character) and \code{reason} (OffloadReason).
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$.allocate_output_buffer(mode, shape, dtype)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{mode}}{Character. Offload mode.}
-
-\item{\code{shape}}{Integer vector. Output shape.}
-
-\item{\code{dtype}}{torch.dtype. Output dtype.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-List with \code{buffer} (Tensor or DiskTensor) and \code{info} (list).
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.to_exe_device"></a>}}
@@ -375,16 +199,6 @@ List with \code{buffer} (Tensor or DiskTensor) and \code{info} (list).
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$.to_exe_device(tensor)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{tensor}}{Tensor. Input tensor.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor on execution device.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.prepare_inputs"></a>}}
@@ -394,16 +208,6 @@ Tensor on execution device.
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$.prepare_inputs(inputs)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{Named list. Input dictionary.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Named list with tensors on execution device.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.run_forward"></a>}}
@@ -413,18 +217,6 @@ Named list with tensors on execution device.
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$.run_forward(forward_fn, inputs)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{forward_fn}}{Function. Model forward function.}
-
-\item{\code{inputs}}{Named list. Prepared inputs.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. Forward output.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-forward"></a>}}
@@ -439,24 +231,6 @@ Tensor. Forward output.
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{forward_fn}}{Function. Model forward function.}
-
-\item{\code{inputs}}{Named list. OrderedDict of inputs (first must be tensor).}
-
-\item{\code{auto_batch}}{Logical. Enable automatic batching (default: \code{TRUE}).}
-
-\item{\code{output_repeat}}{Integer. Memory estimation multiplier for output
-(default: \code{1L}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. Combined output from all batches.
-Compute split sizes for batch dimensions
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.compute_split_sizes"></a>}}
@@ -466,18 +240,6 @@ Compute split sizes for batch dimensions
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$.compute_split_sizes(batch_dims, batch_size)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{batch_dims}}{Integer vector. Batch dimension sizes.}
-
-\item{\code{batch_size}}{Integer. Target batch size.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Integer vector. Split sizes for each dimension.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.compute_n_batches"></a>}}
@@ -487,18 +249,6 @@ Integer vector. Split sizes for each dimension.
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$.compute_n_batches(batch_dims, split_sizes)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{batch_dims}}{Integer vector. Batch dimensions.}
-
-\item{\code{split_sizes}}{Integer vector. Split sizes.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Integer. Total number of batches.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.create_multidim_batches"></a>}}
@@ -508,20 +258,6 @@ Integer. Total number of batches.
 \if{html}{\out{<div class="r">}}\preformatted{inference_manager$.create_multidim_batches(inputs, batch_dims, split_sizes)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{Named list. Input dictionary.}
-
-\item{\code{batch_dims}}{Integer vector. Batch dimensions.}
-
-\item{\code{split_sizes}}{Integer vector. Split sizes.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Iterator yielding list(batch_dict, indices).
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-clone"></a>}}

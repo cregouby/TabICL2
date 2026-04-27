@@ -1,27 +1,10 @@
 #' @importFrom torch torch_cat torch_zeros
 NULL
 
-#' Compute the number of bytes per element for common torch dtypes.
-#'
-#' @param tensor A torch tensor.
-#' @return `integer(1)` Bytes per element.
+#' Get number of elements in tensor
 #' @keywords internal
-.element_size <- function(tensor) {
-  dtype_str <- sub("^torch\\.", "", tolower(as.character(tensor$dtype)))
-  sizes <- c(
-    float16 = 2L, bfloat16 = 2L, float32 = 4L, float64 = 8L,
-    int8 = 1L, int16 = 2L, int32 = 4L, int64 = 8L,
-    uint8 = 1L, bool = 1L, complex32 = 8L, complex64 = 16L
-  )
-  if (dtype_str %in% names(sizes)) {
-    return(sizes[[dtype_str]])
-  }
-  4L # default fallback (float32)
-}
-
 .numel <- function(tensor) {
   tensor$view(-1)$shape
-
 }
 #' KVCacheEntry -- Single Key-Value Cache Entry
 #'
@@ -35,35 +18,35 @@ KVCacheEntry <- R6::R6Class(
 
   public = list(
 
-    #' @field key Cached key tensor of shape
-    #'   \code{(batch, num_heads, seq_len, head_dim)}, or \code{NULL}.
+    # @field key Cached key tensor of shape
+    #   \code{(batch, num_heads, seq_len, head_dim)}, or \code{NULL}.
     key = NULL,
 
-    #' @field value Cached value tensor of shape
-    #'   \code{(batch, num_heads, seq_len, head_dim)}, or \code{NULL}.
+    # @field value Cached value tensor of shape
+    #   \code{(batch, num_heads, seq_len, head_dim)}, or \code{NULL}.
     value = NULL,
 
-    #' @description Create a new (possibly empty) cache entry.
-    #' @param key `tensor` or \code{NULL}.
-    #' @param value `tensor` or \code{NULL}.
+    # @description Create a new (possibly empty) cache entry.
+    # @param key `tensor` or \code{NULL}.
+    # @param value `tensor` or \code{NULL}.
     initialize = function(key = NULL, value = NULL) {
       self$key   <- key
       self$value <- value
     },
 
-    #' @description Check whether this entry contains valid (non-NULL)
-    #'   key and value tensors.
-    #' @return `logical(1)`
+    # @description Check whether this entry contains valid (non-NULL)
+    #   key and value tensors.
+    # @return `logical(1)`
     is_valid = function() {
       !is.null(self$key) && !is.null(self$value)
     },
 
-    #' @description Slice key and value along the batch dimension
-    #'   (dim 1 in R, dim 0 in Python).
-    #' @param start `integer(1)` 1-indexed start position (inclusive).
-    #' @param end `integer(1)` 1-indexed end position (inclusive).
-    #' @return A new \code{KVCacheEntry} with sliced tensors, or an
-    #'   empty entry if this entry is not valid.
+    # @description Slice key and value along the batch dimension
+    #   (dim 1 in R, dim 0 in Python).
+    # @param start `integer(1)` 1-indexed start position (inclusive).
+    # @param end `integer(1)` 1-indexed end position (inclusive).
+    # @return A new \code{KVCacheEntry} with sliced tensors, or an
+    #   empty entry if this entry is not valid.
     subset = function(start, end) {
       if (!self$is_valid()) {
         return(KVCacheEntry$new())
@@ -74,10 +57,10 @@ KVCacheEntry <- R6::R6Class(
       )
     },
 
-    #' @description Write a batch slice into this entry (in-place).
-    #' @param start `integer(1)` 1-indexed start position (inclusive).
-    #' @param end `integer(1)` 1-indexed end position (inclusive).
-    #' @param other A valid \code{KVCacheEntry} to copy from.
+    # @description Write a batch slice into this entry (in-place).
+    # @param start `integer(1)` 1-indexed start position (inclusive).
+    # @param end `integer(1)` 1-indexed end position (inclusive).
+    # @param other A valid \code{KVCacheEntry} to copy from.
     assign = function(start, end, other) {
       if (other$is_valid() && self$is_valid()) {
         self$key[start:end, ..]   <- other$key
@@ -85,10 +68,10 @@ KVCacheEntry <- R6::R6Class(
       }
     },
 
-    #' @description Move this entry to a device and optionally cast dtype.
-    #' @param device Target device (e.g. \code{"cpu"}, \code{"cuda:0"}).
-    #' @param dtype Target torch dtype, or \code{NULL} to preserve.
-    #' @return A new \code{KVCacheEntry}.
+    # @description Move this entry to a device and optionally cast dtype.
+    # @param device Target device (e.g. \code{"cpu"}, \code{"cuda:0"}).
+    # @param dtype Target torch dtype, or \code{NULL} to preserve.
+    # @return A new \code{KVCacheEntry}.
     to = function(device, dtype = NULL) {
       if (!self$is_valid()) {
         return(KVCacheEntry$new())
@@ -145,27 +128,27 @@ KVCache <- R6::R6Class(
 
   public = list(
 
-    #' @field kv Named \code{list} mapping layer indices (as
-    #'   character strings) to \code{KVCacheEntry} objects.
+    # @field kv Named \code{list} mapping layer indices (as
+    #   character strings) to \code{KVCacheEntry} objects.
     kv = list(),
 
-    #' @description Create a new (empty) KVCache.
-    #' @param kv Named list of \code{KVCacheEntry} objects.
+    # @description Create a new (empty) KVCache.
+    # @param kv Named list of \code{KVCacheEntry} objects.
     initialize = function(kv = list()) {
       self$kv <- kv
     },
 
-    #' @description Check whether any layer entry contains valid data.
-    #' @return `logical(1)`
+    # @description Check whether any layer entry contains valid data.
+    # @return `logical(1)`
     is_populated = function() {
       if (length(self$kv) == 0L) return(FALSE)
       any(vapply(self$kv, function(e) e$is_valid(), logical(1L)))
     },
 
-    #' @description Slice all entries along the batch dimension.
-    #' @param start `integer(1)` 1-indexed start (inclusive).
-    #' @param end `integer(1)` 1-indexed end (inclusive).
-    #' @return A new \code{KVCache} with sliced entries.
+    # @description Slice all entries along the batch dimension.
+    # @param start `integer(1)` 1-indexed start (inclusive).
+    # @param end `integer(1)` 1-indexed end (inclusive).
+    # @return A new \code{KVCache} with sliced entries.
     subset = function(start, end) {
       sliced_kv <- lapply(self$kv, function(entry) {
         entry$subset(start, end)
@@ -173,11 +156,11 @@ KVCache <- R6::R6Class(
       KVCache$new(kv = sliced_kv)
     },
 
-    #' @description Write batch-sliced entries into this pre-allocated
-    #'   cache (in-place).
-    #' @param start `integer(1)` 1-indexed start (inclusive).
-    #' @param end `integer(1)` 1-indexed end (inclusive).
-    #' @param other A \code{KVCache} whose entries are copied in.
+    # @description Write batch-sliced entries into this pre-allocated
+    #   cache (in-place).
+    # @param start `integer(1)` 1-indexed start (inclusive).
+    # @param end `integer(1)` 1-indexed end (inclusive).
+    # @param other A \code{KVCache} whose entries are copied in.
     assign = function(start, end, other) {
       for (idx in names(other$kv)) {
         if (idx %in% names(self$kv)) {
@@ -198,10 +181,10 @@ KVCache <- R6::R6Class(
       }
     },
 
-    #' @description Move all entries to a device and optionally cast dtype.
-    #' @param device Target device.
-    #' @param dtype Target torch dtype, or \code{NULL}.
-    #' @return A new \code{KVCache}.
+    # @description Move all entries to a device and optionally cast dtype.
+    # @param device Target device.
+    # @param dtype Target torch dtype, or \code{NULL}.
+    # @return A new \code{KVCache}.
     to = function(device, dtype = NULL) {
       moved_kv <- lapply(self$kv, function(entry) {
         entry$to(device, dtype)
@@ -209,16 +192,16 @@ KVCache <- R6::R6Class(
       KVCache$new(kv = moved_kv)
     },
 
-    #' @description Pre-allocate K/V tensors based on shapes from a
-    #'   reference cache.  The last three dimensions are taken from the
-    #'   reference entry; the leading dimensions are set to
-    #'   \code{batch_shape}.
-    #'
-    #' @param reference A \code{KVCache} from a single batch whose
-    #'   entry shapes serve as a template.
-    #' @param batch_shape `integer` vector for the leading dimensions.
-    #' @param device Device string (default \code{"cpu"}).
-    #' @param dtype Target dtype, or \code{NULL} to use reference dtype.
+    # @description Pre-allocate K/V tensors based on shapes from a
+    #   reference cache.  The last three dimensions are taken from the
+    #   reference entry; the leading dimensions are set to
+    #   \code{batch_shape}.
+    #
+    # @param reference A \code{KVCache} from a single batch whose
+    #   entry shapes serve as a template.
+    # @param batch_shape `integer` vector for the leading dimensions.
+    # @param device Device string (default \code{"cpu"}).
+    # @param dtype Target dtype, or \code{NULL} to use reference dtype.
     preallocate = function(reference, batch_shape, device = "cpu", dtype = NULL) {
       for (idx in names(reference$kv)) {
         ref_entry <- reference$kv[[idx]]
@@ -300,32 +283,32 @@ TabICLCache <- R6::R6Class(
 
   public = list(
 
-    #' @field col_cache A \code{\link{KVCache}} for ColEmbedding.
+    # @field col_cache A \code{\link{KVCache}} for ColEmbedding.
     col_cache = NULL,
 
-    #' @field row_repr Cached row representations, or \code{NULL}.
+    # @field row_repr Cached row representations, or \code{NULL}.
     row_repr = NULL,
 
-    #' @field icl_cache A \code{\link{KVCache}} for ICLearning.
+    # @field icl_cache A \code{\link{KVCache}} for ICLearning.
     icl_cache = NULL,
 
-    #' @field train_shape `integer(3)` \code{c(batch_size, train_size,
-    #'   num_features)} describing the training data shape the cache
-    #'   was built with.
+    # @field train_shape `integer(3)` \code{c(batch_size, train_size,
+    #   num_features)} describing the training data shape the cache
+    #   was built with.
     train_shape = c(0L, 0L, 0L),
 
-    #' @field num_classes `integer(1)` or \code{NULL}. Number of
-    #'   classes (0 or \code{NULL} for regression).
+    # @field num_classes `integer(1)` or \code{NULL}. Number of
+    #   classes (0 or \code{NULL} for regression).
     num_classes = NULL,
 
-    #' @description Create a new TabICLCache.
-    #' @param col_cache A \code{KVCache}, or \code{NULL} (default:
-    #'   empty \code{KVCache}).
-    #' @param row_repr `tensor` or \code{NULL}.
-    #' @param icl_cache A \code{KVCache}, or \code{NULL} (default:
-    #'   empty \code{KVCache}).
-    #' @param train_shape `integer(3)`.
-    #' @param num_classes `integer(1)` or \code{NULL}.
+    # @description Create a new TabICLCache.
+    # @param col_cache A \code{KVCache}, or \code{NULL} (default:
+    #   empty \code{KVCache}).
+    # @param row_repr `tensor` or \code{NULL}.
+    # @param icl_cache A \code{KVCache}, or \code{NULL} (default:
+    #   empty \code{KVCache}).
+    # @param train_shape `integer(3)`.
+    # @param num_classes `integer(1)` or \code{NULL}.
     initialize = function(
       col_cache   = NULL,
       row_repr    = NULL,
@@ -340,9 +323,9 @@ TabICLCache <- R6::R6Class(
       self$num_classes <- num_classes
     },
 
-    #' @description Return the cache type: \code{"kv"}, \code{"repr"},
-    #'   or \code{"empty"}.
-    #' @return `character(1)`
+    # @description Return the cache type: \code{"kv"}, \code{"repr"},
+    #   or \code{"empty"}.
+    # @return `character(1)`
     cache_type = function() {
       if (!is.null(self$row_repr)) {
         return("repr")
@@ -355,32 +338,32 @@ TabICLCache <- R6::R6Class(
       "empty"
     },
 
-    #' @description Return the approximate memory occupied by cached
-    #'   tensors in megabytes.
-    #' @return `numeric(1)`
+    # @description Return the approximate memory occupied by cached
+    #   tensors in megabytes.
+    # @return `numeric(1)`
     cache_size_mb = function() {
       total <- 0L
       if (!is.null(self$col_cache)) {
         for (kv in self$col_cache$kv) {
-          if (!is.null(kv$key))   total <- total + .numel(kv$key)   * .element_size(kv$key)
-          if (!is.null(kv$value)) total <- total + .numel(kv$value) * .element_size(kv$value)
+          if (!is.null(kv$key))   total <- total + .numel(kv$key)   * kv$key$element_size()
+          if (!is.null(kv$value)) total <- total + .numel(kv$value) * kv$value$element_size()
         }
       }
       if (!is.null(self$row_repr)) {
-        total <- total + .numel(self$row_repr) * .element_size(self$row_repr)
+        total <- total + .numel(self$row_repr) * self$row_repr$element_size()
       }
       if (!is.null(self$icl_cache)) {
         for (kv in self$icl_cache$kv) {
-          if (!is.null(kv$key))   total <- total + .numel(kv$key)   * .element_size(kv$key)
-          if (!is.null(kv$value)) total <- total + .numel(kv$value) * .element_size(kv$value)
+          if (!is.null(kv$key))   total <- total + .numel(kv$key)   * kv$key$element_size()
+          if (!is.null(kv$value)) total <- total + .numel(kv$value) * kv$value$element_size()
         }
       }
       total %/% (1024L * 1024L)
     },
 
-    #' @description Check whether this cache is empty (no col_cache
-    #'   entries, no row_repr, no icl_cache entries).
-    #' @return `logical(1)`
+    # @description Check whether this cache is empty (no col_cache
+    #   entries, no row_repr, no icl_cache entries).
+    # @return `logical(1)`
     is_empty = function() {
       col_empty <- is.null(self$col_cache) || length(self$col_cache$kv) == 0L
       row_empty <- is.null(self$row_repr)
@@ -388,10 +371,10 @@ TabICLCache <- R6::R6Class(
       col_empty && row_empty && icl_empty
     },
 
-    #' @description Slice this cache along the batch dimension.
-    #' @param start `integer(1)` 1-indexed start (inclusive).
-    #' @param end `integer(1)` 1-indexed end (inclusive).
-    #' @return A new \code{TabICLCache} with sliced tensors.
+    # @description Slice this cache along the batch dimension.
+    # @param start `integer(1)` 1-indexed start (inclusive).
+    # @param end `integer(1)` 1-indexed end (inclusive).
+    # @return A new \code{TabICLCache} with sliced tensors.
     slice_batch = function(start, end) {
       TabICLCache$new(
         col_cache   = if (!is.null(self$col_cache) && length(self$col_cache$kv) > 0L) {
@@ -410,11 +393,11 @@ TabICLCache <- R6::R6Class(
       )
     },
 
-    #' @description Move all cached tensors to a device and
-    #'   optionally cast dtype.
-    #' @param device Target device.
-    #' @param dtype Target torch dtype, or \code{NULL}.
-    #' @return A new \code{TabICLCache}.
+    # @description Move all cached tensors to a device and
+    #   optionally cast dtype.
+    # @param device Target device.
+    # @param dtype Target torch dtype, or \code{NULL}.
+    # @return A new \code{TabICLCache}.
     to = function(device, dtype = NULL) {
       TabICLCache$new(
         col_cache   = if (!is.null(self$col_cache) && length(self$col_cache$kv) > 0L) {

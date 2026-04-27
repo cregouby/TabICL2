@@ -76,7 +76,7 @@ Encoder <- nn_module(
     self$blocks <- nn_module_list(lapply(
       seq_len(num_blocks),
       function(.) {
-        MultiheadAttentionBlock(
+        multihead_attention_block(
           d_model        = d_model,
           nhead          = nhead,
           dim_feedforward = dim_feedforward,

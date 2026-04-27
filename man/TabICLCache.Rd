@@ -14,24 +14,6 @@ transformer).
 \item \strong{Row representations} cached as a single tensor.
 }
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{col_cache}}{A \code{\link{KVCache}} for ColEmbedding.}
-
-\item{\code{row_repr}}{Cached row representations, or \code{NULL}.}
-
-\item{\code{icl_cache}}{A \code{\link{KVCache}} for ICLearning.}
-
-\item{\code{train_shape}}{\code{integer(3)} \code{c(batch_size, train_size,
-  num_features)} describing the training data shape the cache
-was built with.}
-
-\item{\code{num_classes}}{\code{integer(1)} or \code{NULL}. Number of
-classes (0 or \code{NULL} for regression).}
-}
-\if{html}{\out{</div>}}
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -48,7 +30,6 @@ classes (0 or \code{NULL} for regression).}
 \if{html}{\out{<a id="method-TabICLCache-new"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-new}{}}}
 \subsection{Method \code{new()}}{
-Create a new TabICLCache.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TabICLCache$new(
   col_cache = NULL,
@@ -59,110 +40,51 @@ Create a new TabICLCache.
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{col_cache}}{A \code{KVCache}, or \code{NULL} (default:
-empty \code{KVCache}).}
-
-\item{\code{row_repr}}{\code{tensor} or \code{NULL}.}
-
-\item{\code{icl_cache}}{A \code{KVCache}, or \code{NULL} (default:
-empty \code{KVCache}).}
-
-\item{\code{train_shape}}{\code{integer(3)}.}
-
-\item{\code{num_classes}}{\code{integer(1)} or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-cache_type"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-cache_type}{}}}
 \subsection{Method \code{cache_type()}}{
-Return the cache type: \code{"kv"}, \code{"repr"},
-or \code{"empty"}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TabICLCache$cache_type()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-\code{character(1)}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-cache_size_mb"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-cache_size_mb}{}}}
 \subsection{Method \code{cache_size_mb()}}{
-Return the approximate memory occupied by cached
-tensors in megabytes.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TabICLCache$cache_size_mb()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-\code{numeric(1)}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-is_empty"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-is_empty}{}}}
 \subsection{Method \code{is_empty()}}{
-Check whether this cache is empty (no col_cache
-entries, no row_repr, no icl_cache entries).
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TabICLCache$is_empty()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-\code{logical(1)}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-slice_batch"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-slice_batch}{}}}
 \subsection{Method \code{slice_batch()}}{
-Slice this cache along the batch dimension.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TabICLCache$slice_batch(start, end)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
-
-\item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{TabICLCache} with sliced tensors.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-to"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-to}{}}}
 \subsection{Method \code{to()}}{
-Move all cached tensors to a device and
-optionally cast dtype.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TabICLCache$to(device, dtype = NULL)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{device}}{Target device.}
-
-\item{\code{dtype}}{Target torch dtype, or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{TabICLCache}.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-clone"></a>}}

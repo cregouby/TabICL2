@@ -135,9 +135,9 @@ sdpa_with_flattened_batch <- function(q, k, v, attn_mask = NULL,
 
     # Cumulative sequence lengths for varlen attention
     # R: arange with step, then cumsum-style indexing
-    cu_seqlens_q <- torch_arange(0L, flat_bs * seqlen_q, by = seqlen_q,
+    cu_seqlens_q <- torch_arange(0L, flat_bs * seqlen_q, seqlen_q,
                                   dtype = torch_int32(), device = q$device)
-    cu_seqlens_k <- torch_arange(0L, flat_bs * seqlen_k, by = seqlen_k,
+    cu_seqlens_k <- torch_arange(0L, flat_bs * seqlen_k, seqlen_k,
                                   dtype = torch_int32(), device = q$device)
 
     # Call FlashAttention 3 (placeholder: actual binding depends on R package)

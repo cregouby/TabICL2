@@ -353,14 +353,14 @@ TabICL <- nn_module(
   # -------------------------------------------------------------------
 
   has_cache = function() {
-    #' @description Check if a valid cache is stored.
-    #' @return A logical value: \code{TRUE} when a non-empty cache exists.
+    # @description Check if a valid cache is stored.
+    # @return A logical value: \code{TRUE} when a non-empty cache exists.
     !is.null(self$._cache) && !self$._cache$is_empty()
   },
 
   clear_cache = function() {
-    #' @description Clear the stored cache.
-    #' @return \code{NULL}, invisibly.
+    # @description Clear the stored cache.
+    # @return \code{NULL}, invisibly.
     self$._cache <- NULL
     invisible(NULL)
   },
@@ -375,18 +375,18 @@ TabICL <- nn_module(
     d               = NULL,
     embed_with_test = FALSE
   ) {
-    #' @description Column-wise embedding -> row-wise interaction -> dataset-wise
-    #'   in-context learning for training.
-    #' @param X Input tensor of shape \code{(B, T, H)}. The first
-    #'   \code{train_size} positions contain training samples and the remaining
-    #'   positions contain test samples.
-    #' @param y_train Training labels of shape \code{(B, train_size)}.
-    #' @param d Optional integer tensor. The number of features per dataset.
-    #' @param embed_with_test Logical. If \code{TRUE}, allow training samples
-    #'   to attend to test samples during embedding.
-    #' @return Predictions tensor of shape \code{(B, test_size, out_dim)}.
-    #'   For regression (\code{max_classes = 0}): \code{out_dim = num_quantiles}.
-    #'   For classification (\code{max_classes > 0}): \code{out_dim = max_classes}.
+    # @description Column-wise embedding -> row-wise interaction -> dataset-wise
+    #   in-context learning for training.
+    # @param X Input tensor of shape \code{(B, T, H)}. The first
+    #   \code{train_size} positions contain training samples and the remaining
+    #   positions contain test samples.
+    # @param y_train Training labels of shape \code{(B, train_size)}.
+    # @param d Optional integer tensor. The number of features per dataset.
+    # @param embed_with_test Logical. If \code{TRUE}, allow training samples
+    #   to attend to test samples during embedding.
+    # @return Predictions tensor of shape \code{(B, test_size, out_dim)}.
+    #   For regression (\code{max_classes = 0}): \code{out_dim = num_quantiles}.
+    #   For classification (\code{max_classes > 0}): \code{out_dim = max_classes}.
 
     B <- X$shape[1L]
     T <- X$shape[2L]
@@ -437,21 +437,21 @@ TabICL <- nn_module(
     softmax_temperature    = 0.9,
     inference_config       = NULL
   ) {
-    #' @description Column-wise embedding -> row-wise interaction -> dataset-wise
-    #'   in-context learning for inference.
-    #' @param X Input tensor of shape \code{(B, T, H)}.
-    #' @param y_train Training labels of shape \code{(B, train_size)}.
-    #' @param feature_shuffles Optional list of integer vectors. A list of feature
-    #'   shuffle patterns for each table in the batch. When provided, indicates that
-    #'   \code{X} contains the same table with different feature orders.
-    #' @param embed_with_test Logical, default \code{FALSE}.
-    #' @param return_logits Logical, default \code{TRUE}. If \code{TRUE}, return raw
-    #'   logits instead of probabilities.
-    #' @param softmax_temperature Float, default \code{0.9}.
-    #' @param inference_config An \code{InferenceConfig} object.
-    #' @return For regression: predictions of shape \code{(B, test_size, num_quantiles)}.
-    #'   For classification: logits or probabilities of shape
-    #'   \code{(B, test_size, num_classes)}.
+    # @description Column-wise embedding -> row-wise interaction -> dataset-wise
+    #   in-context learning for inference.
+    # @param X Input tensor of shape \code{(B, T, H)}.
+    # @param y_train Training labels of shape \code{(B, train_size)}.
+    # @param feature_shuffles Optional list of integer vectors. A list of feature
+    #   shuffle patterns for each table in the batch. When provided, indicates that
+    #   \code{X} contains the same table with different feature orders.
+    # @param embed_with_test Logical, default \code{FALSE}.
+    # @param return_logits Logical, default \code{TRUE}. If \code{TRUE}, return raw
+    #   logits instead of probabilities.
+    # @param softmax_temperature Float, default \code{0.9}.
+    # @param inference_config An \code{InferenceConfig} object.
+    # @return For regression: predictions of shape \code{(B, test_size, num_quantiles)}.
+    #   For classification: logits or probabilities of shape
+    #   \code{(B, test_size, num_classes)}.
 
     train_size <- y_train$shape[2L]
 
@@ -502,22 +502,22 @@ TabICL <- nn_module(
     softmax_temperature    = 0.9,
     inference_config       = NULL
   ) {
-    #' @description Column-wise embedding -> row-wise interaction -> dataset-wise
-    #'   in-context learning. Dispatches to \code{train_forward()} in training mode
-    #'   and \code{inference_forward()} in evaluation mode.
-    #' @param X Input tensor of shape \code{(B, T, H)}.
-    #' @param y_train Training labels of shape \code{(B, train_size)}.
-    #' @param d Optional tensor. Used only in training mode.
-    #' @param embed_with_test Logical, default \code{FALSE}.
-    #' @param feature_shuffles Optional list of integer vectors. Used only in
-    #'   inference mode.
-    #' @param return_logits Logical, default \code{TRUE}. Used only in inference mode.
-    #' @param softmax_temperature Float, default \code{0.9}. Used only in inference
-    #'   mode.
-    #' @param inference_config An \code{InferenceConfig} object. Used only in
-    #'   inference mode.
-    #' @return A tensor whose shape depends on mode and task type (see
-    #'   \code{train_forward()} and \code{inference_forward()}).
+    # @description Column-wise embedding -> row-wise interaction -> dataset-wise
+    #   in-context learning. Dispatches to \code{train_forward()} in training mode
+    #   and \code{inference_forward()} in evaluation mode.
+    # @param X Input tensor of shape \code{(B, T, H)}.
+    # @param y_train Training labels of shape \code{(B, train_size)}.
+    # @param d Optional tensor. Used only in training mode.
+    # @param embed_with_test Logical, default \code{FALSE}.
+    # @param feature_shuffles Optional list of integer vectors. Used only in
+    #   inference mode.
+    # @param return_logits Logical, default \code{TRUE}. Used only in inference mode.
+    # @param softmax_temperature Float, default \code{0.9}. Used only in inference
+    #   mode.
+    # @param inference_config An \code{InferenceConfig} object. Used only in
+    #   inference mode.
+    # @return A tensor whose shape depends on mode and task type (see
+    #   \code{train_forward()} and \code{inference_forward()}).
 
     if (self$training) {
       out <- self$train_forward(
@@ -552,26 +552,26 @@ TabICL <- nn_module(
     embed_with_test    = FALSE,
     inference_config   = NULL
   ) {
-    #' @description Compute summary statistics from predicted quantiles. Only
-    #'   applicable for regression tasks (\code{max_classes = 0}).
-    #' @param X Input tensor of shape \code{(B, T, H)}.
-    #' @param y_train Training labels of shape \code{(B, train_size)}.
-    #' @param output_type Character string or character vector determining the
-    #'   type of output. Supported values:
-    #'   \itemize{
-    #'     \item \code{"mean"}: Mean of the predicted quantiles.
-    #'     \item \code{"variance"}: Variance of the predicted quantiles.
-    #'     \item \code{"median"}: Median via inverse CDF interpolation.
-    #'     \item \code{"quantiles"}: Specific quantiles via inverse CDF.
-    #'     \item \code{"raw_quantiles"}: The raw (monotonised) quantile tensor.
-    #'   }
-    #'   If a vector of length > 1, returns a named list.
-    #' @param alphas Optional numeric vector of probability levels. Only used when
-    #'   \code{"quantiles"} is in \code{output_type}. Default:
-    #'   \code{c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)}.
-    #' @param embed_with_test Logical, default \code{FALSE}.
-    #' @param inference_config An \code{InferenceConfig} object.
-    #' @return A tensor (single output type) or a named list of tensors.
+    # @description Compute summary statistics from predicted quantiles. Only
+    #   applicable for regression tasks (\code{max_classes = 0}).
+    # @param X Input tensor of shape \code{(B, T, H)}.
+    # @param y_train Training labels of shape \code{(B, train_size)}.
+    # @param output_type Character string or character vector determining the
+    #   type of output. Supported values:
+    #   \itemize{
+    #     \item \code{"mean"}: Mean of the predicted quantiles.
+    #     \item \code{"variance"}: Variance of the predicted quantiles.
+    #     \item \code{"median"}: Median via inverse CDF interpolation.
+    #     \item \code{"quantiles"}: Specific quantiles via inverse CDF.
+    #     \item \code{"raw_quantiles"}: The raw (monotonised) quantile tensor.
+    #   }
+    #   If a vector of length > 1, returns a named list.
+    # @param alphas Optional numeric vector of probability levels. Only used when
+    #   \code{"quantiles"} is in \code{output_type}. Default:
+    #   \code{c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)}.
+    # @param embed_with_test Logical, default \code{FALSE}.
+    # @param inference_config An \code{InferenceConfig} object.
+    # @return A tensor (single output type) or a named list of tensors.
 
     if (self$max_classes != 0L) {
       stop(
@@ -637,25 +637,25 @@ TabICL <- nn_module(
   # Cached forward
   # -------------------------------------------------------------------
 
-    #' @description Forward pass with caching support for efficient inference.
-    #'   Enables caching of training data computations to speed up repeated
-    #'   inference on the same training context.
-    #' @param X_train Optional tensor of shape \code{(B, train_size, H)}.
-    #'   Required when \code{store_cache = TRUE}.
-    #' @param y_train Optional tensor of shape \code{(B, train_size)}.
-    #'   Required when \code{store_cache = TRUE}.
-    #' @param X_test Optional tensor of shape \code{(B, test_size, H)}.
-    #'   Required when \code{use_cache = TRUE}.
-    #' @param return_logits Logical, default \code{TRUE}.
-    #' @param softmax_temperature Float, default \code{0.9}.
-    #' @param use_cache Logical, default \code{FALSE}.
-    #' @param store_cache Logical, default \code{TRUE}.
-    #' @param cache Optional \code{TabICLCache}.
-    #' @param cache_mode Character string, default \code{"kv"}.
-    #' @param inference_config Optional \code{InferenceConfig}.
-    #' @return Predictions tensor of shape \code{(B, test_size, out_dim)}, or
-    #'   \code{NULL} if \code{store_cache = TRUE} and \code{X_test} is not
-    #'   provided.
+    # @description Forward pass with caching support for efficient inference.
+    #   Enables caching of training data computations to speed up repeated
+    #   inference on the same training context.
+    # @param X_train Optional tensor of shape \code{(B, train_size, H)}.
+    #   Required when \code{store_cache = TRUE}.
+    # @param y_train Optional tensor of shape \code{(B, train_size)}.
+    #   Required when \code{store_cache = TRUE}.
+    # @param X_test Optional tensor of shape \code{(B, test_size, H)}.
+    #   Required when \code{use_cache = TRUE}.
+    # @param return_logits Logical, default \code{TRUE}.
+    # @param softmax_temperature Float, default \code{0.9}.
+    # @param use_cache Logical, default \code{FALSE}.
+    # @param store_cache Logical, default \code{TRUE}.
+    # @param cache Optional \code{TabICLCache}.
+    # @param cache_mode Character string, default \code{"kv"}.
+    # @param inference_config Optional \code{InferenceConfig}.
+    # @return Predictions tensor of shape \code{(B, test_size, out_dim)}, or
+    #   \code{NULL} if \code{store_cache = TRUE} and \code{X_test} is not
+    #   provided.
   forward_with_cache = function(
     X_train              = NULL,
     y_train              = NULL,

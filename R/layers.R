@@ -491,7 +491,6 @@ multihead_attention_block <- nn_module(
 #' @export
 induced_self_attention_block <- nn_module(
   "InducedSelfAttentionBlock",
-  inherit = nn_multihead_attention,
   initialize = function(
     d_model,
     nhead,
@@ -504,8 +503,6 @@ induced_self_attention_block <- nn_module(
     ssmax = FALSE,
     skip_value = -100.0
   ) {
-    super$initialize()
-
     self$skip_value <- skip_value
 
     # Normalize ssmax argument

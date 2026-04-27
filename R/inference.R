@@ -299,7 +299,7 @@ pinned_buffer_pool <- R6::R6Class(
       }
 
       # Create new pinned buffer
-      torch_empty(shape, dtype = dtype, device = "cpu", pin_memory = TRUE)
+      do.call(torch_empty, c(as.list(shape), list(dtype = dtype, device = "cpu", pin_memory = TRUE)))
     },
 
     # Return a buffer to the pool for reuse
@@ -388,12 +388,12 @@ disk_tensor <- R6::R6Class(
   "DiskTensor",
 
   public = list(
-    #' Initialize a DiskTensor
-    #'
-    #' @param shape Integer vector. Shape of the tensor.
-    #' @param dtype torch.dtype. Data type.
-    #' @param path Character. File path.
-    #' @param cleanup Logical. Auto-cleanup on GC.
+    # Initialize a DiskTensor
+    #
+    # @param shape Integer vector. Shape of the tensor.
+    # @param dtype torch.dtype. Data type.
+    # @param path Character. File path.
+    # @param cleanup Logical. Auto-cleanup on GC.
     initialize = function(shape, dtype, path, cleanup = TRUE) {
       private$shape <- as.integer(shape)
       private$dtype <- dtype
@@ -436,9 +436,9 @@ disk_tensor <- R6::R6Class(
       }
     },
 
-    #' Get the torch tensor view (loads data if needed)
-    #'
-    #' @return A torch tensor.
+    # Get the torch tensor view (loads data if needed)
+    #
+    # @return A torch tensor.
     tensor = function() {
       if (is.null(private$data)) {
         # Lazy load from disk
@@ -452,19 +452,19 @@ disk_tensor <- R6::R6Class(
       private$data
     },
 
-    #' Index into the tensor (read)
-    #'
-    #' @param indices List of indices or slices.
-    #' @return A torch tensor.
-    #' @note R6 doesn't support `[` overloading directly; use `$get()` instead.
+    # Index into the tensor (read)
+    #
+    # @param indices List of indices or slices.
+    # @return A torch tensor.
+    # @note R6 doesn't support `[` overloading directly; use `$get()` instead.
     get = function(indices) {
       self$tensor()[indices]
     },
 
-    #' Write to the tensor (automatically persists to disk)
-    #'
-    #' @param indices List of indices.
-    #' @param value Tensor. Value to write.
+    # Write to the tensor (automatically persists to disk)
+    #
+    # @param indices List of indices.
+    # @param value Tensor. Value to write.
     set = function(indices, value) {
       if (!value$is_cpu) {
         value <- value$cpu()
@@ -485,7 +485,7 @@ disk_tensor <- R6::R6Class(
       private$dirty <- TRUE
     },
 
-    #' Flush changes to disk
+    # Flush changes to disk
     flush = function() {
       if (!is.null(private$data) && private$dirty) {
         .save_tensor_to_disk(private$data, private$path, private$storage_dtype)
@@ -494,8 +494,8 @@ disk_tensor <- R6::R6Class(
       invisible(NULL)
     },
 
-    #' Get total size in bytes
-    #' @return Integer. Size in bytes.
+    # Get total size in bytes
+    # @return Integer. Size in bytes.
     nbytes = function() {
       bytes_per_element <- torch_tensor(0, dtype = private$storage_dtype)$element_size()
       as.integer(bytes_per_element * prod(private$shape))
@@ -566,11 +566,11 @@ async_copy_manager <- R6::R6Class(
   "AsyncCopyManager",
 
   public = list(
-    #' Initialize the async copy manager
-    #'
-    #' @param device torch.device. CUDA device.
-    #' @param max_pending Integer. Max pending copies.
-    #' @param buffer_pool PinnedBufferPool or NULL.
+    # Initialize the async copy manager
+    #
+    # @param device torch.device. CUDA device.
+    # @param max_pending Integer. Max pending copies.
+    # @param buffer_pool PinnedBufferPool or NULL.
     initialize = function(device, max_pending = 4L, buffer_pool = NULL) {
       private$device <- device
       private$max_pending <- as.integer(max_pending)
@@ -578,7 +578,7 @@ async_copy_manager <- R6::R6Class(
 
       # Create dedicated copy stream (CUDA only)
       private$copy_stream <- NULL
-      if (device$type == "cuda" && torch_cuda_is_available()) {
+      if (device$type == "cuda" && cuda_is_available()) {
         private$copy_stream <- torch_cuda_Stream(device = device)
       }
 
@@ -586,11 +586,11 @@ async_copy_manager <- R6::R6Class(
       private$bytes_written <- 0.0
     },
 
-    #' Submit an async copy from GPU to target storage
-    #'
-    #' @param gpu_tensor Tensor. Source tensor on GPU.
-    #' @param target Tensor or DiskTensor. Target storage.
-    #' @param indices List. Indices where to write in target.
+    # Submit an async copy from GPU to target storage
+    #
+    # @param gpu_tensor Tensor. Source tensor on GPU.
+    # @param target Tensor or DiskTensor. Target storage.
+    # @param indices List. Indices where to write in target.
     submit_copy = function(gpu_tensor, target, indices) {
       if (is.null(private$copy_stream)) {
         # Fallback to sync copy
@@ -626,9 +626,9 @@ async_copy_manager <- R6::R6Class(
       invisible(NULL)
     },
 
-    #' Complete all pending copies
-    #'
-    #' @return Numeric. Total bytes written in MB.
+    # Complete all pending copies
+    #
+    # @return Numeric. Total bytes written in MB.
     drain_all = function() {
       while (length(private$pending) > 0L) {
         private$.drain_one()
@@ -636,19 +636,19 @@ async_copy_manager <- R6::R6Class(
       private$bytes_written
     },
 
-    #' Get total bytes written so far in MB
-    #' @return Numeric.
+    # Get total bytes written so far in MB
+    # @return Numeric.
     get_bytes_written = function() {
       private$bytes_written
     },
 
-    #' Reset the bytes written counter
+    # Reset the bytes written counter
     reset_bytes_counter = function() {
       private$bytes_written <- 0.0
       invisible(NULL)
     },
 
-    #' Clear pending copies without completing them
+    # Clear pending copies without completing them
     clear = function() {
       private$pending <- list()
       invisible(NULL)
@@ -739,11 +739,11 @@ inference_manager <- R6::R6Class(
   "InferenceManager",
 
   public = list(
-    #' Initialize the inference manager
-    #'
-    #' @param enc_name Character. Encoder name for memory estimation.
-    #' @param out_dim Integer. Output dimension.
-    #' @param out_no_seq Logical. Remove sequence dimension from output.
+    # Initialize the inference manager
+    #
+    # @param enc_name Character. Encoder name for memory estimation.
+    # @param out_dim Integer. Output dimension.
+    # @param out_no_seq Logical. Remove sequence dimension from output.
     initialize = function(enc_name, out_dim, out_no_seq = FALSE) {
       private$enc_name <- enc_name
       private$out_dim <- as.integer(out_dim)
@@ -754,30 +754,30 @@ inference_manager <- R6::R6Class(
       private$disk_finalizers <- list()
     },
 
-    #' Configure inference parameters
-    #'
-    #' @param min_batch_size Integer. Minimum batch size before error (default: `1L`).
-    #' @param safety_factor Numeric. Factor (0-1) for conservative memory usage (default: `0.8`).
-    #' @param offload Character or logical. Offload mode: `"auto"`, `"gpu"`, `"cpu"`,
-    #'   `"disk"`, `TRUE` (cpu), or `FALSE` (gpu) (default: `"auto"`).
-    #' @param auto_offload_threshold Numeric. GPU memory threshold for auto offload
-    #'   (default: `0.5`).
-    #' @param device Character or torch.device. Device for computation (default: auto-detect).
-    #' @param use_amp Logical. Use automatic mixed precision (default: `TRUE`).
-    #' @param use_fa3 Logical. Use Flash Attention 3 (default: `TRUE`).
-    #' @param verbose Logical. Show progress bars and logging (default: `FALSE`).
-    #' @param disk_offload_dir Character or NULL. Directory for disk offloading.
-    #' @param disk_min_free_mb Numeric. Minimum free disk space in MB (default: `1024`).
-    #' @param disk_flush_mb Numeric. Flush memmap after this many MB (default: `8192`).
-    #' @param disk_cleanup Logical. Auto-cleanup disk files (default: `TRUE`).
-    #' @param disk_file_prefix Character. Prefix for disk file names.
-    #' @param disk_dtype torch.dtype or NULL. Override dtype for disk storage.
-    #' @param cpu_safety_factor Numeric. CPU memory safety margin (default: `0.85`).
-    #' @param disk_safety_factor Numeric. Disk space safety margin (default: `0.95`).
-    #' @param max_pinned_memory_mb Numeric. Max pinned memory in MB (default: `32768`).
-    #' @param use_async Logical. Use async D2H copy (default: `TRUE`).
-    #' @param async_depth Integer. Max pending async copies (default: `4L`).
-    #' @return Invisible `self`.
+    # Configure inference parameters
+    #
+    # @param min_batch_size Integer. Minimum batch size before error (default: `1L`).
+    # @param safety_factor Numeric. Factor (0-1) for conservative memory usage (default: `0.8`).
+    # @param offload Character or logical. Offload mode: `"auto"`, `"gpu"`, `"cpu"`,
+    #   `"disk"`, `TRUE` (cpu), or `FALSE` (gpu) (default: `"auto"`).
+    # @param auto_offload_threshold Numeric. GPU memory threshold for auto offload
+    #   (default: `0.5`).
+    # @param device Character or torch.device. Device for computation (default: auto-detect).
+    # @param use_amp Logical. Use automatic mixed precision (default: `TRUE`).
+    # @param use_fa3 Logical. Use Flash Attention 3 (default: `TRUE`).
+    # @param verbose Logical. Show progress bars and logging (default: `FALSE`).
+    # @param disk_offload_dir Character or NULL. Directory for disk offloading.
+    # @param disk_min_free_mb Numeric. Minimum free disk space in MB (default: `1024`).
+    # @param disk_flush_mb Numeric. Flush memmap after this many MB (default: `8192`).
+    # @param disk_cleanup Logical. Auto-cleanup disk files (default: `TRUE`).
+    # @param disk_file_prefix Character. Prefix for disk file names.
+    # @param disk_dtype torch.dtype or NULL. Override dtype for disk storage.
+    # @param cpu_safety_factor Numeric. CPU memory safety margin (default: `0.85`).
+    # @param disk_safety_factor Numeric. Disk space safety margin (default: `0.95`).
+    # @param max_pinned_memory_mb Numeric. Max pinned memory in MB (default: `32768`).
+    # @param use_async Logical. Use async D2H copy (default: `TRUE`).
+    # @param async_depth Integer. Max pending async copies (default: `4L`).
+    # @return Invisible `self`.
     configure = function(
       min_batch_size = 1L,
       safety_factor = 0.8,
@@ -828,7 +828,7 @@ inference_manager <- R6::R6Class(
 
       # Setup device
       if (is.null(device)) {
-        private$exe_device <- if (torch_cuda_is_available()) {
+        private$exe_device <- if (cuda_is_available()) {
           torch_device("cuda")
         } else {
           torch_device("cpu")
@@ -847,9 +847,9 @@ inference_manager <- R6::R6Class(
       invisible(self)
     },
 
-    #' Get available CPU memory in MB
-    #'
-    #' @return Numeric. Available CPU memory in MB.
+    # Get available CPU memory in MB
+    #
+    # @return Numeric. Available CPU memory in MB.
     get_available_cpu_memory = function() {
       # Use system command or pryr package as fallback
       # Simplified: return a large default value
@@ -857,11 +857,11 @@ inference_manager <- R6::R6Class(
       32768.0  # Default 32GB
     },
 
-    #' Get available GPU memory in MB
-    #'
-    #' @return Numeric. Available GPU memory in MB, or 0.0 if CUDA unavailable.
+    # Get available GPU memory in MB
+    #
+    # @return Numeric. Available GPU memory in MB, or 0.0 if CUDA unavailable.
     get_available_gpu_memory = function() {
-      if (!torch_cuda_is_available() || private$exe_device$type != "cuda") {
+      if (!cuda_is_available() || private$exe_device$type != "cuda") {
         return(0.0)
       }
       torch_cuda_synchronize()
@@ -870,10 +870,10 @@ inference_manager <- R6::R6Class(
       torch_cuda_mem_get_info(private$exe_device)[1L] / (1024 * 1024)
     },
 
-    #' Get available disk space at path in MB
-    #'
-    #' @param path Character or NULL. Path to check.
-    #' @return Numeric. Available disk space in MB, or 0.0 if unavailable.
+    # Get available disk space at path in MB
+    #
+    # @param path Character or NULL. Path to check.
+    # @return Numeric. Available disk space in MB, or 0.0 if unavailable.
     get_available_disk_space = function(path) {
       if (is.null(path)) {
         return(0.0)
@@ -890,25 +890,25 @@ inference_manager <- R6::R6Class(
       })
     },
 
-    #' Estimate tensor size in MB
-    #'
-    #' @param shape Integer vector. Tensor shape.
-    #' @param dtype torch.dtype. Tensor dtype.
-    #' @param repet Integer. Multiplier for size estimation (default: `1L`).
-    #' @return Numeric. Estimated size in MB.
-    #' @keywords internal
+    # Estimate tensor size in MB
+    #
+    # @param shape Integer vector. Tensor shape.
+    # @param dtype torch.dtype. Tensor dtype.
+    # @param repet Integer. Multiplier for size estimation (default: `1L`).
+    # @return Numeric. Estimated size in MB.
+    # @keywords internal
     .estimate_tensor_mb = function(shape, dtype, repet = 1L) {
       bytes_per_element <- torch_tensor(0, dtype = dtype)$element_size()
       (bytes_per_element * prod(shape) * as.integer(repet) / (1024^2))
     },
 
-    #' Estimate safe batch size based on available GPU memory
-    #'
-    #' @param seq_len Integer. Sequence length.
-    #' @param include_inputs Logical. Include input tensor memory (default: `TRUE`).
-    #' @param in_dim Integer or NULL. Input dimension.
-    #' @param max_bs Integer. Maximum batch size cap (default: `50000L`).
-    #' @return List with `available_mem` (numeric) and `safe_bs` (integer).
+    # Estimate safe batch size based on available GPU memory
+    #
+    # @param seq_len Integer. Sequence length.
+    # @param include_inputs Logical. Include input tensor memory (default: `TRUE`).
+    # @param in_dim Integer or NULL. Input dimension.
+    # @param max_bs Integer. Maximum batch size cap (default: `50000L`).
+    # @return List with `available_mem` (numeric) and `safe_bs` (integer).
     estimate_safe_batch_size = function(seq_len, include_inputs = TRUE,
                                          in_dim = NULL, max_bs = 50000L) {
       available_mem <- self$get_available_gpu_memory()
@@ -926,14 +926,14 @@ inference_manager <- R6::R6Class(
       list(available_mem = available_mem, safe_bs = as.integer(safe_bs))
     },
 
-    #' Resolve actual offload mode based on available resources
-    #'
-    #' @param output_mb Numeric. Output size in MB.
-    #' @param gpu_free_mb Numeric. Free GPU memory in MB.
-    #' @param cpu_free_mb Numeric. Free CPU memory in MB.
-    #' @param disk_free_mb Numeric. Free disk space in MB.
-    #' @return List with `mode` (character) and `reason` (OffloadReason).
-    #' @keywords internal
+    # Resolve actual offload mode based on available resources
+    #
+    # @param output_mb Numeric. Output size in MB.
+    # @param gpu_free_mb Numeric. Free GPU memory in MB.
+    # @param cpu_free_mb Numeric. Free CPU memory in MB.
+    # @param disk_free_mb Numeric. Free disk space in MB.
+    # @return List with `mode` (character) and `reason` (OffloadReason).
+    # @keywords internal
     .resolve_offload_mode = function(output_mb, gpu_free_mb, cpu_free_mb, disk_free_mb) {
       has_gpu <- gpu_free_mb > 0
       has_disk <- !is.null(private$disk_offload_dir)
@@ -1026,13 +1026,13 @@ inference_manager <- R6::R6Class(
       }
     },
 
-    #' Allocate output buffer according to mode
-    #'
-    #' @param mode Character. Offload mode.
-    #' @param shape Integer vector. Output shape.
-    #' @param dtype torch.dtype. Output dtype.
-    #' @return List with `buffer` (Tensor or DiskTensor) and `info` (list).
-    #' @keywords internal
+    # Allocate output buffer according to mode
+    #
+    # @param mode Character. Offload mode.
+    # @param shape Integer vector. Output shape.
+    # @param dtype torch.dtype. Output dtype.
+    # @return List with `buffer` (Tensor or DiskTensor) and `info` (list).
+    # @keywords internal
     .allocate_output_buffer = function(mode, shape, dtype) {
       info <- list(mode = mode, shape = shape, dtype = as.character(dtype))
       output_mb <- self$.estimate_tensor_mb(shape, dtype)
@@ -1089,11 +1089,11 @@ inference_manager <- R6::R6Class(
       list(buffer = disk_tensor_obj, info = info)
     },
 
-    #' Move tensor to execution device if needed
-    #'
-    #' @param tensor Tensor. Input tensor.
-    #' @return Tensor on execution device.
-    #' @keywords internal
+    # Move tensor to execution device if needed
+    #
+    # @param tensor Tensor. Input tensor.
+    # @return Tensor on execution device.
+    # @keywords internal
     .to_exe_device = function(tensor) {
       if (inherits(tensor, "torch_tensor") &&
           private$exe_device$type == "cuda" &&
@@ -1104,11 +1104,11 @@ inference_manager <- R6::R6Class(
       }
     },
 
-    #' Prepare inputs by moving tensors to execution device
-    #'
-    #' @param inputs Named list. Input dictionary.
-    #' @return Named list with tensors on execution device.
-    #' @keywords internal
+    # Prepare inputs by moving tensors to execution device
+    #
+    # @param inputs Named list. Input dictionary.
+    # @return Named list with tensors on execution device.
+    # @keywords internal
     .prepare_inputs = function(inputs) {
       prepared <- list()
       for (name in names(inputs)) {
@@ -1122,12 +1122,12 @@ inference_manager <- R6::R6Class(
       prepared
     },
 
-    #' Execute forward function with no_grad and optional AMP
-    #'
-    #' @param forward_fn Function. Model forward function.
-    #' @param inputs Named list. Prepared inputs.
-    #' @return Tensor. Forward output.
-    #' @keywords internal
+    # Execute forward function with no_grad and optional AMP
+    #
+    # @param forward_fn Function. Model forward function.
+    # @param inputs Named list. Prepared inputs.
+    # @return Tensor. Forward output.
+    # @keywords internal
     .run_forward = function(forward_fn, inputs) {
       # Toggle Flash Attention 3
       restore_fa3 <- flash_attn3_toggle(private$use_fa3)
@@ -1153,14 +1153,14 @@ inference_manager <- R6::R6Class(
       }
     },
 
-    #' Main inference call with automatic batching
-    #'
-    #' @param forward_fn Function. Model forward function.
-    #' @param inputs Named list. OrderedDict of inputs (first must be tensor).
-    #' @param auto_batch Logical. Enable automatic batching (default: `TRUE`).
-    #' @param output_repeat Integer. Memory estimation multiplier for output
-    #'   (default: `1L`).
-    #' @return Tensor. Combined output from all batches.
+    # Main inference call with automatic batching
+    #
+    # @param forward_fn Function. Model forward function.
+    # @param inputs Named list. OrderedDict of inputs (first must be tensor).
+    # @param auto_batch Logical. Enable automatic batching (default: `TRUE`).
+    # @param output_repeat Integer. Memory estimation multiplier for output
+    #   (default: `1L`).
+    # @return Tensor. Combined output from all batches.
     forward = function(forward_fn, inputs, auto_batch = TRUE, output_repeat = 1L) {
       if (!private$is_configured) {
         runtime_error("InferenceManager must be configured before use. Call configure() first.")
@@ -1361,12 +1361,12 @@ inference_manager <- R6::R6Class(
       }
     },
 
-    #' Compute split sizes for batch dimensions
-    #'
-    #' @param batch_dims Integer vector. Batch dimension sizes.
-    #' @param batch_size Integer. Target batch size.
-    #' @return Integer vector. Split sizes for each dimension.
-    #' @keywords internal
+    # Compute split sizes for batch dimensions
+    #
+    # @param batch_dims Integer vector. Batch dimension sizes.
+    # @param batch_size Integer. Target batch size.
+    # @return Integer vector. Split sizes for each dimension.
+    # @keywords internal
     .compute_split_sizes = function(batch_dims, batch_size) {
       elements_left <- as.integer(batch_size)
       split_sizes <- integer(length(batch_dims))
@@ -1385,12 +1385,12 @@ inference_manager <- R6::R6Class(
       split_sizes
     },
 
-    #' Compute total number of batches
-    #'
-    #' @param batch_dims Integer vector. Batch dimensions.
-    #' @param split_sizes Integer vector. Split sizes.
-    #' @return Integer. Total number of batches.
-    #' @keywords internal
+    # Compute total number of batches
+    #
+    # @param batch_dims Integer vector. Batch dimensions.
+    # @param split_sizes Integer vector. Split sizes.
+    # @return Integer. Total number of batches.
+    # @keywords internal
     .compute_n_batches = function(batch_dims, split_sizes) {
       n <- 1L
       for (i in seq_along(batch_dims)) {
@@ -1399,13 +1399,13 @@ inference_manager <- R6::R6Class(
       n
     },
 
-    #' Create multi-dimensional batch iterator
-    #'
-    #' @param inputs Named list. Input dictionary.
-    #' @param batch_dims Integer vector. Batch dimensions.
-    #' @param split_sizes Integer vector. Split sizes.
-    #' @return Iterator yielding list(batch_dict, indices).
-    #' @keywords internal
+    # Create multi-dimensional batch iterator
+    #
+    # @param inputs Named list. Input dictionary.
+    # @param batch_dims Integer vector. Batch dimensions.
+    # @param split_sizes Integer vector. Split sizes.
+    # @return Iterator yielding list(batch_dict, indices).
+    # @keywords internal
     .create_multidim_batches = function(inputs, batch_dims, split_sizes) {
       # Build slice lists for each dimension
       slices_list <- lapply(seq_along(batch_dims), function(i) {
@@ -1428,7 +1428,7 @@ inference_manager <- R6::R6Class(
       n_total <- nrow(batch_indices)
 
       list(
-        next <- function() {
+        get_next = function() {
           if (current > n_total) {
             return(NULL)
           }

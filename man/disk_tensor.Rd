@@ -11,10 +11,6 @@ Uses R's \code{bigmemory} or base file I/O for storage and provides a torch tens
 interface for seamless integration. This enables storing tensors larger than
 available RAM by using disk space.
 }
-\note{
-R6 doesn't support \code{[} overloading directly; use \verb{$get()} instead.
-Write to the tensor (automatically persists to disk)
-}
 \section{Methods}{
 
 \describe{
@@ -63,12 +59,12 @@ dt$flush()
 \describe{
 \item{\code{shape}}{Integer vector. Shape of the tensor.}
 
-\item{\code{dtype}}{torch.dtype. Data type.}
+\item{\code{dtype}}{torch.dtype. Data type of the tensor.}
 
-\item{\code{path}}{Character. File path.}
+\item{\code{path}}{Character. Path to the memory-mapped file.}
 
-\item{\code{cleanup}}{Logical. Auto-cleanup on GC.
-Get the torch tensor view (loads data if needed)}
+\item{\code{cleanup}}{Logical. Whether to delete the file when object is garbage
+collected (default: \code{TRUE}).}
 }
 \if{html}{\out{</div>}}
 }
@@ -81,10 +77,6 @@ Get the torch tensor view (loads data if needed)}
 \if{html}{\out{<div class="r">}}\preformatted{disk_tensor$tensor()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-A torch tensor.
-Index into the tensor (read)
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-get"></a>}}
@@ -94,16 +86,6 @@ Index into the tensor (read)
 \if{html}{\out{<div class="r">}}\preformatted{disk_tensor$get(indices)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indices}}{List of indices or slices.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A torch tensor.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-set"></a>}}
@@ -113,17 +95,6 @@ A torch tensor.
 \if{html}{\out{<div class="r">}}\preformatted{disk_tensor$set(indices, value)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indices}}{List of indices.}
-
-\item{\code{value}}{Tensor. Value to write.
-Flush changes to disk
-Get total size in bytes}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-flush"></a>}}
@@ -142,9 +113,6 @@ Get total size in bytes}
 \if{html}{\out{<div class="r">}}\preformatted{disk_tensor$nbytes()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Integer. Size in bytes.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-clone"></a>}}
