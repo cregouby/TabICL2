@@ -42,8 +42,7 @@ pool$put(buf)  # Return to pool for reuse
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{max_buffers_per_shape}}{Integer. Maximum number of buffers to keep pooled
-for each unique (shape, dtype) combination (default: \code{4L}).}
+\item{\code{max_buffers_per_shape}}{Integer. Maximum buffers per (shape, dtype)}
 }
 \if{html}{\out{</div>}}
 }
@@ -65,6 +64,9 @@ for each unique (shape, dtype) combination (default: \code{4L}).}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+A pinned CPU tensor.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PinnedBufferPool-put"></a>}}
@@ -77,7 +79,7 @@ for each unique (shape, dtype) combination (default: \code{4L}).}
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{buf}}{Tensor. Buffer to return (must be pinned).}
+\item{\code{buf}}{Tensor. Buffer to return.}
 }
 \if{html}{\out{</div>}}
 }

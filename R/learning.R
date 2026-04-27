@@ -8,7 +8,9 @@ torch_unique <- function(x) {
   x_sorted <- x_flat$sort()[[1L]]
 
   # Use torch_unique_consecutive to eliminate consecutive duplicates
-  torch_unique_consecutive(x_sorted)
+  # Returns list: [[1]] unique values, [[2]] inverse indices, [[3]] counts
+  # We only need the unique values
+  torch_unique_consecutive(x_sorted)[[1L]]
 }
 
 #' Dataset-wise in-context learning.
@@ -28,7 +30,7 @@ torch_unique <- function(x) {
 #' @param ssmax logical or str. Type of scalable softmax to use.
 #' @param recompute logical. If TRUE, uses gradient checkpointing.
 #'
-#' @importFrom torch nn_module nn_layer_norm nn_linear nn_sequential nn_gelu torch_zeros torch_tensor torch_cat torch_softmax torch_log torch_stack torch_searchsorted
+#' @importFrom torch nn_module nn_layer_norm nn_linear nn_sequential nn_gelu torch_zeros torch_tensor torch_cat nnf_softmax torch_log torch_stack torch_searchsorted
 #' @export
 nn_ic_learning <- nn_module(
   "nn_ic_learning",
@@ -105,15 +107,18 @@ nn_ic_learning <- nn_module(
   .fit_node = function(node, R, y, current_depth) {
     unique_classes <- torch_unique(y)
     node$classes_ <- unique_classes
-    
-    if (length(unique_classes) <= self$max_classes) {
+
+    # Get number of unique classes as R integer
+    num_unique <- as.integer(unique_classes$shape[1])
+
+    if (num_unique <= self$max_classes) {
       node$is_leaf <- TRUE
       node$R <- R
       node$y <- y
       return(NULL)
     }
-    
-    groups <- self$.grouping(length(unique_classes))
+
+    groups <- self$.grouping(num_unique)
     group_assignments <- groups[[1]]
     num_groups <- groups[[2]]
     
@@ -165,20 +170,21 @@ nn_ic_learning <- nn_module(
   },
   
   .predict_standard = function(R, y_train, return_logits = FALSE, softmax_temperature = 0.9, auto_batch = TRUE) {
-    out <- self$inference_mgr(
-      self$.icl_predictions, 
-      inputs = list(R = R, y_train = y_train), 
+    out <- self$inference_mgr$forward(
+      self$.icl_predictions,
+      inputs = list(R = R, y_train = y_train),
       auto_batch = auto_batch
     )
     
     train_size <- y_train$shape[2]
+    seq_len <- out$shape[2]
     if (self$max_classes == 0) {
-      out <- out[, (train_size + 1):NULL, ..]
+      out <- out[, (train_size + 1):seq_len, ..]
     } else {
-      num_classes <- length(torch_unique(y_train[1, ..]))
-      out <- out[, (train_size + 1):NULL, 1:num_classes]
+      num_classes <- as.integer(torch_unique(y_train[1, ..])$shape[1])
+      out <- out[, (train_size + 1):seq_len, 1:num_classes]
       if (!return_logits) {
-        out <- torch_softmax(out / softmax_temperature, dim = -1)
+        out <- nnf_softmax(out / softmax_temperature, dim = -1)
       }
     }
     out
@@ -237,10 +243,10 @@ nn_ic_learning <- nn_module(
     if (self$max_classes == 0) {
       out <- self$.predict_standard(R, y_train)
     } else {
-      num_classes <- length(torch_unique(y_train[1, ..]))
-      
+      num_classes <- as.integer(torch_unique(y_train[1, ..])$shape[1])
+
       for (i in 1:y_train$shape[1]) {
-        if (length(torch_unique(y_train[i, ..])) != num_classes) {
+        if (as.integer(torch_unique(y_train[i, ..])$shape[1]) != num_classes) {
           cli_abort("All tables must have the same number of classes")
         }
       }
@@ -260,7 +266,8 @@ nn_ic_learning <- nn_module(
           }
           
           self$.fit_hierarchical(ri[1:train_size, ..], yi)
-          probs <- self$.predict_hierarchical(ri[(train_size + 1):NULL, ..], softmax_temperature)
+          ri_len <- ri$shape[1]
+          probs <- self$.predict_hierarchical(ri[(train_size + 1):ri_len, ..], softmax_temperature)
           out_list[[i]] <- probs
         }
         out <- torch_stack(out_list, dim = 1)
@@ -276,7 +283,8 @@ nn_ic_learning <- nn_module(
     if (self$training) {
       train_size <- y_train$shape[2]
       out <- self$.icl_predictions(R, y_train)
-      out <- out[, (train_size + 1):NULL, ..]
+      seq_len <- out$shape[2]
+      out <- out[, (train_size + 1):seq_len, ..]
     } else {
       out <- self$.inference_forward(R, y_train, return_logits, softmax_temperature, mgr_config)
     }
@@ -305,18 +313,19 @@ nn_ic_learning <- nn_module(
   forward_with_repr_cache = function(R, train_size, num_classes = NULL, return_logits = TRUE, softmax_temperature = 0.9, mgr_config = NULL) {
     if (is.null(mgr_config)) mgr_config <- list()
     do.call(self$inference_mgr$configure, mgr_config)
-    
-    out <- self$inference_mgr(
+
+    out <- self$inference_mgr$forward(
       self$.icl_predictions_repr_cache,
       inputs = list(R = R, train_size = train_size)
     )
-    
-    out <- out[, (train_size + 1):NULL, ..]
+
+    seq_len <- out$shape[2]
+    out <- out[, (train_size + 1):seq_len, ..]
     if (self$max_classes > 0) {
       if (is.null(num_classes)) cli_abort("num_classes must be provided for classification")
       out <- out[.., 1:num_classes]
       if (!return_logits) {
-        out <- torch_softmax(out / softmax_temperature, dim = -1)
+        out <- nnf_softmax(out / softmax_temperature, dim = -1)
       }
     }
     out
@@ -357,7 +366,7 @@ nn_ic_learning <- nn_module(
     if (store_cache) {
       if (is.null(y_train)) cli_abort("y_train must be provided when store_cache=TRUE")
       if (self$max_classes > 0) {
-        num_classes <- length(torch_unique(y_train[1, ..]))
+        num_classes <- as.integer(torch_unique(y_train[1, ..])$shape[1])
         if (num_classes > self$max_classes) {
           value_error("KV caching is not supported for classification with more classes ({num_classes}) than max_classes ({self$max_classes}).")
         }
@@ -368,8 +377,8 @@ nn_ic_learning <- nn_module(
     
     if (is.null(mgr_config)) mgr_config <- list()
     do.call(self$inference_mgr$configure, mgr_config)
-    
-    out <- self$inference_mgr(
+
+    out <- self$inference_mgr$forward(
       self$.icl_predictions_with_cache,
       inputs = list(
         R = R,
@@ -382,13 +391,14 @@ nn_ic_learning <- nn_module(
     
     if (store_cache) {
       train_size <- y_train$shape[2]
-      out <- out[, (train_size + 1):NULL, ..]
+      seq_len <- out$shape[2]
+      out <- out[, (train_size + 1):seq_len, ..]
     }
     
     if (self$max_classes > 0) {
       out <- out[.., 1:num_classes]
       if (!return_logits) {
-        out <- torch_softmax(out / softmax_temperature, dim = -1)
+        out <- nnf_softmax(out / softmax_temperature, dim = -1)
       }
     }
     out

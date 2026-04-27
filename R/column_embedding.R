@@ -198,7 +198,7 @@ col_embedding <- nn_module(
 
     if (mode == "same") {
       # Group through circular permutation
-      idxs <- torch_arange(0L, H - 1L, dtype = torch_long(), device = X$device)
+      idxs <- torch_arange(0L, H, dtype = torch_long(), device = X$device)
       # Stack shifted versions: [(idxs + 2^i) % H] for i in 0:size-1
       shifted <- lapply(seq_len(size) - 1L, function(i) {
         X[, , (idxs + (2L^i)) %% H + 1L]  # R: +1 for 1-based indexing
@@ -375,7 +375,7 @@ col_embedding <- nn_module(
 
       X <- X$transpose(1L, 2L)
 
-      indices <- torch_arange(0L, HC - 1L, device = X$device)$unsqueeze(1L)$expand(B, HC)
+      indices <- torch_arange(0L, HC, device = X$device)$unsqueeze(1L)$expand(B, HC)
       mask <- indices < d$unsqueeze(2L)
 
       features <- X[mask]$unsqueeze(-1L)

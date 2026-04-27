@@ -14,7 +14,7 @@ test_that("col_embedding initializes and forwards correctly", {
   # Forward pass
   B <- 2L; T <- 20L; H <- 10L; train_size <- 15L
   X <- torch_randn(B, T, H)
-  y_train <- torch_randint(1L, 6L, c(B, train_size))
+  y_train <- torch_randint(0L, 5L, c(B, train_size))  # 0-based class indices
 
   emb$train()
   out <- emb(X, y_train)  # Appel direct, forward implicite
@@ -31,7 +31,7 @@ test_that("ColEmbedding forward preserves shapes", {
 
   B <- 2L; T <- 20L; H <- 10L; train_size <- 15L
   X <- torch_randn(B, T, H)
-  y_train <- torch_randint(1L, 6L, c(B, train_size))
+  y_train <- torch_randint(0L, 5L, c(B, train_size))  # 0-based class indices
 
   # Training mode
   emb$train()

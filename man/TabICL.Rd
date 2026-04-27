@@ -139,6 +139,18 @@ LayerNorm layers.}
 \item{recompute}{Logical, default \code{FALSE}. If \code{TRUE}, uses gradient checkpointing
 to save memory at the cost of additional computation.}
 
+\item{d}{Optional tensor. Used only in training mode.}
+
+\item{feature_shuffles}{Optional list of integer vectors. Used only in}
+
+\item{X}{Input tensor of shape \code{(B, T, H)}.}
+
+\item{embed_with_test}{Logical, default \code{FALSE}.}
+
+\item{return_logits}{Logical, default \code{TRUE}.}
+
+\item{softmax_temperature}{Float, default \code{0.9}.}
+
 \item{X_train}{Optional tensor of shape \code{(B, train_size, H)}.}
 
 \item{y_train}{Optional tensor of shape \code{(B, train_size)}.}
@@ -163,10 +175,38 @@ to save memory at the cost of additional computation.}
 \value{
 An \code{nn_module} instance of class \code{TabICL}.
 
+A logical value: \code{TRUE} when a non-empty cache exists.
+
+\code{NULL}, invisibly.
+
+Predictions tensor of shape \code{(B, test_size, out_dim)}.
+
+For regression: predictions of shape \code{(B, test_size, num_quantiles)}.
+
+A tensor whose shape depends on mode and task type (see
+
+A tensor (single output type) or a named list of tensors.
+
+Predictions tensor of shape \code{(B, test_size, out_dim)}, or
+
 A tensor, a named list of tensors, or \code{NULL} (when
 \code{store_cache = TRUE} and \code{X_test} is not provided).
 }
 \description{
+Check if a valid cache is stored.
+
+Clear the stored cache.
+
+Column-wise embedding -> row-wise interaction -> dataset-wise
+
+Column-wise embedding -> row-wise interaction -> dataset-wise
+
+Column-wise embedding -> row-wise interaction -> dataset-wise
+
+Compute summary statistics from predicted quantiles. Only
+
+Forward pass with caching support for efficient inference.
+
 Compute summary statistics from predicted quantiles with KV
 caching. Only applicable for regression tasks (\code{max_classes = 0}).
 Delegates to \code{forward_with_cache()} and then applies the same

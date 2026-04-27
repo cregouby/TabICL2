@@ -8,6 +8,15 @@ An R6 class holding optional cached key and value
 projections for one attention layer.  Supports slicing, device
 transfer, concatenation and in-place assignment.
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{key}}{Cached key tensor of shape}
+
+\item{\code{value}}{Cached value tensor of shape}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -23,46 +32,98 @@ transfer, concatenation and in-place assignment.
 \if{html}{\out{<a id="method-KVCacheEntry-new"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCacheEntry-new}{}}}
 \subsection{Method \code{new()}}{
+Create a new (possibly empty) cache entry.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCacheEntry$new(key = NULL, value = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{\code{tensor} or \code{NULL}.}
+
+\item{\code{value}}{\code{tensor} or \code{NULL}.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCacheEntry-is_valid"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCacheEntry-is_valid}{}}}
 \subsection{Method \code{is_valid()}}{
+Check whether this entry contains valid (non-NULL)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCacheEntry$is_valid()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+\code{logical(1)}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCacheEntry-subset"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCacheEntry-subset}{}}}
 \subsection{Method \code{subset()}}{
+Slice key and value along the batch dimension
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCacheEntry$subset(start, end)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{start}}{\code{integer(1)} 1-indexed start position (inclusive).}
+
+\item{\code{end}}{\code{integer(1)} 1-indexed end position (inclusive).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new \code{KVCacheEntry} with sliced tensors, or an
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCacheEntry-assign"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCacheEntry-assign}{}}}
 \subsection{Method \code{assign()}}{
+Write a batch slice into this entry (in-place).
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCacheEntry$assign(start, end, other)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{start}}{\code{integer(1)} 1-indexed start position (inclusive).}
+
+\item{\code{end}}{\code{integer(1)} 1-indexed end position (inclusive).}
+
+\item{\code{other}}{A valid \code{KVCacheEntry} to copy from.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCacheEntry-to"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCacheEntry-to}{}}}
 \subsection{Method \code{to()}}{
+Move this entry to a device and optionally cast dtype.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCacheEntry$to(device, dtype = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{device}}{Target device (e.g. \code{"cpu"}, \code{"cuda:0"}).}
+
+\item{\code{dtype}}{Target torch dtype, or \code{NULL} to preserve.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new \code{KVCacheEntry}.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCacheEntry-clone"></a>}}

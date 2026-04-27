@@ -45,12 +45,13 @@ one_hot_and_linear <- nn_module(
   # Transform integer indices to dense embeddings
   #
   # @param src Integer tensor of shape `(batch_size, sequence_length)` containing
-  #   category indices.
+  #   category indices (0-based).
   # @return Embedded representation of shape `(batch_size, sequence_length, embed_dim)`.
   forward = function(src) {
     # Convert indices to one-hot vectors and apply linear projection
-    # R: one_hot expects 0-based indices for consistency with Python logic
-    one_hot <- nnf_one_hot(src$to(dtype = torch_long()), self$num_classes)
+    # R: one_hot expects 1-based indices, so add 1 to convert from 0-based
+    src_long <- src$to(dtype = torch_long()) + 1L
+    one_hot <- nnf_one_hot(src_long, self$num_classes)
     # Cast to src dtype and apply linear projection
     nnf_linear(one_hot$to(dtype = src$dtype), self$weight, self$bias)
   }
@@ -347,7 +348,8 @@ multihead_attention_block <- nn_module(
         value_error("k and v must be NULL when train_size is provided")
       }
       # R: 1-based inclusive slicing for training portion
-      k <- v <- q[.., seq_len(train_size), ..]
+      # Use narrow to slice second-to-last dimension (sequence dim)
+      k <- v <- q$narrow(dim = -2, start = 1, length = train_size)
     }
 
     k_proj <- NULL
@@ -369,7 +371,7 @@ multihead_attention_block <- nn_module(
           v_normed <- if (identical(v, k)) k_normed else self$norm1(v)
         } else {
           # R: slice training portion
-          k_normed <- v_normed <- q_normed[.., seq_len(train_size), ..]
+          k_normed <- v_normed <- q_normed$narrow(dim = -2, start = 1, length = train_size)
         }
 
         attn_result <- self$.attn_block(
@@ -567,11 +569,8 @@ induced_self_attention_block <- nn_module(
       hidden <- self$multihead_attn1(ind_vectors, src, src)
     } else {
       # R: 1-based inclusive slicing for training portion
-      hidden <- self$multihead_attn1(
-        ind_vectors,
-        src[.., seq_len(train_size), ..],
-        src[.., seq_len(train_size), ..]
-      )
+      src_train <- src$narrow(dim = -2, start = 1, length = train_size)
+      hidden <- self$multihead_attn1(ind_vectors, src_train, src_train)
     }
 
     # Second attention: src attends to hidden (inducing points)
@@ -651,11 +650,8 @@ induced_self_attention_block <- nn_module(
         value_error("train_size must be provided when store_cache = TRUE")
       }
       # First attention: inducing points attend to training portion only
-      hidden <- self$multihead_attn1(
-        ind_vectors,
-        src[.., seq_len(train_size), ..],
-        src[.., seq_len(train_size), ..]
-      )
+      src_train <- src$narrow(dim = -2, start = 1, length = train_size)
+      hidden <- self$multihead_attn1(ind_vectors, src_train, src_train)
       # Second attention: get K/V projections for caching
       result <- self$multihead_attn2(src, hidden, hidden, need_kv = TRUE)
 

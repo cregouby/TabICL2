@@ -9,6 +9,13 @@ An R6 class that maps layer/block indices
 Supports slicing, device transfer, concatenation and
 pre-allocation.
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{kv}}{Named \code{list} mapping layer indices (as}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -25,55 +32,119 @@ pre-allocation.
 \if{html}{\out{<a id="method-KVCache-new"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-new}{}}}
 \subsection{Method \code{new()}}{
+Create a new (empty) KVCache.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCache$new(kv = list())}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{kv}}{Named list of \code{KVCacheEntry} objects.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-is_populated"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-is_populated}{}}}
 \subsection{Method \code{is_populated()}}{
+Check whether any layer entry contains valid data.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCache$is_populated()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+\code{logical(1)}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-subset"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-subset}{}}}
 \subsection{Method \code{subset()}}{
+Slice all entries along the batch dimension.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCache$subset(start, end)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
+
+\item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new \code{KVCache} with sliced entries.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-assign"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-assign}{}}}
 \subsection{Method \code{assign()}}{
+Write batch-sliced entries into this pre-allocated
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCache$assign(start, end, other)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
+
+\item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
+
+\item{\code{other}}{A \code{KVCache} whose entries are copied in.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-to"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-to}{}}}
 \subsection{Method \code{to()}}{
+Move all entries to a device and optionally cast dtype.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCache$to(device, dtype = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{device}}{Target device.}
+
+\item{\code{dtype}}{Target torch dtype, or \code{NULL}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new \code{KVCache}.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-preallocate"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-preallocate}{}}}
 \subsection{Method \code{preallocate()}}{
+Pre-allocate K/V tensors based on shapes from a
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{KVCache$preallocate(reference, batch_shape, device = "cpu", dtype = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{reference}}{A \code{KVCache} from a single batch whose}
+
+\item{\code{batch_shape}}{\code{integer} vector for the leading dimensions.}
+
+\item{\code{device}}{Device string (default \code{"cpu"}).}
+
+\item{\code{dtype}}{Target dtype, or \code{NULL} to use reference dtype.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-clone"></a>}}

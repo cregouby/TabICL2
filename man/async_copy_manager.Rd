@@ -41,12 +41,11 @@ GPU computation to overlap with data movement.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{device}}{torch.device. The CUDA device to use.}
+\item{\code{device}}{torch.device. CUDA device.}
 
-\item{\code{max_pending}}{Integer. Maximum pending async copies before blocking
-(default: \code{4L}).}
+\item{\code{max_pending}}{Integer. Max pending copies.}
 
-\item{\code{buffer_pool}}{PinnedBufferPool or NULL. Pool of pinned buffers.}
+\item{\code{buffer_pool}}{PinnedBufferPool or NULL.}
 }
 \if{html}{\out{</div>}}
 }
@@ -59,6 +58,17 @@ GPU computation to overlap with data movement.
 \if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$submit_copy(gpu_tensor, target, indices)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{gpu_tensor}}{Tensor. Source tensor on GPU.}
+
+\item{\code{target}}{Tensor or DiskTensor. Target storage.}
+
+\item{\code{indices}}{List. Indices where to write in target.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-drain_all"></a>}}
@@ -68,6 +78,9 @@ GPU computation to overlap with data movement.
 \if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$drain_all()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+Numeric. Total bytes written in MB.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-get_bytes_written"></a>}}
@@ -77,6 +90,9 @@ GPU computation to overlap with data movement.
 \if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$get_bytes_written()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+Numeric.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-reset_bytes_counter"></a>}}

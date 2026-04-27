@@ -20,7 +20,7 @@ test_that("skippable_linear handles skip values correctly", {
 
 test_that("one_hot_and_linear produces correct embeddings", {
   encoder <- one_hot_and_linear(num_classes = 5L, embed_dim = 16L)
-  indices <- torch_randint(1L, 6L, c(2L, 10L))  # [batch, seq], values 1-5
+  indices <- torch_randint(0L, 5L, c(2L, 10L))  # [batch, seq], values 0-4 (0-based)
 
   embeddings <- encoder(indices)
 

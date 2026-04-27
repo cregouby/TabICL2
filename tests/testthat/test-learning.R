@@ -50,8 +50,8 @@ test_that("nn_ic_learning handles standard classification (num_classes <= max_cl
   model$eval()
   
   R <- torch_randn(batch_size, train_size + test_size, d_model)
-  # 3 unique classes, all <= max_classes
-  y_train <- torch_tensor(matrix(c(1, 2, 3, 1), nrow = batch_size), dtype = torch_int())
+  # 3 unique classes (0, 1, 2), all <= max_classes
+  y_train <- torch_tensor(matrix(c(0, 1, 2, 0), nrow = batch_size), dtype = torch_int())
   
   # Test with return_logits = FALSE (probabilities)
   probs <- model(R, y_train, return_logits = FALSE)
@@ -83,8 +83,8 @@ test_that("nn_ic_learning triggers hierarchical classification (num_classes > ma
   model$eval()
   
   R <- torch_randn(batch_size, train_size + test_size, d_model)
-  # 4 unique classes > max_classes (2)
-  y_train <- torch_tensor(matrix(c(1, 2, 3, 4, 1, 2), nrow = batch_size), dtype = torch_int())
+  # 4 unique classes (0, 1, 2, 3) > max_classes (2)
+  y_train <- torch_tensor(matrix(c(0, 1, 2, 3, 0, 1), nrow = batch_size), dtype = torch_int())
   
   # Should run through _fit_hierarchical and _predict_hierarchical
   # Using return_logits = FALSE for easier verification
@@ -112,7 +112,7 @@ test_that("KV caching consistency check", {
   
   # Data for cache storing (Training portion)
   R_train <- torch_randn(1, 5, d_model)
-  y_train <- torch_tensor(matrix(c(1, 2, 1, 2, 3), nrow = 1), dtype = torch_int())
+  y_train <- torch_tensor(matrix(c(0, 1, 0, 1, 2), nrow = 1), dtype = torch_int())
   
   # Data for cache usage (Test portion)
   R_test <- torch_randn(1, 2, d_model)
@@ -154,7 +154,8 @@ test_that("Error handling for inconsistent classes and cache settings", {
   
   # 1. Inconsistent classes in batch (Inference mode)
   R <- torch_randn(2, 4, 8)
-  y_train_bad <- torch_tensor(matrix(c(1, 1, 1, 2, 1, 2, 3, 4), nrow = 2, byrow = TRUE), dtype = torch_int())
+  # First row has 2 classes (0, 1), second row has 4 classes (0, 1, 2, 3)
+  y_train_bad <- torch_tensor(matrix(c(0, 0, 0, 1, 0, 1, 2, 3), nrow = 2, byrow = TRUE), dtype = torch_int())
   expect_error(model(R, y_train_bad), "All tables must have the same number of classes")
   
   # 2. Both use_cache and store_cache are TRUE
