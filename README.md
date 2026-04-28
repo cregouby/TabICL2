@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# TabICL2
+# TabICL2 (WiP)
 
 <!-- badges: start -->
 
@@ -16,12 +16,17 @@ status](https://www.r-pkg.org/badges/version/tabicl2)](https://CRAN.R-project.or
 
 <!-- badges: end -->
 
-**TabICL2** is an R implementation of a transformer-based foundation
-model for tabular data using **in-context learning**. Unlike traditional
-supervised learning that requires model fine-tuning, TabICL learns
-patterns from labeled examples in-context—similar to how GPT processes
-text, but for tabular data—to make predictions without additional
-training.
+**TabICL2** is an **Work in Progress** R implementation of [TabICLv2: A
+better, faster, scalable, and open tabular foundation
+model](https://arxiv.org/abs/2602.11139) [(Jingang Qu, David Holzmüller,
+Gaël Varoquaux, Marine Le
+Morvan)](https://doi.org/10.48550/arXiv.2602.11139).  
+
+**TabICL2** is a transformer-based foundation model for tabular data
+using **in-context learning**. Unlike traditional supervised learning
+that requires model fine-tuning, TabICL learns patterns from labeled
+examples in-context—similar to how GPT processes text, but for tabular
+data—to make predictions without additional training.
 
 ## Key Features
 
@@ -282,8 +287,10 @@ before it can perform effective in-context learning at inference time.
 
 ## References
 
-- **TabPFN**: [Tabular Data Prior-Fitted
-  Networks](https://github.com/automl/TabPFN)
+- **TabICL**: [A Tabular Foundation Model for In-Context Learning on
+  Large Data](https://arxiv.org/abs/2502.05564)
+- **TabPFNv2**: [Accurate predictions on small data with a tabular
+  foundation model](https://github.com/automl/TabPFN)
 - **Set Transformers**: [Lee et al.,
   2019](https://arxiv.org/abs/1810.00825)
 - **In-Context Learning**: Learning from examples in the prompt without
