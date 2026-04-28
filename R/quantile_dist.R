@@ -291,11 +291,17 @@ estimate_gpd_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles
   # η estimate: deviation from exponential behavior
   ratio_deviation <- actual_q_ratio / expected_q_ratio$clamp(min = cfg$TOL)
 
+  # Clamp intermediate values for numerical stability
+  log_ratio <- torch_log(ratio_deviation$clamp(min = cfg$TOL))
+  log_ratio_clamped <- torch_clamp(log_ratio, min = -cfg$MAX_LOG_RATIO, max = cfg$MAX_LOG_RATIO)
+
   eta_l_raw <- torch_where(
     ratio_deviation > cfg$TOL,
-    torch_log(ratio_deviation$clamp(min = cfg$TOL)) / ln_alpha_12$abs()$clamp(min = cfg$TOL),
+    log_ratio_clamped / ln_alpha_12$abs()$clamp(min = cfg$TOL),
     torch_zeros_like(ratio_deviation)
   )
+  # Ensure no NaN or Inf values before clamping
+  eta_l_raw <- torch_where(torch_isnan(eta_l_raw) | torch_isinf(eta_l_raw), torch_zeros_like(eta_l_raw), eta_l_raw)
   eta_l <- torch_clamp(eta_l_raw, min = cfg$MIN_ETA, max = cfg$MAX_ETA)
   mu_l <- beta_l
 
@@ -328,11 +334,18 @@ estimate_gpd_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles
   actual_q_ratio_r <- delta_q_12_r / delta_q_23_r$clamp(min = cfg$TOL)
 
   ratio_deviation_r <- actual_q_ratio_r / expected_q_ratio_r$clamp(min = cfg$TOL)
+
+  # Clamp intermediate values for numerical stability
+  log_ratio_r <- torch_log(ratio_deviation_r$clamp(min = cfg$TOL))
+  log_ratio_r_clamped <- torch_clamp(log_ratio_r, min = -cfg$MAX_LOG_RATIO, max = cfg$MAX_LOG_RATIO)
+
   eta_r_raw <- torch_where(
     ratio_deviation_r > cfg$TOL,
-    torch_log(ratio_deviation_r$clamp(min = cfg$TOL)) / ln_1ma_12$abs()$clamp(min = cfg$TOL),
+    log_ratio_r_clamped / ln_1ma_12$abs()$clamp(min = cfg$TOL),
     torch_zeros_like(ratio_deviation_r)
   )
+  # Ensure no NaN or Inf values before clamping
+  eta_r_raw <- torch_where(torch_isnan(eta_r_raw) | torch_isinf(eta_r_raw), torch_zeros_like(eta_r_raw), eta_r_raw)
   eta_r <- torch_clamp(eta_r_raw, min = cfg$MIN_ETA, max = cfg$MAX_ETA)
   mu_r <- beta_r
 
@@ -583,7 +596,14 @@ QuantileDistribution <- R6::R6Class(
       )
 
       if (squeeze_output) {
-        result <- result$squeeze(-1L)
+        # For scalar input, extract the single element
+        if (result$dim() == 2 && all(result$shape == c(1, 1))) {
+          result <- result[1, 1]
+        } else if (result$dim() == 1 && result$shape[1] == 1) {
+          result <- result[1]
+        } else {
+          result <- result$squeeze()
+        }
       }
 
       result
@@ -682,7 +702,7 @@ QuantileDistribution <- R6::R6Class(
           right = TRUE
         ) - 1L
       )
-      seg_idx <- seg_idx$clamp(0L, self$num_segments - 1L)
+      seg_idx <- seg_idx$clamp(1L, self$num_segments)
 
       q_lo_g <- self$q_lo$gather(-1L, seg_idx)
       q_hi_g <- self$q_hi$gather(-1L, seg_idx)
@@ -821,7 +841,7 @@ QuantileDistribution <- R6::R6Class(
           right = TRUE
         ) - 1L
       )
-      seg_idx <- seg_idx$clamp(0L, self$num_segments - 1L)
+      seg_idx <- seg_idx$clamp(1L, self$num_segments)
 
       q_lo_g <- self$q_lo$gather(-1L, seg_idx)
       q_hi_g <- self$q_hi$gather(-1L, seg_idx)
@@ -848,22 +868,35 @@ QuantileDistribution <- R6::R6Class(
     .icdf_derivative = function(alpha) {
       cfg <- self$cfg
 
+      # Expand alpha for batch dimensions if needed (same logic as icdf)
+      alpha_shape <- alpha$shape
+      if (alpha$dim() == 1 && length(self$batch_shape) > 0) {
+        alpha_expanded <- alpha
+        for (i in seq_along(self$batch_shape)) {
+          alpha_expanded <- alpha_expanded$unsqueeze(1L)
+        }
+        expand_shape <- c(self$batch_shape, alpha_shape)
+        alpha_expanded <- alpha_expanded$expand(expand_shape)
+      } else {
+        alpha_expanded <- alpha
+      }
+
       alpha_l_t <- torch_tensor(self$alpha_l, device = alpha$device, dtype = alpha$dtype)
       alpha_r_t <- torch_tensor(self$alpha_r, device = alpha$device, dtype = alpha$dtype)
 
-      if (alpha$dim() > length(self$batch_shape)) {
-        alpha_l_t <- self$.expand_to_alpha(alpha_l_t$expand(self$batch_shape), alpha)
-        alpha_r_t <- self$.expand_to_alpha(alpha_r_t$expand(self$batch_shape), alpha)
+      if (alpha_expanded$dim() > length(self$batch_shape)) {
+        alpha_l_t <- self$.expand_to_alpha(alpha_l_t$expand(self$batch_shape), alpha_expanded)
+        alpha_r_t <- self$.expand_to_alpha(alpha_r_t$expand(self$batch_shape), alpha_expanded)
       }
 
-      deriv_left <- self$.deriv_left_tail(alpha)
-      deriv_right <- self$.deriv_right_tail(alpha)
-      deriv_spline <- self$.deriv_spline(alpha)
+      deriv_left <- self$.deriv_left_tail(alpha_expanded)
+      deriv_right <- self$.deriv_right_tail(alpha_expanded)
+      deriv_spline <- self$.deriv_spline(alpha_expanded)
 
       deriv <- torch_where(
-        alpha < alpha_l_t,
+        alpha_expanded < alpha_l_t,
         deriv_left,
-        torch_where(alpha > alpha_r_t, deriv_right, deriv_spline)
+        torch_where(alpha_expanded > alpha_r_t, deriv_right, deriv_spline)
       )
 
       torch_clamp(deriv, min = cfg$MIN_SLOPE, max = cfg$MAX_SLOPE)
@@ -933,7 +966,7 @@ QuantileDistribution <- R6::R6Class(
           right = TRUE
         ) - 1L
       )
-      seg_idx <- seg_idx$clamp(0L, self$num_segments - 1L)
+      seg_idx <- seg_idx$clamp(1L, self$num_segments)
 
       result <- self$slopes$gather(-1L, seg_idx)
 
@@ -1256,8 +1289,24 @@ QuantileDistribution <- R6::R6Class(
       z_exp <- z$unsqueeze(seg_dim)
       alpha_z_exp <- alpha_z$unsqueeze(seg_dim)
 
-      # Unified formula via clamp trick
-      r <- torch_clamp(alpha_z_exp, alpha_i, alpha_ip1)
+      # Manually expand to compatible shapes for broadcasting
+      # alpha_z_exp: (*batch, 1, *obs) -> (*batch, n_seg, *obs)
+      # alpha_i: (*batch, n_seg, 1) -> (*batch, n_seg, *obs)
+      # Compute target shape from alpha_z_exp shape, replacing the segment dimension
+      alpha_z_shape <- as.list(alpha_z_exp$shape)
+      alpha_z_shape[[seg_dim]] <- self$num_segments
+      target_shape <- unlist(alpha_z_shape)
+
+      alpha_z_broadcast <- alpha_z_exp$expand(target_shape)
+      alpha_i_broadcast <- alpha_i$expand(target_shape)
+      alpha_ip1_broadcast <- alpha_ip1$expand(target_shape)
+
+      # Unified formula via clamp trick - compute mask and use it to select values
+      lower_mask <- (alpha_z_broadcast < alpha_i_broadcast)$to(dtype = alpha_z_exp$dtype)
+      upper_mask <- (alpha_z_broadcast > alpha_ip1_broadcast)$to(dtype = alpha_z_exp$dtype)
+      middle_mask <- 1.0 - lower_mask - upper_mask
+
+      r <- lower_mask * alpha_i_broadcast + middle_mask * alpha_z_broadcast + upper_mask * alpha_ip1_broadcast
 
       r2 <- r^2
       r3 <- r^3
@@ -1318,7 +1367,14 @@ QuantileDistribution <- R6::R6Class(
       q <- self$icdf(u)
 
       if (is.null(sample_shape)) {
-        return(q$squeeze(-1L))
+        # For single sample, extract the single element
+        if (q$dim() == 2 && all(q$shape == c(1, 1))) {
+          return(q[1, 1])
+        } else if (q$dim() == 1 && q$shape[1] == 1) {
+          return(q[1])
+        } else {
+          return(q$squeeze())
+        }
       }
 
       # Reshape
