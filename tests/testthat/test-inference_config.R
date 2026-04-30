@@ -7,8 +7,8 @@ test_that("MgrConfig validates and stores valid parameters", {
     safety_factor  = 0.8,
     offload        = "auto"
   )
-  expect_true(inherits(cfg, "MgrConfig"))
-  expect_true(inherits(cfg, "list"))
+  expect_s3_class(cfg, "MgrConfig")
+  expect_type(cfg, "list")
   expect_identical(cfg$use_amp, TRUE)
   expect_identical(cfg$use_fa3, FALSE)
   expect_identical(cfg$offload, "auto")
@@ -59,12 +59,11 @@ test_that("MgrConfig accepts character device", {
   expect_equal(cfg$device, "cpu")
 })
 
-test_that("as.list.MgrConfig strips class", {
+test_that("MgrConfig is usable directly with do.call (no as.list needed)", {
   cfg <- MgrConfig(use_amp = TRUE, verbose = FALSE)
-  lst <- as.list(cfg)
-  expect_false(inherits(lst, "MgrConfig"))
-  expect_true(is.list(lst))
-  expect_identical(lst$use_amp, TRUE)
+  # MgrConfig is a named list: $-access works
+  expect_identical(cfg$use_amp, TRUE)
+  expect_true(is.list(cfg))
 })
 
 test_that(".mgrcfg_update applies overrides correctly", {
@@ -82,10 +81,10 @@ test_that(".mgrcfg_update validates overrides", {
 
 test_that("InferenceConfig initialises with all three sub-configs", {
   cfg <- InferenceConfig$new()
-  expect_inherits(cfg, "InferenceConfig")
-  expect_true(inherits(cfg$COL_CONFIG, "MgrConfig"))
-  expect_true(inherits(cfg$ROW_CONFIG, "MgrConfig"))
-  expect_true(inherits(cfg$ICL_CONFIG, "MgrConfig"))
+  expect_s3_class(cfg, "InferenceConfig")
+  expect_s3_class(cfg$COL_CONFIG, "MgrConfig")
+  expect_s3_class(cfg$ROW_CONFIG, "MgrConfig")
+  expect_s3_class(cfg$ICL_CONFIG, "MgrConfig")
 })
 
 test_that("InferenceConfig COL_CONFIG has offload = 'auto' by default", {
@@ -137,8 +136,8 @@ test_that("InferenceConfig$update_from_dict rejects invalid keys", {
 
 test_that("inference_config() is an alias for InferenceConfig$new()", {
   cfg <- inference_config()
-  expect_inherits(cfg, "InferenceConfig")
-  expect_true(inherits(cfg$COL_CONFIG, "MgrConfig"))
+  expect_s3_class(cfg, "InferenceConfig")
+  expect_s3_class(cfg$COL_CONFIG, "MgrConfig")
 })
 
 test_that("MgrConfig is usable with do.call on inference_manager$configure", {

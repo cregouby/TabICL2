@@ -49,8 +49,8 @@ test_that("RotaryEmbedding initializes without error", {
     rope <- RotaryEmbedding(dim = 64L)
   })
 
-  expect_true(inherits(rope, "RotaryEmbedding"))
-  expect_true(inherits(rope, "nn_module"))
+  expect_s3_class(rope, "RotaryEmbedding")
+  expect_s3_class(rope, "nn_module")
 
   # Check that buffers are registered
   state <- rope$state_dict()

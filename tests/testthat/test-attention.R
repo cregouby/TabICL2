@@ -68,7 +68,7 @@ test_that("multi_head_attention_forward validates mask shapes", {
   expect_error(
     multi_head_attention_forward(
       query, num_heads, in_proj_weight, in_proj_bias,
-      dropout_p = 0.0, out_proj_weight, out_proj_bias,
+      dropout_p = 0, out_proj_weight, out_proj_bias,
       key = key, value = value, attn_mask = bad_mask
     ),
     class = "value_error"
