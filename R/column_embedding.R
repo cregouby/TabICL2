@@ -507,7 +507,7 @@ col_embedding <- nn_module(
     if (is.null(mgr_config)) {
       mgr_config <- inference_config()$COL_CONFIG
     }
-    self$inference_mgr$configure(!!!mgr_config)
+    do.call(self$inference_mgr$configure, as.list(mgr_config))
 
     train_size <- y_train$size(2L)
 
@@ -523,6 +523,8 @@ col_embedding <- nn_module(
   },
 
   # Main forward method: dispatches to train or inference path
+  # TODO improve readability with a straight case_when() on all bianry variables
+  # TODO question isn't it managed by hardhat triple dispatch upfront ?
   forward = function(X, y_train, d = NULL, embed_with_test = FALSE,
                      feature_shuffles = NULL, mgr_config = NULL) {
     if (self$training) {
@@ -596,7 +598,7 @@ col_embedding <- nn_module(
     if (is.null(mgr_config)) {
       mgr_config <- inference_config()$COL_CONFIG
     }
-    self$inference_mgr$configure(!!!mgr_config)
+    do.call(self$inference_mgr$configure, as.list(mgr_config))
 
     if (self$feature_group) {
       X <- self$feature_grouping(X)

@@ -263,7 +263,7 @@ multi_head_attention_forward <- function(
     src_len <- key_shape[length(key_shape) - 1L]
 
     if (!identical(key$shape, value$shape)) {
-      value_error("key shape {paste(key$shape, collapse=', ')} does not match value shape {paste(value$shape, collapse=', ')}")
+      value_error("key shape {key$shape} does not match value shape {value$shape}")
     }
 
     # R equivalent of F._in_projection_packed: manual projection
@@ -337,7 +337,7 @@ multi_head_attention_forward <- function(
 
     if (mask_ndim == 2L) {
       if (!identical(attn_mask$shape, correct_2d_shape)) {
-        value_error("2D attn_mask should have shape {paste(correct_2d_shape, collapse=', ')}, but got {paste(attn_mask$shape, collapse=', ')}")
+        value_error("2D attn_mask should have shape {correct_2d_shape}, but got {attn_mask$shape}")
       }
       # Expand to full batch shape: (tgt_len, src_len) -> (.., num_heads, tgt_len, src_len)
       attn_mask <- attn_mask$unsqueeze(1L)$unsqueeze(1L)  # Add head and batch dims
@@ -347,7 +347,7 @@ multi_head_attention_forward <- function(
       attn_mask <- attn_mask$expand(correct_nd_shape)
     } else if (mask_ndim == length(correct_nd_shape)) {
       if (!identical(attn_mask$shape, correct_nd_shape)) {
-        value_error("{length(correct_nd_shape)}D attn_mask should have shape {paste(correct_nd_shape, collapse=', ')}, but got {paste(attn_mask$shape, collapse=', ')}")
+        value_error("{length(correct_nd_shape)}D attn_mask should have shape {correct_nd_shape}, but got {attn_mask$shape}")
       }
     } else {
       value_error("attn_mask must be 2D or {length(correct_nd_shape)}D, got {mask_ndim}D")
@@ -358,7 +358,7 @@ multi_head_attention_forward <- function(
   if (!is.null(key_padding_mask)) {
     expected_kpm_shape <- c(batch_shape, src_len)
     if (!identical(key_padding_mask$shape, expected_kpm_shape)) {
-      value_error("key_padding_mask should have shape {paste(expected_kpm_shape, collapse=', ')}, but got {paste(key_padding_mask$shape, collapse=', ')}")
+      value_error("key_padding_mask should have shape {expected_kpm_shape}, but got {key_padding_mask$shape}")
     }
 
     # Expand to attention mask shape: (.., src_len) -> (.., 1, 1, src_len) -> (.., num_heads, tgt_len, src_len)

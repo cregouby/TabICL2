@@ -12,6 +12,7 @@ Imports:
     cli (>= 3.6.6),
     einops,
     hardhat,
+    parallel,
     R6,
     recipes,
     rlang,

@@ -89,6 +89,12 @@ TabICLBaseEstimator <- R6::R6Class(
     #' @field inference_config Inference configuration (list or InferenceConfig)
     inference_config = NULL,
 
+    # --- Fitted attributes (set by subclass $fit()) ---
+    #' @field device_ Resolved torch device (set by \code{.resolve_device()}).
+    device_ = NULL,
+    #' @field inference_config_ Resolved InferenceConfig (set by \code{.build_inference_config()}).
+    inference_config_ = NULL,
+
     #' Initialize the estimator
     #'
     #' @param device Device specification

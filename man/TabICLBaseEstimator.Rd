@@ -51,7 +51,11 @@ Provides shared functionality for both classifier and regressor.
 
 \item{\code{disk_offload_dir}}{Directory for disk offloading}
 
-\item{\code{inference_config}}{Inference configuration (list or InferenceConfig)
+\item{\code{inference_config}}{Inference configuration (list or InferenceConfig)}
+
+\item{\code{device_}}{Resolved torch device (set by \code{.resolve_device()}).}
+
+\item{\code{inference_config_}}{Resolved InferenceConfig (set by \code{.build_inference_config()}).
 Initialize the estimator}
 }
 \if{html}{\out{</div>}}
