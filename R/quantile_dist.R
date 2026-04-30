@@ -1180,9 +1180,9 @@ QuantileDistribution <- R6::R6Class(
 
       alpha_tilde <- torch_clamp(alpha_z, min = self$tol, max = alpha_L - self$tol)
       psi <- torch_clamp((q_L - z) / torch_clamp(mu, min = self$tol), min = 0.0, max = cfg$MAX_EXPONENT)
-      T <- torch_clamp(1.0 + eta_safe * psi, min = self$tol)
+      TT <- torch_clamp(1.0 + eta_safe * psi, min = self$tol)
       exp_power <- torch_clamp(
-        (1.0 - 2.0 / eta_safe) * torch_log(T),
+        (1.0 - 2.0 / eta_safe) * torch_log(TT),
         min = -cfg$MAX_EXPONENT,
         max = cfg$MAX_EXPONENT
       )
@@ -1252,9 +1252,9 @@ QuantileDistribution <- R6::R6Class(
 
       alpha_tilde <- torch_clamp(alpha_z, min = alpha_R + self$tol, max = 1 - self$tol)
       psi <- torch_clamp((z - q_R) / torch_clamp(mu, min = self$tol), min = 0.0, max = cfg$MAX_EXPONENT)
-      T <- torch_clamp(1.0 + eta_safe * psi, min = self$tol)
+      TT <- torch_clamp(1.0 + eta_safe * psi, min = self$tol)
       exp_power <- torch_clamp(
-        (1.0 - 2.0 / eta_safe) * torch_log(T),
+        (1.0 - 2.0 / eta_safe) * torch_log(TT),
         min = -cfg$MAX_EXPONENT,
         max = cfg$MAX_EXPONENT
       )

@@ -298,7 +298,7 @@ test_that("TabICLCache: cache_size_mb returns non-negative integer", {
   ))
   cache <- TabICLCache$new(col_cache = kv)
   size <- cache$cache_size_mb()
-  expect_true(is.integer(size) || is.numeric(size))
+  expect_true(is.numeric(size))
   expect_true(size >= 0)
 })
 

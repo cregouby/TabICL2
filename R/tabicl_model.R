@@ -120,8 +120,8 @@
 #' Dispatches to \code{train_forward()} in training mode and \code{inference_forward()}
 #' in evaluation mode.
 #' \itemize{
-#'   \item \code{X}: Input tensor of shape \code{(B, T, H)} where B is the number of tables,
-#'     T is the number of samples (rows), and H is the number of features (columns). The
+#'   \item \code{X}: Input tensor of shape \code{(B, TT, H)} where B is the number of tables,
+#'     TT is the number of samples (rows), and H is the number of features (columns). The
 #'     first \code{train_size} positions contain training samples, and the remaining positions
 #'     contain test samples.
 #'   \item \code{y_train}: Training labels of shape \code{(B, train_size)}.
@@ -377,7 +377,7 @@ TabICL <- nn_module(
   ) {
     #' @description Column-wise embedding -> row-wise interaction -> dataset-wise
     #'   in-context learning for training.
-    #' @param X Input tensor of shape \code{(B, T, H)}. The first
+    #' @param X Input tensor of shape \code{(B, TT, H)}. The first
     #'   \code{train_size} positions contain training samples and the remaining
     #'   positions contain test samples.
     #' @param y_train Training labels of shape \code{(B, train_size)}.
@@ -389,11 +389,11 @@ TabICL <- nn_module(
     #'   For classification (\code{max_classes > 0}): \code{out_dim = max_classes}.
 
     B <- X$shape[1L]
-    T <- X$shape[2L]
+    TT <- X$shape[2L]
     H <- X$shape[3L]
     train_size <- y_train$shape[2L]
 
-    if (train_size > T) {
+    if (train_size > TT) {
       stop(
         "Number of training samples exceeds total samples.",
         call. = FALSE
@@ -439,7 +439,7 @@ TabICL <- nn_module(
   ) {
     #' @description Column-wise embedding -> row-wise interaction -> dataset-wise
     #'   in-context learning for inference.
-    #' @param X Input tensor of shape \code{(B, T, H)}.
+    #' @param X Input tensor of shape \code{(B, TT, H)}.
     #' @param y_train Training labels of shape \code{(B, train_size)}.
     #' @param feature_shuffles Optional list of integer vectors. A list of feature
     #'   shuffle patterns for each table in the batch. When provided, indicates that
@@ -505,7 +505,7 @@ TabICL <- nn_module(
     #' @description Column-wise embedding -> row-wise interaction -> dataset-wise
     #'   in-context learning. Dispatches to \code{train_forward()} in training mode
     #'   and \code{inference_forward()} in evaluation mode.
-    #' @param X Input tensor of shape \code{(B, T, H)}.
+    #' @param X Input tensor of shape \code{(B, TT, H)}.
     #' @param y_train Training labels of shape \code{(B, train_size)}.
     #' @param d Optional tensor. Used only in training mode.
     #' @param embed_with_test Logical, default \code{FALSE}.
@@ -554,7 +554,7 @@ TabICL <- nn_module(
   ) {
     #' @description Compute summary statistics from predicted quantiles. Only
     #'   applicable for regression tasks (\code{max_classes = 0}).
-    #' @param X Input tensor of shape \code{(B, T, H)}.
+    #' @param X Input tensor of shape \code{(B, TT, H)}.
     #' @param y_train Training labels of shape \code{(B, train_size)}.
     #' @param output_type Character string or character vector determining the
     #'   type of output. Supported values:

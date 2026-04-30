@@ -179,17 +179,17 @@ col_embedding <- nn_module(
 
   # Group features into fixed-size groups
   #
-  # @param X Input tensor of shape `(B, T, H)`.
-  # @return Tensor of shape `(B, T, G, feature_group_size)`.
+  # @param X Input tensor of shape `(B, TT, H)`.
+  # @return Tensor of shape `(B, TT, G, feature_group_size)`.
   # @keywords internal
   feature_grouping = function(X) {
     if (!self$feature_group) {
-      return(X$unsqueeze(-1L))  # (B, T, H, 1)
+      return(X$unsqueeze(-1L))  # (B, TT, H, 1)
     }
 
     shape <- X$shape
     B <- shape[1L]
-    T <- shape[2L]
+    TT <- shape[2L]
     H <- shape[3L]
     size <- self$feature_group_size
 
@@ -210,12 +210,12 @@ col_embedding <- nn_module(
       if (x_pad_cols > 0L) {
         X <- nnf_pad(X, pad = c(0L, x_pad_cols), value = 0)
       }
-      # Reshape: (B, T, H_padded) -> (B, T, G, size)
-      new_shape <- c(B, T, -1L, size)
+      # Reshape: (B, TT, H_padded) -> (B, TT, G, size)
+      new_shape <- c(B, TT, -1L, size)
       X <- X$view(new_shape)
     }
 
-    X  # (B, T, G, size)
+    X  # (B, TT, G, size)
   },
 
   # Compute balanced bases for mixed-radix decomposition (internal)
@@ -264,11 +264,11 @@ col_embedding <- nn_module(
 
   # Feature embedding using a shared set transformer (internal)
   #
-  # @param features Input tensor `(..., T, in_dim)`.
+  # @param features Input tensor `(..., TT, in_dim)`.
   # @param train_size Integer. Position to split training/test data.
   # @param y_train Tensor or NULL. Target values.
   # @param embed_with_test Logical. Whether inducing points attend to all samples.
-  # @return Tensor `(..., T, E)`.
+  # @return Tensor `(..., TT, E)`.
   # @keywords internal
   .compute_embeddings = function(features, train_size, y_train = NULL, embed_with_test = FALSE) {
     src <- self$in_linear(features)
@@ -370,7 +370,7 @@ col_embedding <- nn_module(
       }
 
       B <- X$size(1L)
-      T <- X$size(2L)
+      TT <- X$size(2L)
       HC <- X$size(3L)
 
       X <- X$transpose(1L, 2L)
@@ -387,7 +387,7 @@ col_embedding <- nn_module(
 
       effective_embeddings <- self$.compute_embeddings(features, train_size, y_train, embed_with_test)
 
-      embeddings <- torch_zeros(c(B, HC, T, self$embed_dim),
+      embeddings <- torch_zeros(c(B, HC, TT, self$embed_dim),
                                 device = X$device, dtype = effective_embeddings$dtype)
       embeddings[mask] <- effective_embeddings
     }

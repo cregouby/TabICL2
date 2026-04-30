@@ -12,14 +12,14 @@ test_that("col_embedding initializes and forwards correctly", {
   expect_s3_class(emb$tf_col, "nn_module")
 
   # Forward pass
-  B <- 2L; T <- 20L; H <- 10L; train_size <- 15L
-  X <- torch_randn(B, T, H)
+  B <- 2L; TT <- 20L; H <- 10L; train_size <- 15L
+  X <- torch_randn(B, TT, H)
   y_train <- torch_randint(0L, 5L, c(B, train_size))  # 0-based class indices
 
   emb$train()
   out <- emb(X, y_train)  # Appel direct, forward implicite
 
-  expect_tensor_shape(out, c(B, T, H + 4L, 16L))
+  expect_tensor_shape(out, c(B, TT, H + 4L, 16L))
   expect_false(any(torch_isnan(out)$item()))
 })
 
@@ -29,19 +29,19 @@ test_that("ColEmbedding forward preserves shapes", {
     dim_feedforward = 32L, num_inds = 8L
   )
 
-  B <- 2L; T <- 20L; H <- 10L; train_size <- 15L
-  X <- torch_randn(B, T, H)
+  B <- 2L; TT <- 20L; H <- 10L; train_size <- 15L
+  X <- torch_randn(B, TT, H)
   y_train <- torch_randint(0L, 5L, c(B, train_size))  # 0-based class indices
 
   # Training mode
   emb$train()
   out <- emb$forward(X, y_train)
 
-  # Output: (B, T, H + reserve_cls_tokens, embed_dim)
-  expect_tensor_shape(out, c(B, T, H + 4L, 16L))
+  # Output: (B, TT, H + reserve_cls_tokens, embed_dim)
+  expect_tensor_shape(out, c(B, TT, H + 4L, 16L))
 
   # Inference mode
   emb$eval()
   out_inf <- emb$forward(X, y_train)
-  expect_tensor_shape(out_inf, c(B, T, H + 4L, 16L))
+  expect_tensor_shape(out_inf, c(B, TT, H + 4L, 16L))
 })
