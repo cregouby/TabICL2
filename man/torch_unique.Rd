@@ -2,7 +2,7 @@
 % Please edit documentation in R/learning.R
 \name{torch_unique}
 \alias{torch_unique}
-\title{Get unique values from a tensor (pure torch implementation)}
+\title{Get unique values from a tensor}
 \usage{
 torch_unique(x)
 }
@@ -13,6 +13,6 @@ torch_unique(x)
 torch tensor with unique sorted values
 }
 \description{
-Get unique values from a tensor (pure torch implementation)
+Get unique values from a tensor
 }
 \keyword{internal}
