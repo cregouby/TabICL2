@@ -514,7 +514,9 @@ TransformToNumerical <- R6Class(
 
     #' @description Create a new `TransformToNumerical`.
     #' @param verbose Logical.
-    initialize = function(verbose = FALSE) self$verbose <- verbose,
+    initialize = function(verbose = FALSE) {
+      self$verbose <- verbose
+    },
 
     #' @description Fit to training data.
     #' @param X Matrix or data.frame.
@@ -623,7 +625,9 @@ UniqueFeatureFilter <- R6Class(
 
     #' @description Create a new `UniqueFeatureFilter`.
     #' @param threshold Integer uniqueness threshold.
-    initialize = function(threshold = 1L) self$threshold <- as.integer(threshold),
+    initialize = function(threshold = 1L) {
+      self$threshold <- as.integer(threshold)
+      },
 
     #' @description Fit: identify zero-variance features.
     #' @param X Numeric matrix.
@@ -693,7 +697,9 @@ OutlierRemover <- R6Class(
 
     #' @description Create a new `OutlierRemover`.
     #' @param threshold Numeric Z-score threshold.
-    initialize = function(threshold = 4.0) self$threshold <- threshold,
+    initialize = function(threshold = 4.0) {
+      self$threshold <- threshold
+    },
 
     #' @description Fit: compute clipping bounds.
     #' @param X Numeric matrix.

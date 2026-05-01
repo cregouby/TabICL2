@@ -42,8 +42,7 @@ pool$put(buf)  # Return to pool for reuse
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{max_buffers_per_shape}}{Integer. Maximum buffers per (shape, dtype)
-Get a pinned buffer, creating one if necessary}
+\item{\code{max_buffers_per_shape}}{Integer. Maximum buffers per (shape, dtype)}
 }
 \if{html}{\out{</div>}}
 }
@@ -67,7 +66,6 @@ Get a pinned buffer, creating one if necessary}
 }
 \subsection{Returns}{
 A pinned CPU tensor.
-Return a buffer to the pool for reuse
 }
 }
 \if{html}{\out{<hr>}}
@@ -81,8 +79,7 @@ Return a buffer to the pool for reuse
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{buf}}{Tensor. Buffer to return.
-Clear all pooled buffers}
+\item{\code{buf}}{Tensor. Buffer to return.}
 }
 \if{html}{\out{</div>}}
 }

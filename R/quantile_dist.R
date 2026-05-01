@@ -1,4 +1,4 @@
-#' Configuration constants for QuantileDistribution
+#' Configuration constants for Quantile Distribution
 #'
 #' @description
 #' Numerical stability parameters, tail parameters, computational limits,
@@ -28,17 +28,29 @@
 QuantileDistributionConfig <- R6::R6Class(
   "QuantileDistributionConfig",
   public = list(
+    #' @field TOL General numerical tolerance (default: 1e-6).
     TOL = 1e-6,
+    #' @field MIN_SLOPE Minimum allowed slope dQ/dα (default: 1e-6).
     MIN_SLOPE = 1e-6,
+    #' @field MAX_SLOPE Maximum allowed slope dQ/dα (default: 1e6).
     MAX_SLOPE = 1e6,
+    #' @field MIN_BETA Minimum tail scale parameter β (default: 0.01).
     MIN_BETA = 0.01,
+    #' @field MAX_BETA Maximum tail scale parameter β (default: 100.0).
     MAX_BETA = 100.0,
+    #' @field MIN_ETA Minimum GPD shape parameter η (default: -0.49).
     MIN_ETA = -0.49,
+    #' @field MAX_ETA Maximum GPD shape parameter η (default: 0.49).
     MAX_ETA = 0.49,
+    #' @field ETA_TOLERANCE Threshold for treating η ≈ 0 (default: 0.01).
     ETA_TOLERANCE = 0.01,
+    #' @field MAX_LOG_RATIO Maximum log(ratio) (default: 15.0).
     MAX_LOG_RATIO = 15.0,
+    #' @field MAX_EXPONENT Maximum exponent before exp() (default: 15.0).
     MAX_EXPONENT = 15.0,
+    #' @field MAX_CRPS Maximum CRPS value (default: 1e4).
     MAX_CRPS = 1e4,
+    #' @field TAIL_QUANTILES_FOR_ESTIMATION Number of tail quantiles (default: 20).
     TAIL_QUANTILES_FOR_ESTIMATION = 20L
   )
 )
@@ -610,6 +622,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Expand batch parameter to match alpha shape
+    #' @param param Tensor. Parameter estimates of the tail function.
+    #' @param alpha Tensor. Probability levels.
     .expand_to_alpha = function(param, alpha) {
       n_expand <- alpha$dim() - param$dim()
       result <- param
@@ -620,6 +634,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Left tail quantile
+    #' @param alpha Tensor. Probability levels.
     .icdf_left_tail = function(alpha) {
       if (self$tail_type == "exp") {
         a <- self$.expand_to_alpha(self$tail_a_l, alpha)
@@ -632,6 +647,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Right tail quantile
+    #' @param alpha Tensor. Probability levels.
     .icdf_right_tail = function(alpha) {
       if (self$tail_type == "exp") {
         a <- self$.expand_to_alpha(self$tail_a_r, alpha)
@@ -644,6 +660,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description GPD left tail
+    #' @param alpha Tensor. Probability levels.
     .icdf_gpd_left = function(alpha) {
       cfg <- self$cfg
       eta <- self$.expand_to_alpha(self$eta_l, alpha)
@@ -669,6 +686,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description GPD right tail
+    #' @param alpha Tensor. Probability levels.
     .icdf_gpd_right = function(alpha) {
       cfg <- self$cfg
       eta <- self$.expand_to_alpha(self$eta_r, alpha)
@@ -694,6 +712,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Piecewise linear quantile interpolation
+    #' @param alpha Tensor. Probability levels.
     .icdf_spline = function(alpha) {
       seg_idx <- (
         torch_searchsorted(
@@ -748,6 +767,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Expand batch parameter to match z shape
+    #' @param param Tensor. Parameter estimates of the tail function.
+    #' @param z Tensor. Values at which to evaluate CDF.
     .expand_to_z = function(param, z) {
       n_expand <- z$dim() - param$dim()
       result <- param
@@ -758,6 +779,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description CDF in left tail region
+    #' @param z Tensor. Values at which to evaluate CDF.
     .cdf_left_tail = function(z) {
       cfg <- self$cfg
       if (self$tail_type == "exp") {
@@ -792,6 +814,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description CDF in right tail region
+    #' @param z Tensor. Values at which to evaluate CDF.
     .cdf_right_tail = function(z) {
       cfg <- self$cfg
       if (self$tail_type == "exp") {
@@ -827,6 +850,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description CDF in spline region
+    #' @param z Tensor. Values at which to evaluate CDF.
     .cdf_spline = function(z) {
       # Handle z: (*batch_shape,) or (*batch_shape, n)
       added_dim <- z$dim() == length(self$batch_shape)
@@ -865,6 +889,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Compute dQ/dα derivative
+    #' @param alpha Tensor. Probability levels.
     .icdf_derivative = function(alpha) {
       cfg <- self$cfg
 
@@ -903,6 +928,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Left tail derivative
+    #' @param alpha Tensor. Probability levels.
     .deriv_left_tail = function(alpha) {
       if (self$tail_type == "exp") {
         a <- self$.expand_to_alpha(self$tail_a_l, alpha)
@@ -928,6 +954,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Right tail derivative
+    #' @param alpha Tensor. Probability levels.
     .deriv_right_tail = function(alpha) {
       if (self$tail_type == "exp") {
         a <- self$.expand_to_alpha(self$tail_a_r, alpha)
@@ -953,6 +980,7 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Spline derivative
+    #' @param alpha Tensor. Probability levels.
     .deriv_spline = function(alpha) {
       added_dim <- alpha$dim() == length(self$batch_shape)
       if (added_dim) {
@@ -1128,6 +1156,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description CRPS contribution from left tail
+    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    #' @param alpha_z Tensor. Probability levels.
     .crps_left_tail = function(z, alpha_z) {
       if (self$tail_type == "exp") {
         self$.crps_left_tail_exp(z, alpha_z)
@@ -1137,6 +1167,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Exponential left tail CRPS
+    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    #' @param alpha_z Tensor. Probability levels.
     .crps_left_tail_exp = function(z, alpha_z) {
       a <- self$.expand_to_z(self$tail_a_l, z)
       b <- self$.expand_to_z(self$tail_b_l, z)
@@ -1160,6 +1192,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description GPD left tail CRPS
+    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    #' @param alpha_z Tensor. Probability levels.
     .crps_left_tail_gpd = function(z, alpha_z) {
       cfg <- self$cfg
 
@@ -1197,6 +1231,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description CRPS contribution from right tail
+    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    #' @param alpha_z Tensor. Probability levels.
     .crps_right_tail = function(z, alpha_z) {
       if (self$tail_type == "exp") {
         self$.crps_right_tail_exp(z, alpha_z)
@@ -1206,6 +1242,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description Exponential right tail CRPS
+    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    #' @param alpha_z Tensor. Probability levels.
     .crps_right_tail_exp = function(z, alpha_z) {
       a <- self$.expand_to_z(self$tail_a_r, z)
       b <- self$.expand_to_z(self$tail_b_r, z)
@@ -1230,6 +1268,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description GPD right tail CRPS
+    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    #' @param alpha_z Tensor. Probability levels.
     .crps_right_tail_gpd = function(z, alpha_z) {
       cfg <- self$cfg
 
@@ -1269,6 +1309,8 @@ QuantileDistribution <- R6::R6Class(
     },
 
     #' @description CRPS contribution from spline region
+    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    #' @param alpha_z Tensor. Probability levels.
     .crps_spline = function(z, alpha_z) {
       n_extra <- z$dim() - length(self$batch_shape)
       seg_dim <- length(self$batch_shape) + 1L

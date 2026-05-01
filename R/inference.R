@@ -273,7 +273,7 @@ offload_config <- function(
 pinned_buffer_pool <- R6::R6Class(
   "PinnedBufferPool",
   public = list(
-    #' Initialize the buffer pool
+    # Initialize the buffer pool
     #
     #' @param max_buffers_per_shape Integer. Maximum buffers per (shape, dtype)
     initialize = function(max_buffers_per_shape = 4L) {
@@ -281,7 +281,7 @@ pinned_buffer_pool <- R6::R6Class(
       private$max_per_shape <- as.integer(max_buffers_per_shape)
     },
 
-    #' Get a pinned buffer, creating one if necessary
+    # Get a pinned buffer, creating one if necessary
     #
     #' @param shape Integer vector. Shape of the tensor.
     #' @param dtype torch.dtype. Data type of the tensor.
@@ -302,7 +302,7 @@ pinned_buffer_pool <- R6::R6Class(
       do.call(torch_empty, c(as.list(shape), list(dtype = dtype, device = "cpu")))
     },
 
-    #' Return a buffer to the pool for reuse
+    # Return a buffer to the pool for reuse
     #
     #' @param buf Tensor. Buffer to return.
     put = function(buf) {
@@ -325,7 +325,7 @@ pinned_buffer_pool <- R6::R6Class(
       invisible(NULL)
     },
 
-    #' Clear all pooled buffers
+    # Clear all pooled buffers
     #'
     #' @return A cleared private pool
     clear = function() {
@@ -391,7 +391,7 @@ disk_tensor <- R6::R6Class(
   "DiskTensor",
 
   public = list(
-    #' Initialize a DiskTensor
+    # Initialize a DiskTensor
     #
     #' @param shape Integer vector. Shape of the tensor.
     #' @param dtype torch.dtype. Data type.
@@ -439,7 +439,7 @@ disk_tensor <- R6::R6Class(
       }
     },
 
-    #' Get the torch tensor view (loads data if needed)
+    # Get the torch tensor view (loads data if needed)
     #
     #' @return A torch tensor.
     tensor = function() {
@@ -455,7 +455,7 @@ disk_tensor <- R6::R6Class(
       private$data
     },
 
-    #' Index into the tensor (read)
+    # Index into the tensor (read)
     #
     #' @param indices List of indices or slices.
     #' @return A torch tensor.
@@ -464,7 +464,7 @@ disk_tensor <- R6::R6Class(
       self$tensor()[indices]
     },
 
-    #' Write to the tensor (automatically persists to disk)
+    # Write to the tensor (automatically persists to disk)
     #
     #' @param indices List of indices.
     #' @param value Tensor. Value to write.
@@ -488,7 +488,7 @@ disk_tensor <- R6::R6Class(
       private$dirty <- TRUE
     },
 
-    #' Flush changes to disk
+    # Flush changes to disk
     #'
     #' @return Invisible flush to disk
     flush = function() {
@@ -499,7 +499,7 @@ disk_tensor <- R6::R6Class(
       invisible(NULL)
     },
 
-    #' Get total size in bytes
+    # Get total size in bytes
     #' @return Integer. Size in bytes.
     nbytes = function() {
       bytes_per_element <- torch_tensor(0, dtype = private$storage_dtype)$element_size()
@@ -651,12 +651,14 @@ async_copy_manager <- R6::R6Class(
     },
 
     # Reset the bytes written counter
+    #' @return NULL
     reset_bytes_counter = function() {
       private$bytes_written <- 0.0
       invisible(NULL)
     },
 
     # Clear pending copies without completing them
+    #' @return NULL
     clear = function() {
       private$pending <- list()
       invisible(NULL)

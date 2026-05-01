@@ -102,6 +102,9 @@ Numeric.
 \if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$reset_bytes_counter()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+NULL
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-clear"></a>}}
@@ -111,6 +114,9 @@ Numeric.
 \if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$clear()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+NULL
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-clone"></a>}}

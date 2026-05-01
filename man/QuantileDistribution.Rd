@@ -202,6 +202,15 @@ Expand batch parameter to match alpha shape
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.expand_to_alpha(param, alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{param}}{Tensor. Parameter estimates of the tail function.}
+
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_left_tail"></a>}}
@@ -212,6 +221,13 @@ Left tail quantile
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_left_tail(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_right_tail"></a>}}
@@ -222,6 +238,13 @@ Right tail quantile
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_right_tail(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_gpd_left"></a>}}
@@ -232,6 +255,13 @@ GPD left tail
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_gpd_left(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_gpd_right"></a>}}
@@ -242,6 +272,13 @@ GPD right tail
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_gpd_right(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_spline"></a>}}
@@ -252,6 +289,13 @@ Piecewise linear quantile interpolation
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_spline(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-cdf"></a>}}
@@ -282,6 +326,15 @@ Expand batch parameter to match z shape
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.expand_to_z(param, z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{param}}{Tensor. Parameter estimates of the tail function.}
+
+\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.cdf_left_tail"></a>}}
@@ -292,6 +345,13 @@ CDF in left tail region
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.cdf_left_tail(z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.cdf_right_tail"></a>}}
@@ -302,6 +362,13 @@ CDF in right tail region
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.cdf_right_tail(z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.cdf_spline"></a>}}
@@ -312,6 +379,13 @@ CDF in spline region
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.cdf_spline(z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_derivative"></a>}}
@@ -322,6 +396,13 @@ Compute dQ/dα derivative
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_derivative(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.deriv_left_tail"></a>}}
@@ -332,6 +413,13 @@ Left tail derivative
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.deriv_left_tail(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.deriv_right_tail"></a>}}
@@ -342,6 +430,13 @@ Right tail derivative
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.deriv_right_tail(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.deriv_spline"></a>}}
@@ -352,6 +447,13 @@ Spline derivative
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.deriv_spline(alpha)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{alpha}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-log_prob"></a>}}
@@ -501,6 +603,15 @@ CRPS contribution from left tail
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_left_tail(z, alpha_z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+
+\item{\code{alpha_z}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_left_tail_exp"></a>}}
@@ -511,6 +622,15 @@ Exponential left tail CRPS
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_left_tail_exp(z, alpha_z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+
+\item{\code{alpha_z}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_left_tail_gpd"></a>}}
@@ -521,6 +641,15 @@ GPD left tail CRPS
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_left_tail_gpd(z, alpha_z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+
+\item{\code{alpha_z}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_right_tail"></a>}}
@@ -531,6 +660,15 @@ CRPS contribution from right tail
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_right_tail(z, alpha_z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+
+\item{\code{alpha_z}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_right_tail_exp"></a>}}
@@ -541,6 +679,15 @@ Exponential right tail CRPS
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_right_tail_exp(z, alpha_z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+
+\item{\code{alpha_z}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_right_tail_gpd"></a>}}
@@ -551,6 +698,15 @@ GPD right tail CRPS
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_right_tail_gpd(z, alpha_z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+
+\item{\code{alpha_z}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_spline"></a>}}
@@ -561,6 +717,15 @@ CRPS contribution from spline region
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_spline(z, alpha_z)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+
+\item{\code{alpha_z}}{Tensor. Probability levels.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-pinball"></a>}}
