@@ -23,6 +23,9 @@ transformer).
 
 \item{\code{icl_cache}}{A \code{\link{KVCache}} for ICLearning.}
 
+\item{\code{train_shape}}{\code{integer(3)} \code{c(batch_size, train_size,num_features)}
+describing the training data shape the cache}
+
 \item{\code{num_classes}}{\code{integer(1)} or \code{NULL}. Number of}
 }
 \if{html}{\out{</div>}}

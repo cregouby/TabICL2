@@ -1,17 +1,17 @@
 test_that("sdpa_with_flattened_batch preserves shapes", {
   # Simple test: single batch, single head
-  q <- torch_randn(2L, 4L, 8L)   # [batch=2, tgt_len=4, head_dim=8]
-  k <- torch_randn(2L, 6L, 8L)   # [batch=2, src_len=6, head_dim=8]
-  v <- torch_randn(2L, 6L, 8L)
+  q <- torch_randn(3L, 4L, 8L)   # [batch=3, tgt_len=4, head_dim=8]
+  k <- torch_randn(3L, 7L, 8L)   # [batch=3, src_len=7, head_dim=8]
+  v <- torch_randn(3L, 7L, 8L)
 
   # Reshape to add head dimension: (batch, seq, head_dim) -> (batch, 1, seq, head_dim)
-  q <- q$unsqueeze(2L)  # [2, 1, 4, 8]
-  k <- k$unsqueeze(2L)  # [2, 1, 6, 8]
-  v <- v$unsqueeze(2L)
+  q <- q$unsqueeze(2)  # [3, 1, 4, 8]
+  k <- k$unsqueeze(2)  # [3, 1, 7, 8]
+  v <- v$unsqueeze(2)
 
   out <- sdpa_with_flattened_batch(q, k, v)
 
-  expect_tensor_shape(out, c(2L, 1L, 4L, 8L))
+  expect_tensor_shape(out, c(3L, 1L, 4L, 8L))
   expect_tensor_dtype(out, q$dtype)
 })
 
@@ -44,9 +44,9 @@ test_that("multi_head_attention_forward handles caching", {
   k_proj <- result[[2L]]
   v_proj <- result[[3L]]
 
-  expect_tensor_shape(attn_out, c(2L, 10L, embed_dim))
-  expect_tensor_shape(k_proj, c(2L, num_heads, 15L, head_dim))
-  expect_tensor_shape(v_proj, c(2L, num_heads, 15L, head_dim))
+  expect_tensor_shape(attn_out, c(2, 10, embed_dim))
+  expect_tensor_shape(k_proj, c(2, num_heads, 15, head_dim))
+  expect_tensor_shape(v_proj, c(2, num_heads, 15, head_dim))
 })
 
 test_that("multi_head_attention_forward validates mask shapes", {

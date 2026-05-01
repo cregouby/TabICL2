@@ -7,6 +7,6 @@
 .load_tensor_from_disk(path, shape, dtype)
 }
 \description{
-Load tensor from disk (simplified implementation)
+TODO swith to safetensors::safe_load_file()
 }
 \keyword{internal}

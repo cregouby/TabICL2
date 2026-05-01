@@ -6,56 +6,6 @@
 #' @keywords internal
 NULL
 
-#' Custom error wrappers using glue-style formatting
-#'
-#' @param msg Message template with {variable} placeholders
-#' @param ... Variables to interpolate in the message
-#' @keywords internal
-runtime_error <- function(msg, ...) {
-  stop(glue::glue(msg, ...), call. = FALSE)
-}
-
-#' @rdname runtime_error
-#' @keywords internal
-type_error <- function(msg, ...) {
-  stop(glue::glue(msg, ...), call. = FALSE)
-}
-
-#' @rdname runtime_error
-#' @keywords internal
-value_error <- function(msg, ...) {
-  stop(glue::glue(msg, ...), call. = FALSE)
-}
-
-#' @rdname runtime_error
-#' @keywords internal
-stop_iteration_error <- function(msg, ...) {
-  stop(glue::glue(msg, ...), call. = FALSE)
-}
-
-#' Check version compatibility between saved and current environment
-#'
-#' Warn if saved package versions differ from current environment.
-#'
-#' @param metadata A list containing version information
-#' @keywords internal
-.check_version_compatibility <- function(metadata) {
-  checks <- list(
-    list(key = "sklearn_version", current = "0.0.0", name = "caret"),
-    list(key = "torch_version", current = as.character(packageVersion("torch")), name = "torch"),
-    list(key = "numpy_version", current = as.character(packageVersion("numpy")), name = "numpy")
-  )
-
-  purrr::walk(checks, function(check) {
-    saved <- metadata[[check$key]]
-    if (!is.null(saved) && !identical(saved, check$current)) {
-      cli_warn(
-        "This file was saved with {check$name}=={saved} but you are running {check$name}=={check$current}. This may cause errors or incorrect results."
-      )
-    }
-  })
-}
-
 #' TabICL Base Estimator Class
 #'
 #' Base class for TabICL scikit-learn compatible estimators.
@@ -133,6 +83,8 @@ TabICLBaseEstimator <- R6::R6Class(
 
     #' Resolve the target device from the init parameter
     #'
+    #' TODO : improve it through tabnet:::get_device_from_config
+    #' @return A proper torch_device()
     #' @keywords internal
     .resolve_device = function() {
       self$device_ <- if (is.null(self$device)) {
@@ -186,6 +138,7 @@ TabICLBaseEstimator <- R6::R6Class(
 
     #' Build the inference configuration from init parameters
     #'
+    #' @return A proper config list
     #' @keywords internal
     .build_inference_config = function() {
       amp_fa3 <- self$.resolve_amp_fa3()
@@ -234,6 +187,7 @@ TabICLBaseEstimator <- R6::R6Class(
 
     #' Move KV cache to the current device, auto-upcasting if needed
     #'
+    #' @return nothing
     #' @keywords internal
     .move_cache_to_device = function() {
       if (!exists("model_kv_cache_", envir = self, inherits = FALSE) ||
@@ -328,10 +282,19 @@ TabICLBaseEstimator <- R6::R6Class(
 #' @return Softmax probabilities array
 #' @export
 softmax <- function(x, axis = -1, temperature = 0.9) {
+  if (is.null(dim(x))) {
+    stop("x must be an array or matrix")
+  }
+
+  nd <- length(dim(x))
+  if (axis < 0) axis <- nd + axis + 1
+  if (axis < 1 || axis > nd) {
+    stop("axis must be between 1 and ", nd)
+  }
+
   x <- x / temperature
-  # Subtract max for numerical stability
-  x_max <- apply(x, MARGIN = axis, FUN = max, na.rm = TRUE, drop = FALSE)
-  e_x <- exp(x - x_max)
-  # Compute softmax
-  e_x / apply(e_x, MARGIN = axis, FUN = sum, na.rm = TRUE, drop = FALSE)
+  x_max <- apply(x, MARGIN = axis, FUN = max, na.rm = TRUE)
+  e_x <- exp(sweep(x, MARGIN = axis, STATS = x_max, FUN = "-"))
+  e_x_sum <- apply(e_x, MARGIN = axis, FUN = sum, na.rm = TRUE)
+  sweep(e_x, MARGIN = axis, STATS = e_x_sum, FUN = "/")
 }

@@ -1,84 +1,20 @@
-if (!exists("InferenceConfig", mode = "function")) {
-  InferenceConfig <- R6::R6Class(
-    "InferenceConfig",
-    public = list(
-      update_from_dict = function(config) {
-        purrr::iwalk(config, function(value, key) {
-          self[[key]] <- value
-        })
-        invisible(self)
-      }
-    )
-  )
-}
+# if (!exists("InferenceConfig", mode = "function")) {
+#   InferenceConfig <- R6::R6Class(
+#     "InferenceConfig",
+#     public = list(
+#       update_from_dict = function(config) {
+#         purrr::iwalk(config, function(value, key) {
+#           self[[key]] <- value
+#         })
+#         invisible(self)
+#       }
+#     )
+#   )
+# }
 
-
-test_that("runtime_error throws with glue-style interpolation", {
-  expect_error(
-    runtime_error("Value {x} is invalid", x = 42),
-    "Value 42 is invalid"
-  )
-})
-
-test_that("type_error throws with glue-style interpolation", {
-  expect_error(
-    type_error("Expected {expected_type} but got {actual_type}",
-               expected_type = "numeric", actual_type = "character"),
-    "Expected numeric but got character"
-  )
-})
-
-test_that("value_error throws with glue-style interpolation", {
-  expect_error(
-    value_error("Parameter {param} must be positive, got {val}",
-                param = "alpha", val = -1),
-    "Parameter alpha must be positive, got -1"
-  )
-})
-
-test_that("stop_iteration_error throws with glue-style interpolation", {
-  expect_error(
-    stop_iteration_error("Iterator exhausted after {n} steps", n = 100),
-    "Iterator exhausted after 100 steps"
-  )
-})
-
-test_that(".check_version_compatibility warns on version mismatch", {
-  metadata <- list(
-    sklearn_version = "0.0.1",
-    torch_version = as.character(packageVersion("torch")),
-    numpy_version = "99.99.99"
-  )
-  expect_warning(
-    .check_version_compatibility(metadata),
-    "caret==0.0.1"
-  )
-  expect_warning(
-    .check_version_compatibility(metadata),
-    "numpy==99.99.99"
-  )
-})
-
-test_that(".check_version_compatibility silent on matching versions", {
-  metadata <- list(
-    sklearn_version = "0.0.0",
-    torch_version = as.character(packageVersion("torch")),
-    numpy_version = as.character(packageVersion("numpy"))
-  )
-  expect_silent(.check_version_compatibility(metadata))
-})
-
-test_that(".check_version_compatibility handles NULL metadata values", {
-  metadata <- list(
-    sklearn_version = NULL,
-    torch_version = NULL,
-    numpy_version = NULL
-  )
-  expect_silent(.check_version_compatibility(metadata))
-})
 
 test_that("softmax computes correct probabilities with default temperature", {
-  x <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, ncol = 3)
+  x <- matrix(1:6, nrow = 2)
   result <- softmax(x)
   expect_equal(dim(result), dim(x))
   row_sums <- rowSums(result)
@@ -87,7 +23,7 @@ test_that("softmax computes correct probabilities with default temperature", {
 })
 
 test_that("softmax handles temperature scaling", {
-  x <- matrix(c(1, 2, 3), nrow = 1)
+  x <- matrix(1:6, nrow = 2)
   result_low_temp <- softmax(x, temperature = 0.1)
   result_high_temp <- softmax(x, temperature = 10)
   expect_true(max(result_low_temp) > max(result_high_temp))
@@ -152,7 +88,7 @@ test_that(".resolve_device handles string device specification", {
 })
 
 test_that(".resolve_device handles torch_device object", {
-  if (torch_cuda_is_available()) {
+  if (cuda_is_available()) {
     device_obj <- torch_device("cuda:0")
   } else {
     device_obj <- torch_device("cpu")
@@ -363,7 +299,6 @@ test_that("full workflow init resolve build config", {
 })
 
 test_that("softmax output compatible with expect_tensor helpers", {
-  skip_if_not_installed("testthat")
   x <- matrix(rnorm(20), nrow = 4, ncol = 5)
   result <- softmax(x)
   expect_equal(dim(result), c(4, 5))

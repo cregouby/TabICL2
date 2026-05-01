@@ -292,8 +292,8 @@ TabICLCache <- R6::R6Class(
     #' @field icl_cache A \code{\link{KVCache}} for ICLearning.
     icl_cache = NULL,
 
-    #' @field train_shape `integer(3)` \code{c(batch_size, train_size,
-    #   num_features)} describing the training data shape the cache
+    #' @field train_shape `integer(3)` \code{c(batch_size, train_size,num_features)}
+    #'  describing the training data shape the cache
     #   was built with.
     train_shape = c(0L, 0L, 0L),
 

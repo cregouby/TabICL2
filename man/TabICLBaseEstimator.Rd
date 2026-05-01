@@ -135,6 +135,8 @@ Get sklearn-compatible tags
 \subsection{Returns}{
 A list with tags
 Resolve the target device from the init parameter
+
+TODO : improve it through tabnet:::get_device_from_config
 }
 }
 \if{html}{\out{<hr>}}
@@ -145,6 +147,9 @@ Resolve the target device from the init parameter
 \if{html}{\out{<div class="r">}}\preformatted{TabICLBaseEstimator$.resolve_device()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A proper torch_device()
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLBaseEstimator-.resolve_amp_fa3"></a>}}
@@ -166,6 +171,9 @@ A list with use_amp and use_fa3 boolean values
 \if{html}{\out{<div class="r">}}\preformatted{TabICLBaseEstimator$.build_inference_config()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A proper config list
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLBaseEstimator-.move_cache_to_device"></a>}}
@@ -175,6 +183,9 @@ A list with use_amp and use_fa3 boolean values
 \if{html}{\out{<div class="r">}}\preformatted{TabICLBaseEstimator$.move_cache_to_device()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+nothing
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLBaseEstimator-save"></a>}}

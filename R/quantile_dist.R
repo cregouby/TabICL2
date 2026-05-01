@@ -718,7 +718,7 @@ QuantileDistribution <- R6::R6Class(
 
     #' @description Compute CDF F(z) = P(Z ≤ z)
     #' @param z Tensor. Values at which to evaluate CDF.
-    #' @return Tensor. CDF values in [0, 1].
+    #' @return Tensor. CDF values in \[0, 1\].
     cdf = function(z) {
       # Handle 1D input by broadcasting
       if (z$dim() == 1 && length(self$batch_shape) > 0) {
@@ -1003,7 +1003,7 @@ QuantileDistribution <- R6::R6Class(
       torch_exp(self$log_prob(z))
     },
 
-    #' @description Compute mean E[Z]
+    #' @description Compute mean E\[Z\]
     #' @return Tensor. Expected value. Shape: `(*batch_shape,)`.
     mean = function() {
       if (self$tail_type == "exp") {

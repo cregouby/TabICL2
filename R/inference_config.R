@@ -1,4 +1,5 @@
 #' @importFrom R6 R6Class
+#' @importFrom rlang is_scalar_character is_scalar_integer is_scalar_logical is_scalar_double
 #' @keywords internal
 NULL
 
@@ -17,80 +18,80 @@ NULL
 # verbose accepts integer 0/1 as well as logical (base class stores it as int).
 .MGRCFG_SPECS <- list(
   device = list(
-    check   = function(x) is.null(x) || is.character(x) || inherits(x, "torch_device"),
+    check   = function(x) is.null(x) || is_scalar_character(x) || inherits(x, "torch_device"),
     coerce  = NULL,
     msg     = "device must be NULL, a character string, or a torch_device"
   ),
   use_amp = list(
-    check   = function(x) (is.logical(x) || is.numeric(x)) && length(x) == 1L,
+    check   = is_scalar_logical,
     coerce  = as.logical,
     msg     = "use_amp must be a logical"
   ),
   use_fa3 = list(
-    check   = function(x) (is.logical(x) || is.numeric(x)) && length(x) == 1L,
+    check   = is_scalar_logical,
     coerce  = as.logical,
     msg     = "use_fa3 must be a logical"
   ),
   verbose = list(
-    check   = function(x) (is.logical(x) || is.numeric(x)) && length(x) == 1L,
+    check   = is_scalar_logical,
     coerce  = as.logical,
     msg     = "verbose must be a logical"
   ),
   min_batch_size = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 1,
+    check   = function(x) is_scalar_integer(x) && x >= 1,
     coerce  = as.integer,
     msg     = "min_batch_size must be a number >= 1"
   ),
   safety_factor = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 0 && x <= 1,
+    check   = function(x) is_scalar_double(x) && x >= 0 && x <= 1,
     coerce  = NULL,
     msg     = "safety_factor must be a number in [0, 1]"
   ),
   offload = list(
     check   = function(x) {
-      (is.logical(x) && length(x) == 1L) ||
-        (is.character(x) && x %in% c("auto", "gpu", "cpu", "disk"))
+      (is_scalar_logical(x)) ||
+        (is_scalar_character(x) && x %in% c("auto", "gpu", "cpu", "disk"))
     },
     coerce  = NULL,
     msg     = "offload must be a logical or one of 'auto', 'gpu', 'cpu', 'disk'"
   ),
   auto_offload_threshold = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 0 && x <= 1,
+    check   = function(x) is_scalar_double(x) && x >= 0 && x <= 1,
     coerce  = NULL,
     msg     = "auto_offload_threshold must be a number in [0, 1]"
   ),
   cpu_safety_factor = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 0 && x <= 1,
+    check   = function(x) is_scalar_double(x) && x >= 0 && x <= 1,
     coerce  = NULL,
     msg     = "cpu_safety_factor must be a number in [0, 1]"
   ),
   max_pinned_memory_mb = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 0,
+    check   = function(x) is_scalar_double(x) && x >= 0,
     coerce  = NULL,
     msg     = "max_pinned_memory_mb must be a non-negative number"
   ),
   disk_offload_dir = list(
-    check   = function(x) is.null(x) || (is.character(x) && length(x) == 1L),
+    check   = function(x) is.null(x) || is_scalar_character(x),
     coerce  = NULL,
     msg     = "disk_offload_dir must be NULL or a character string"
   ),
   disk_min_free_mb = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 0,
+    check   = function(x) is_scalar_double(x) && x >= 0,
     coerce  = NULL,
     msg     = "disk_min_free_mb must be a non-negative number"
   ),
   disk_flush_mb = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 0,
+    check   = function(x) is_scalar_double(x) && x >= 0,
     coerce  = NULL,
     msg     = "disk_flush_mb must be a non-negative number"
   ),
   disk_cleanup = list(
-    check   = function(x) (is.logical(x) || is.numeric(x)) && length(x) == 1L,
+    check   = is_scalar_logical,
     coerce  = as.logical,
     msg     = "disk_cleanup must be a logical"
   ),
   disk_file_prefix = list(
-    check   = function(x) is.character(x) && length(x) == 1L,
+    check   = is_scalar_character,
     coerce  = NULL,
     msg     = "disk_file_prefix must be a character string"
   ),
@@ -100,17 +101,17 @@ NULL
     msg     = "disk_dtype must be NULL or a torch dtype"
   ),
   disk_safety_factor = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 0 && x <= 1,
+    check   = function(x) is_scalar_double(x) && x >= 0 && x <= 1,
     coerce  = NULL,
     msg     = "disk_safety_factor must be a number in [0, 1]"
   ),
   use_async = list(
-    check   = function(x) (is.logical(x) || is.numeric(x)) && length(x) == 1L,
+    check   = is_scalar_logical,
     coerce  = as.logical,
     msg     = "use_async must be a logical"
   ),
   async_depth = list(
-    check   = function(x) is.numeric(x) && length(x) == 1L && x >= 1,
+    check   = function(x) is_scalar_double(x) && x >= 1,
     coerce  = as.integer,
     msg     = "async_depth must be a number >= 1"
   )

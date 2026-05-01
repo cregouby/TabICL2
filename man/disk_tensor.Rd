@@ -13,6 +13,7 @@ available RAM by using disk space.
 }
 \note{
 R6 doesn't support \code{[} overloading directly; use \verb{$get()} instead.
+Write to the tensor (automatically persists to disk)
 }
 \section{Methods}{
 
@@ -66,7 +67,8 @@ dt$flush()
 
 \item{\code{path}}{Character. File path.}
 
-\item{\code{cleanup}}{Logical. Auto-cleanup on GC.}
+\item{\code{cleanup}}{Logical. Auto-cleanup on GC.
+Get the torch tensor view (loads data if needed)}
 }
 \if{html}{\out{</div>}}
 }
@@ -81,6 +83,7 @@ dt$flush()
 
 \subsection{Returns}{
 A torch tensor.
+Index into the tensor (read)
 }
 }
 \if{html}{\out{<hr>}}
@@ -115,7 +118,8 @@ A torch tensor.
 \describe{
 \item{\code{indices}}{List of indices.}
 
-\item{\code{value}}{Tensor. Value to write.}
+\item{\code{value}}{Tensor. Value to write.
+Flush changes to disk}
 }
 \if{html}{\out{</div>}}
 }
@@ -128,6 +132,10 @@ A torch tensor.
 \if{html}{\out{<div class="r">}}\preformatted{disk_tensor$flush()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+Invisible flush to disk
+Get total size in bytes
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-nbytes"></a>}}

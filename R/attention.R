@@ -86,21 +86,20 @@ flash_attn3_toggle <- function(enabled) {
 #'
 #' @keywords internal
 sdpa_with_flattened_batch <- function(q, k, v, attn_mask = NULL,
-                                       dropout_p = 0.0, ssmax_layer = NULL) {
+                                       dropout_p = 0, ssmax_layer = NULL) {
   # Store original shape for restoration
   q_shape <- q$shape
 
   # Flatten batch dimensions: (.., nh, tgt_len, hs) -> (-1, nh, tgt_len, hs)
   # R: compute product of all but last 3 dimensions
-  ndim <- length(q_shape)
-  batch_prod <- if (ndim > 3L) prod(q_shape[seq_len(ndim - 3L)]) else 1L
+  batch_prod <- if (q$ndim > 3L) prod(q_shape[seq_len(q$ndim - 3L)]) else 1L
 
-  q <- q$view(c(batch_prod, q_shape[(ndim-2L):ndim]))
-  k <- k$view(c(batch_prod, k$shape[(length(k$shape)-2L):length(k$shape)]))
-  v <- v$view(c(batch_prod, v$shape[(length(v$shape)-2L):length(v$shape)]))
+  q <- q$view(c(batch_prod, q_shape[(q$ndim-2L):q$ndim]))
+  k <- k$view(c(batch_prod, k$shape[(k$ndim-2L):k$ndim]))
+  v <- v$view(c(batch_prod, v$shape[(v$ndim-2L):v$ndim]))
 
   if (!is.null(attn_mask)) {
-    attn_mask <- attn_mask$view(c(batch_prod, attn_mask$shape[(length(attn_mask$shape)-3L):length(attn_mask$shape)]))
+    attn_mask <- attn_mask$view(c(batch_prod, attn_mask$shape[(attn_mask$ndim-3L):attn_mask$ndim]))
   }
 
   # Apply SSMax scaling if provided
@@ -245,7 +244,7 @@ multi_head_attention_forward <- function(
     batch_shape <- integer(0L)
   }
 
-  tgt_len <- query_shape[ndim - 1L]
+  tgt_len <- query_shape[ndim - 1]
   embed_dim <- query_shape[ndim]
 
   head_dim <- embed_dim %/% num_heads
@@ -260,7 +259,7 @@ multi_head_attention_forward <- function(
     }
 
     key_shape <- key$shape
-    src_len <- key_shape[length(key_shape) - 1L]
+    src_len <- key_shape[key$ndim - 1]
 
     if (!identical(key$shape, value$shape)) {
       value_error("key shape {key$shape} does not match value shape {value$shape}")

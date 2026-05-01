@@ -50,7 +50,7 @@ unlink_model_file <- function() {
 }
 
 .skip_if_no_backend <- function(backend) {
-  if (backend == "cuda" && !torch_cuda_is_available()) {
+  if (backend == "cuda" && !cuda_is_available()) {
     testthat::skip("CUDA not available")
   }
   if (backend == "mps" && !torch_mps_is_available()) {

@@ -42,7 +42,8 @@ pool$put(buf)  # Return to pool for reuse
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{max_buffers_per_shape}}{Integer. Maximum buffers per (shape, dtype)}
+\item{\code{max_buffers_per_shape}}{Integer. Maximum buffers per (shape, dtype)
+Get a pinned buffer, creating one if necessary}
 }
 \if{html}{\out{</div>}}
 }
@@ -66,6 +67,7 @@ pool$put(buf)  # Return to pool for reuse
 }
 \subsection{Returns}{
 A pinned CPU tensor.
+Return a buffer to the pool for reuse
 }
 }
 \if{html}{\out{<hr>}}
@@ -79,7 +81,8 @@ A pinned CPU tensor.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{buf}}{Tensor. Buffer to return.}
+\item{\code{buf}}{Tensor. Buffer to return.
+Clear all pooled buffers}
 }
 \if{html}{\out{</div>}}
 }
@@ -92,6 +95,9 @@ A pinned CPU tensor.
 \if{html}{\out{<div class="r">}}\preformatted{pinned_buffer_pool$clear()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A cleared private pool
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PinnedBufferPool-clone"></a>}}

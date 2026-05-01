@@ -270,7 +270,7 @@ Compute CDF F(z) = P(Z ≤ z)
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Tensor. CDF values in \link{0, 1}.
+Tensor. CDF values in [0, 1].
 }
 }
 \if{html}{\out{<hr>}}
@@ -397,7 +397,7 @@ Tensor. PDF values (non-negative).
 \if{html}{\out{<a id="method-QuantileDistribution-mean"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-mean}{}}}
 \subsection{Method \code{mean()}}{
-Compute mean E\link{Z}
+Compute mean E[Z]
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$mean()}\if{html}{\out{</div>}}
 }
