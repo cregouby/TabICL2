@@ -2,9 +2,8 @@
 # Transcribed from Python pytest
 
 test_that("TabICLClassifier supports NaNs", {
-  skip_if_not(exists("TabICLClassifier"), "TabICLClassifier not yet implemented")
 
-  est <- TabICLClassifier(random_state = 0L)
+  est <- TabICLClassifier$new(random_state = 0L)
 
   X <- matrix(
     c(
@@ -28,7 +27,7 @@ test_that("TabICLClassifier supports NaNs", {
 test_that("TabICLRegressor supports NaNs", {
   skip_if_not(exists("TabICLRegressor"), "TabICLRegressor not yet implemented")
 
-  est <- TabICLRegressor(random_state = 0L)
+  est <- TabICLRegressor$new(random_state = 0L)
 
   X <- matrix(
     c(
@@ -50,9 +49,8 @@ test_that("TabICLRegressor supports NaNs", {
 
 
 test_that("TabICLClassifier supports logical inputs", {
-  skip_if_not(exists("TabICLClassifier"), "TabICLClassifier not yet implemented")
 
-  est <- TabICLClassifier(random_state = 0L)
+  est <- TabICLClassifier$new(random_state = 0L)
 
   X <- matrix(
     c(
@@ -76,7 +74,7 @@ test_that("TabICLClassifier supports logical inputs", {
 test_that("TabICLRegressor supports logical inputs", {
   skip_if_not(exists("TabICLRegressor"), "TabICLRegressor not yet implemented")
 
-  est <- TabICLRegressor(random_state = 0L)
+  est <- TabICLRegressor$new(random_state = 0L)
 
   X <- matrix(
     c(
@@ -98,9 +96,8 @@ test_that("TabICLRegressor supports logical inputs", {
 
 
 test_that("TabICLClassifier supports mixed numeric types", {
-  skip_if_not(exists("TabICLClassifier"), "TabICLClassifier not yet implemented")
 
-  est <- TabICLClassifier(random_state = 0L)
+  est <- TabICLClassifier$new(random_state = 0L)
 
   # In R, mixed integer and numeric automatically becomes numeric
   X <- matrix(
@@ -125,7 +122,7 @@ test_that("TabICLClassifier supports mixed numeric types", {
 test_that("TabICLRegressor supports mixed numeric types", {
   skip_if_not(exists("TabICLRegressor"), "TabICLRegressor not yet implemented")
 
-  est <- TabICLRegressor(random_state = 0L)
+  est <- TabICLRegressor$new(random_state = 0L)
 
   # In R, mixed integer and numeric automatically becomes numeric
   X <- matrix(
@@ -148,9 +145,8 @@ test_that("TabICLRegressor supports mixed numeric types", {
 
 
 test_that("TabICLClassifier supports character inputs", {
-  skip_if_not(exists("TabICLClassifier"), "TabICLClassifier not yet implemented")
 
-  est <- TabICLClassifier(random_state = 0L)
+  est <- TabICLClassifier$new(random_state = 0L)
 
   X <- matrix(
     c(
@@ -174,7 +170,7 @@ test_that("TabICLClassifier supports character inputs", {
 test_that("TabICLRegressor supports character inputs", {
   skip_if_not(exists("TabICLRegressor"), "TabICLRegressor not yet implemented")
 
-  est <- TabICLRegressor(random_state = 0L)
+  est <- TabICLRegressor$new(random_state = 0L)
 
   X <- matrix(
     c(

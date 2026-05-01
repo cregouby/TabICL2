@@ -55,7 +55,11 @@ Provides shared functionality for both classifier and regressor.
 
 \item{\code{device_}}{Resolved torch device (set by \code{.resolve_device()}).}
 
-\item{\code{inference_config_}}{Resolved InferenceConfig (set by \code{.build_inference_config()}).
+\item{\code{inference_config_}}{Resolved InferenceConfig (set by \code{.build_inference_config()}).}
+
+\item{\code{n_samples_in_}}{Number of training samples (set by \code{$fit()}).}
+
+\item{\code{n_features_in_}}{Number of training features (set by \code{$fit()}).
 Initialize the estimator}
 }
 \if{html}{\out{</div>}}

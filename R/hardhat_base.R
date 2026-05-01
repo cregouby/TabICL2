@@ -44,6 +44,10 @@ TabICLBaseEstimator <- R6::R6Class(
     device_ = NULL,
     #' @field inference_config_ Resolved InferenceConfig (set by \code{.build_inference_config()}).
     inference_config_ = NULL,
+    #' @field n_samples_in_ Number of training samples (set by \code{$fit()}).
+    n_samples_in_ = NULL,
+    #' @field n_features_in_ Number of training features (set by \code{$fit()}).
+    n_features_in_ = NULL,
 
     #' Initialize the estimator
     #'
@@ -101,12 +105,12 @@ TabICLBaseEstimator <- R6::R6Class(
     #' @return A list with use_amp and use_fa3 boolean values
     #' @keywords internal
     .resolve_amp_fa3 = function() {
-      n_samples <- if (exists("n_samples_in_", envir = self, inherits = FALSE)) {
+      n_samples <- if (!is.null(self$n_samples_in_)) {
         self$n_samples_in_
       } else {
         0
       }
-      n_features <- if (exists("n_features_in_", envir = self, inherits = FALSE)) {
+      n_features <- if (!is.null(self$n_features_in_)) {
         self$n_features_in_
       } else {
         0

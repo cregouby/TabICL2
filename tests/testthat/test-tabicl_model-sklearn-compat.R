@@ -32,10 +32,9 @@ make_regression <- function(n_samples, n_features, random_state = NULL) {
 # These tests should be expanded manually based on specific requirements
 
 test_that("TabICLClassifier basic sklearn compatibility", {
-  skip_if_not(exists("TabICLClassifier"), "TabICLClassifier not yet implemented")
 
   # n_estimators=2 ensures full preprocessing and ensembling pipeline is tested
-  est <- TabICLClassifier(n_estimators = 2L)
+  est <- TabICLClassifier$new(n_estimators = 2L)
 
   # Test that estimator has required methods
   expect_true(is.function(est$fit) || is.environment(est))
@@ -78,7 +77,6 @@ test_that("TabICLRegressor basic sklearn compatibility", {
 # KV Cache tests for Classifier
 
 test_that("TabICLClassifier KV cache mode 'kv' matches no cache", {
-  skip_if_not(exists("TabICLClassifier"), "TabICLClassifier not yet implemented")
 
   data <- make_classification(n_samples = 50L, n_features = 5L, random_state = 42L)
   X <- data$X
@@ -89,12 +87,12 @@ test_that("TabICLClassifier KV cache mode 'kv' matches no cache", {
   y_train <- y[1:40]
 
   # Without cache
-  clf <- TabICLClassifier(n_estimators = 2L)
+  clf <- TabICLClassifier$new(n_estimators = 2L)
   clf <- clf$fit(X_train, y_train)
   pred_no_cache <- clf$predict_proba(X_test)
 
   # With kv cache
-  clf_cached <- TabICLClassifier(n_estimators = 2L, kv_cache = "kv")
+  clf_cached <- TabICLClassifier$new(n_estimators = 2L, kv_cache = "kv")
   clf_cached <- clf_cached$fit(X_train, y_train)
   pred_cached <- clf_cached$predict_proba(X_test)
 
@@ -115,12 +113,12 @@ test_that("TabICLClassifier KV cache mode 'repr' matches no cache", {
   y_train <- y[1:40]
 
   # Without cache
-  clf <- TabICLClassifier(n_estimators = 2L)
+  clf <- TabICLClassifier$new(n_estimators = 2L)
   clf <- clf$fit(X_train, y_train)
   pred_no_cache <- clf$predict_proba(X_test)
 
   # With repr cache
-  clf_cached <- TabICLClassifier(n_estimators = 2L, kv_cache = "repr")
+  clf_cached <- TabICLClassifier$new(n_estimators = 2L, kv_cache = "repr")
   clf_cached <- clf_cached$fit(X_train, y_train)
   pred_cached <- clf_cached$predict_proba(X_test)
 
@@ -143,12 +141,12 @@ test_that("TabICLRegressor KV cache mode 'kv' matches no cache", {
   y_train <- y[1:40]
 
   # Without cache
-  reg <- TabICLRegressor(n_estimators = 2L)
+  reg <- TabICLRegressor$new(n_estimators = 2L)
   reg <- reg$fit(X_train, y_train)
   pred_no_cache <- reg$predict(X_test)
 
   # With kv cache
-  reg_cached <- TabICLRegressor(n_estimators = 2L, kv_cache = "kv")
+  reg_cached <- TabICLRegressor$new(n_estimators = 2L, kv_cache = "kv")
   reg_cached <- reg_cached$fit(X_train, y_train)
   pred_cached <- reg_cached$predict(X_test)
 
@@ -169,12 +167,12 @@ test_that("TabICLRegressor KV cache mode 'repr' matches no cache", {
   y_train <- y[1:40]
 
   # Without cache
-  reg <- TabICLRegressor(n_estimators = 2L)
+  reg <- TabICLRegressor$new(n_estimators = 2L)
   reg <- reg$fit(X_train, y_train)
   pred_no_cache <- reg$predict(X_test)
 
   # With repr cache
-  reg_cached <- TabICLRegressor(n_estimators = 2L, kv_cache = "repr")
+  reg_cached <- TabICLRegressor$new(n_estimators = 2L, kv_cache = "repr")
   reg_cached <- reg_cached$fit(X_train, y_train)
   pred_cached <- reg_cached$predict(X_test)
 
