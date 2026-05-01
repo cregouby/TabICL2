@@ -111,7 +111,7 @@ NULL
     msg     = "use_async must be a logical"
   ),
   async_depth = list(
-    check   = function(x) is_scalar_double(x) && x >= 1,
+    check   = function(x) is_scalar_integer(x) && x >= 1,
     coerce  = as.integer,
     msg     = "async_depth must be a number >= 1"
   )

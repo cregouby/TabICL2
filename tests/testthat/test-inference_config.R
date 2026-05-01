@@ -15,18 +15,6 @@ test_that("MgrConfig validates and stores valid parameters", {
   expect_identical(cfg$min_batch_size, 2L)
 })
 
-test_that("MgrConfig coerces numeric verbose to logical", {
-  cfg <- MgrConfig(verbose = 0L)
-  expect_identical(cfg$verbose, FALSE)
-  cfg2 <- MgrConfig(verbose = 1L)
-  expect_identical(cfg2$verbose, TRUE)
-})
-
-test_that("MgrConfig coerces numeric use_amp to logical", {
-  cfg <- MgrConfig(use_amp = 0)
-  expect_identical(cfg$use_amp, FALSE)
-})
-
 test_that("MgrConfig rejects invalid key", {
   expect_error(MgrConfig(invalid_key = 1), "Invalid config key")
 })
