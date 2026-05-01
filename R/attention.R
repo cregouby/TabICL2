@@ -236,7 +236,7 @@ multi_head_attention_forward <- function(
 ) {
   # Extract shape information, supporting arbitrary batch dimensions
   query_shape <- query$shape
-  ndim <- length(query_shape)
+  ndim <- query$ndim
 
   # R: extract batch_shape as all but last 2 dimensions
   if (ndim > 2L) {
@@ -325,7 +325,7 @@ multi_head_attention_forward <- function(
 
   # Disable dropout during evaluation
   if (!training) {
-    dropout_p <- 0.0
+    dropout_p <- 0
   }
 
   # Process attention mask

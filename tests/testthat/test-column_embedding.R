@@ -20,7 +20,7 @@ test_that("col_embedding initializes and forwards correctly", {
   out <- emb(X, y_train)  # Appel direct, forward implicite
 
   expect_tensor_shape(out, c(B, TT, H + 4L, 16L))
-  expect_false(any(torch_isnan(out)$item()))
+  expect_false(torch_isnan(out)$max()$item())
 })
 
 test_that("ColEmbedding forward preserves shapes", {

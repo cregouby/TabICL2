@@ -463,7 +463,7 @@ TabICL <- nn_module(
     }
 
     if (is.null(inference_config)) {
-      inference_config <- InferenceConfig()
+      inference_config <- inference_config()
     }
 
     # Column-wise embedding -> Row-wise interaction
@@ -690,7 +690,7 @@ TabICL <- nn_module(
     }
 
     if (is.null(inference_config)) {
-      inference_config <- InferenceConfig()
+      inference_config <- inference_config()
     }
 
     # Auto-detect cache mode from cache contents

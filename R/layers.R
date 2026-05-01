@@ -349,7 +349,7 @@ multihead_attention_block <- nn_module(
       }
       # R: 1-based inclusive slicing for training portion
       # Use narrow to slice second-to-last dimension (sequence dim)
-      k <- v <- q$narrow(dim = -2, start = 1, length = train_size)
+      k <- v <- q$narrow(dim = -2, start = 1, length = train_size - 1)
     }
 
     k_proj <- NULL
@@ -371,7 +371,7 @@ multihead_attention_block <- nn_module(
           v_normed <- if (identical(v, k)) k_normed else self$norm1(v)
         } else {
           # R: slice training portion
-          k_normed <- v_normed <- q_normed$narrow(dim = -2, start = 1, length = train_size)
+          k_normed <- v_normed <- q_normed$narrow(dim = -2, start = 1, length = train_size - 1)
         }
 
         attn_result <- self$.attn_block(
@@ -569,7 +569,7 @@ induced_self_attention_block <- nn_module(
       hidden <- self$multihead_attn1(ind_vectors, src, src)
     } else {
       # R: 1-based inclusive slicing for training portion
-      src_train <- src$narrow(dim = -2, start = 1, length = train_size)
+      src_train <- src$narrow(dim = -2, start = 1, length = train_size - 1)
       hidden <- self$multihead_attn1(ind_vectors, src_train, src_train)
     }
 
@@ -650,7 +650,7 @@ induced_self_attention_block <- nn_module(
         value_error("train_size must be provided when store_cache = TRUE")
       }
       # First attention: inducing points attend to training portion only
-      src_train <- src$narrow(dim = -2, start = 1, length = train_size)
+      src_train <- src$narrow(dim = -2, start = 1, length = train_size - 1)
       hidden <- self$multihead_attn1(ind_vectors, src_train, src_train)
       # Second attention: get K/V projections for caching
       result <- self$multihead_attn2(src, hidden, hidden, need_kv = TRUE)

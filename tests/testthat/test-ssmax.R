@@ -212,20 +212,20 @@ test_that("create_ssmax_layer: 'none' returns NULL", {
 test_that("create_ssmax_layer: 'ssmax' returns SSMax", {
   mod <- create_ssmax_layer("ssmax", num_heads = 4L, embed_dim = 16L)
   expect_s3_class(mod, "nn_module")
-  expect_true(inherits(mod, "SSMax"))
+  expect_s3_class(mod, "SSMax")
 })
 
 test_that("create_ssmax_layer: 'ssmax-mlp' returns SSMaxMLP", {
   mod <- create_ssmax_layer("ssmax-mlp", num_heads = 4L, embed_dim = 16L)
   expect_s3_class(mod, "nn_module")
-  expect_true(inherits(mod, "SSMaxMLP"))
+  expect_s3_class(mod, "SSMaxMLP")
 })
 
 test_that("create_ssmax_layer: 'ssmax-mlp-elementwise' returns elementwise SSMaxMLP", {
   mod <- create_ssmax_layer(
     "ssmax-mlp-elementwise", num_heads = 4L, embed_dim = 16L
   )
-  expect_true(inherits(mod, "SSMaxMLP"))
+  expect_s3_class(mod, "SSMaxMLP")
   expect_true(mod$elementwise)
 })
 
@@ -233,14 +233,14 @@ test_that("create_ssmax_layer: 'qassmax-mlp' returns QASSMaxMLP", {
   mod <- create_ssmax_layer(
     "qassmax-mlp", num_heads = 4L, embed_dim = 16L
   )
-  expect_true(inherits(mod, "QASSMaxMLP"))
+  expect_s3_class(mod, "QASSMaxMLP")
 })
 
 test_that("create_ssmax_layer: 'qassmax-mlp-elementwise' returns elementwise QASSMaxMLP", {
   mod <- create_ssmax_layer(
     "qassmax-mlp-elementwise", num_heads = 4L, embed_dim = 16L
   )
-  expect_true(inherits(mod, "QASSMaxMLP"))
+  expect_s3_class(mod, "QASSMaxMLP")
   expect_true(mod$elementwise)
 })
 
