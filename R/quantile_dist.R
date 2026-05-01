@@ -462,8 +462,8 @@ QuantileDistribution <- R6::R6Class(
       self$tail_type <- tail_type
 
       # Store shapes
-      self$batch_shape <- quantiles$shape[-length(quantiles$shape)]
-      self$num_quantiles <- quantiles$shape[length(quantiles$shape)]
+      self$batch_shape <- quantiles$shape[-quantiles$ndim]
+      self$num_quantiles <- quantiles$shape[quantiles$ndim]
 
       # Default alpha levels
       if (is.null(alpha_levels)) {
@@ -1152,7 +1152,7 @@ QuantileDistribution <- R6::R6Class(
       crps_spline <- self$.crps_spline(z, alpha_z)
       crps_right <- self$.crps_right_tail(z, alpha_z)
 
-      torch_clamp(crps_left + crps_spline + crps_right, min = 0.0, max = cfg$MAX_CRPS)
+      torch_clamp(crps_left + crps_spline + crps_right, min = 0.0, max = cfg$MAX_CRPS)$view(z$shape)
     },
 
     #' @description CRPS contribution from left tail
@@ -1312,6 +1312,11 @@ QuantileDistribution <- R6::R6Class(
     #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
     #' @param alpha_z Tensor. Probability levels.
     .crps_spline = function(z, alpha_z) {
+      z_shape <- z$shape
+      if (z$ndim < alpha_z$ndim) {
+        n_missing <- alpha_z$ndim - z$ndim
+        z <- z$view(c(rep(1L, n_missing), z_shape))
+      }
       n_extra <- z$dim() - length(self$batch_shape)
       seg_dim <- length(self$batch_shape) + 1L
 
@@ -1321,12 +1326,12 @@ QuantileDistribution <- R6::R6Class(
       q_i <- self$q_lo
       m <- self$slopes
 
-      for (i in seq_len(n_extra)) {
-        alpha_i <- alpha_i$unsqueeze(-1L)
-        alpha_ip1 <- alpha_ip1$unsqueeze(-1L)
-        q_i <- q_i$unsqueeze(-1L)
-        m <- m$unsqueeze(-1L)
-      }
+      lapply(seq_len(n_extra), function(i) {
+        alpha_i <<- alpha_i$unsqueeze(-1L)
+        alpha_ip1 <<- alpha_ip1$unsqueeze(-1L)
+        q_i <<- q_i$unsqueeze(-1L)
+        m <<- m$unsqueeze(-1L)
+      })
 
       z_exp <- z$unsqueeze(seg_dim)
       alpha_z_exp <- alpha_z$unsqueeze(seg_dim)
