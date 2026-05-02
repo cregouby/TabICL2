@@ -2,7 +2,7 @@
 NULL
 
 #' Get number of elements in tensor
-#' @keywords internal
+#' @noRd
 .numel <- function(tensor) {
   tensor$view(-1)$shape
 }
@@ -259,7 +259,7 @@ kv_cache_concat <- function(caches, dim = 1L) {
 }
 
 
-#' @keywords internal
+#' @noRd
 .caches_has_index <- function(caches, idx) {
   vapply(caches, function(c) idx %in% names(c$kv), logical(1L))
 }

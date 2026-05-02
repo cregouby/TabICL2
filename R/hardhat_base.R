@@ -1,6 +1,6 @@
 #' @importFrom torch torch_device torch_float32 cuda_is_available torch_float16 torch_bfloat16 nn_module
 #' @importFrom utils packageVersion
-#' @keywords internal
+#' @noRd
 NULL
 
 #' TabICL Base Estimator Class

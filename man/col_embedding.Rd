@@ -2,7 +2,7 @@
 % Please edit documentation in R/column_embedding.R
 \name{col_embedding}
 \alias{col_embedding}
-\title{Distribution-aware Column-wise Embedding for TabICL2}
+\title{Distribution-aware column-wise embedding module}
 \usage{
 col_embedding(
   embed_dim,
@@ -119,4 +119,3 @@ embeddings_inf <- col_emb$forward_with_cache(
 }
 
 }
-\keyword{internal}

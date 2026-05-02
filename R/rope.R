@@ -4,7 +4,7 @@
 #' Ported from https://github.com/lucidrains/rotary-embedding-torch
 #'
 #' @name rotary_embedding
-#' @keywords internal
+#' @noRd
 NULL
 
 
@@ -12,7 +12,7 @@ NULL
 #'
 #' @param val Value to check
 #' @return `TRUE` if `val` is not `NULL`, `FALSE` otherwise
-#' @keywords internal
+#' @noRd
 exists_val <- function(val) {
   !is.null(val)
 }
@@ -23,7 +23,7 @@ exists_val <- function(val) {
 #' @param val Value to check
 #' @param d Default value to return if `val` is `NULL`
 #' @return `val` if not `NULL`, otherwise `d`
-#' @keywords internal
+#' @noRd
 default_val <- function(val, d) {
   if (exists_val(val)) val else d
 }
@@ -36,7 +36,7 @@ default_val <- function(val, d) {
 #' @param tensors List of tensors to broadcast and concatenate
 #' @param dim Dimension along which to concatenate (default: `-1L`)
 #' @return Concatenated tensor after broadcasting
-#' @keywords internal
+#' @noRd
 broadcat <- function(tensors, dim = -1L) {
   broadcasted <- torch_broadcast_tensors(tensors)
   torch_cat(broadcasted, dim = dim)
@@ -55,7 +55,7 @@ broadcat <- function(tensors, dim = -1L) {
 #'
 #' @param x Input tensor of shape `[.., d]` where `d` is even
 #' @return Rotated tensor with same shape as `x`
-#' @keywords internal
+#' @noRd
 rotate_half_interleaved <- function(x) {
   # Rearrange: [..., d] -> [..., d/2, 2]
   x <- einops::rearrange(x, "... (d r) -> ... d r", r = 2L)
@@ -76,7 +76,7 @@ rotate_half_interleaved <- function(x) {
 #'
 #' @param x Input tensor of shape `[..., d]` where `d` is even
 #' @return Rotated tensor with same shape as `x`
-#' @keywords internal
+#' @noRd
 rotate_half_contiguous <- function(x) {
   last_dim <- length(x$shape)
   d <- x$shape[last_dim]
@@ -107,7 +107,7 @@ rotate_half_contiguous <- function(x) {
 #'   where the embedding is split into first half `[1:(d/2)]` and
 #'   second half `[(d/2+1):d]` (default: `TRUE`)
 #' @return Rotated tensor, same shape as `t`
-#' @keywords internal
+#' @noRd
 apply_rotary_emb <- function(freqs, t, start_index = 1L, scale = 1.0,
                              seq_dim = -2L, interleaved = TRUE) {
   dtype <- t$dtype
@@ -178,7 +178,7 @@ apply_rotary_emb <- function(freqs, t, start_index = 1L, scale = 1.0,
 #' @param start_index Starting index for rotation (default: `1L`)
 #' @param freq_ranges Optional frequency ranges tensor
 #' @return Rotated tensor
-#' @keywords internal
+#' @noRd
 apply_learned_rotations <- function(rotations, t, start_index = 1L, freq_ranges = NULL) {
   if (exists_val(freq_ranges)) {
     rotations <- torch_einsum("..., f -> ... f", list(rotations, freq_ranges))

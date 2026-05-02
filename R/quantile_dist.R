@@ -68,7 +68,7 @@ QuantileDistributionConfig <- R6::R6Class(
 #' @return Tensor. Isotonic (monotonically non-decreasing) values.
 #'   Shape: `(*batch_shape, n)`.
 #'
-#' @keywords internal
+#' @noRd
 isotonic_regression_pava <- function(y, weights = NULL) {
   # For R implementation, use simpler approach
   # Can be optimized later with Rcpp if needed
@@ -104,7 +104,7 @@ isotonic_regression_pava <- function(y, weights = NULL) {
 }
 
 #' Single-sequence PAVA
-#' @keywords internal
+#' @noRd
 .pava_single <- function(y, w = NULL) {
   n <- y$shape[1]
   if (n <= 1) return(y$clone())
@@ -199,7 +199,7 @@ enforce_monotonicity <- function(quantiles, method = "sort", weights = NULL) {
 #'   - `beta_l`: Left tail scale parameter. Shape: `(*batch_shape,)`.
 #'   - `beta_r`: Right tail scale parameter. Shape: `(*batch_shape,)`.
 #'
-#' @keywords internal
+#' @noRd
 estimate_exp_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles = 20L) {
   cfg <- QuantileDistributionConfig$new()
   n <- quantiles$shape[length(quantiles$shape)]
@@ -264,7 +264,7 @@ estimate_exp_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles
 #'   - `eta_r`: Right tail shape parameter. Shape: `(*batch_shape,)`.
 #'   - `mu_r`: Right tail scale parameter. Shape: `(*batch_shape,)`.
 #'
-#' @keywords internal
+#' @noRd
 estimate_gpd_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles = 20L) {
   cfg <- QuantileDistributionConfig$new()
   n <- quantiles$shape[length(quantiles$shape)]

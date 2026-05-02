@@ -4,7 +4,7 @@
 #' @importFrom cli cli_inform cli_warn cli_abort
 #' @importFrom tools md5sum
 #' @importFrom utils download.file
-#' @keywords internal
+#' @noRd
 NULL
 
 # Model registry: name -> c(url, md5, human_size)

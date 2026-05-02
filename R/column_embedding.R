@@ -1,7 +1,7 @@
 #' Distribution-aware Column-wise Embedding for TabICL2
 #'
 #' @name col_embedding
-#' @keywords internal
+#' @noRd
 NULL
 
 

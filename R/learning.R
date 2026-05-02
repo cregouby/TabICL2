@@ -1,7 +1,7 @@
 #' Get unique values from a tensor
 #' @param x torch tensor
 #' @return torch tensor with unique sorted values
-#' @keywords internal
+#' @noRd
 torch_unique <- function(x) {
   # Flatten and sort to make duplicates consecutive
   x_flat <- x$flatten()

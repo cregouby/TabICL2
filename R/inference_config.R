@@ -1,6 +1,6 @@
 #' @importFrom R6 R6Class
 #' @importFrom rlang is_scalar_character is_scalar_integer is_scalar_logical is_scalar_double
-#' @keywords internal
+#' @noRd
 NULL
 
 # Allowed keys for MgrConfig
@@ -165,7 +165,7 @@ as.list.MgrConfig <- function(x, ...) {
 #' @param x A \code{MgrConfig} or named list.
 #' @param updates A named list or \code{MgrConfig} with new values.
 #' @return Updated \code{MgrConfig}.
-#' @keywords internal
+#' @noRd
 .mgrcfg_update <- function(x, updates) {
   if (inherits(updates, "MgrConfig") || is.list(updates)) {
     for (key in names(updates)) {

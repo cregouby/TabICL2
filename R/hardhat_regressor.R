@@ -2,52 +2,8 @@
 #' @importFrom torch torch_load torch_tensor with_no_grad
 #' @importFrom torch torch_set_num_threads torch_get_num_threads
 #' @importFrom magrittr %>%
+#' @importFrom abind asub
 NULL
-
-#' Split an array along its first axis into roughly equal chunks.
-#'
-#' @param arr A matrix or array.
-#' @param n `integer(1)` Number of chunks.
-#'
-#' @return A list of sub-arrays.
-#' @keywords internal
-.split_first_axis <- function(arr, n) {
-  total <- dim(arr)[1L]
-  if (n >= total) return(list(arr))
-
-  sizes <- rep(total %/% n, n)
-  remainder <- total %% n
-  if (remainder > 0L) sizes[1L:remainder] <- sizes[1L:remainder] + 1L
-
-  offset <- 1L
-  lapply(sizes, function(size) {
-    rows <- seq(offset, length.out = size)
-    offset <<- offset + size
-    ndim <- length(dim(arr))
-    idx  <- as.list(rep(TRUE, ndim))
-    idx[[1L]] <- rows
-    idx$drop <- FALSE
-    do.call(`[`, c(list(arr), idx))
-  })
-}
-
-#' Concatenate a list of arrays along their first axis.
-#'
-#' @param arrays List of matrices or arrays with compatible dimensions.
-#'
-#' @return A single concatenated array.
-#' @keywords internal
-.concat_first_axis <- function(arrays) {
-  if (length(arrays) == 0L) return(NULL)
-  if (length(arrays) == 1L) return(arrays[[1L]])
-
-  ndim <- length(dim(arrays[[1L]]))
-  if (ndim <= 2L) {
-    do.call(rbind, arrays)
-  } else {
-    do.call(abind::abind, c(arrays, list(along = 1L)))
-  }
-}
 
 #' @title TabICLRegressor -- Tabular In-Context Learning Regressor
 #'
@@ -156,6 +112,46 @@ TabICLRegressor <- R6Class(
     ensemble_generator_ = NULL,
 
     #' @description Create a new TabICLRegressor.
+    #' @param n_estimators `integer(1)` Number of ensemble estimators.
+    #'   Default \code{8L}.
+    #' @param norm_methods `character` or \code{NULL}. Normalization
+    #'   methods. Default \code{NULL} (uses \code{c("none", "power")}).
+    #' @param feat_shuffle_method `character(1)` Feature permutation
+    #'   strategy. Default \code{"latin"}.
+    #' @param outlier_threshold `double(1)` Z-score threshold for
+    #'   outlier clipping. Default \code{4.0}.
+    #' @param batch_size `integer(1)` or \code{NULL}. Batch size for
+    #'   inference. Default \code{8L}.
+    #' @param kv_cache `logical(1)` or `character(1)`. Caching mode.
+    #'   Default \code{FALSE}.
+    #' @param model_path `character(1)` or \code{NULL}. Path to
+    #'   checkpoint. Default \code{NULL}.
+    #' @param allow_auto_download `logical(1)`. Whether to auto-download
+    #'   checkpoint from Hugging Face Hub. Default \code{TRUE}.
+    #' @param checkpoint_version `character(1)`. Checkpoint version
+    #'   string. Default \code{"tabicl-regressor-v2-20260212.ckpt"}.
+    #' @param device `character(1)` or \code{NULL}. Torch device.
+    #'   Passed to \code{\link{TabICLBaseEstimator}}.
+    #' @param use_amp `character(1)` or \code{logical(1)}. Automatic
+    #'   mixed precision setting. Default \code{"auto"}.
+    #'   Passed to \code{\link{TabICLBaseEstimator}}.
+    #' @param use_fa3 `character(1)` or \code{logical(1)}`. Flash
+    #'   Attention v3 setting. Default \code{"auto"}.
+    #'   Passed to \code{\link{TabICLBaseEstimator}}.
+    #' @param offload_mode `character(1)`. Model offloading strategy.
+    #'   Default \code{"auto"}.
+    #'   Passed to \code{\link{TabICLBaseEstimator}}.
+    #' @param disk_offload_dir `character(1)` or \code{NULL}. Directory
+    #'   for disk offloading. Default \code{NULL}.
+    #'   Passed to \code{\link{TabICLBaseEstimator}}.
+    #' @param random_state `integer(1)` or \code{NULL}. Random seed.
+    #'   Default \code{42L}.
+    #' @param n_jobs `integer(1)` or \code{NULL}. Number of parallel
+    #'   threads. Default \code{NULL}.
+    #' @param verbose `logical(1)`. Print progress. Default \code{FALSE}.
+    #' @param inference_config `InferenceConfig` or \code{NULL}. Custom
+    #'   inference configuration. Default \code{NULL}.
+    #'   Passed to \code{\link{TabICLBaseEstimator}}.
     initialize = function(
       n_estimators        = 8L,
       norm_methods        = NULL,
@@ -314,6 +310,8 @@ TabICLRegressor <- R6Class(
     #' \code{checkpoint_version}, downloading from Hugging Face Hub if
     #' necessary.
     #'
+    #' @param progress Show download progress
+    #'
     #' @return \code{self}, invisibly.
     .load_model = function(progress = TRUE) {
       path <- .resolve_checkpoint_path(
@@ -364,8 +362,8 @@ TabICLRegressor <- R6Class(
 
         batch_size <- self$batch_size %||% nrow(Xs)
         n_batches  <- ceiling(nrow(Xs) / batch_size)
-        Xs_split   <- .split_first_axis(Xs, n_batches)
-        ys_split   <- .split_first_axis(as.matrix(ys), n_batches)
+        Xs_split   <- asub(Xs, seq.int(to = nrow(Xs), by = batch_size), dim =1)
+        ys_split   <- asub(as.matrix(ys), seq.int(to = nrow(ys), by = batch_size), dim =1)
 
         caches <- Map(list, Xs_split, ys_split) %>%
           lapply(function(p) {
@@ -402,8 +400,8 @@ TabICLRegressor <- R6Class(
     .batch_forward = function(Xs, ys, output_type, alphas = NULL) {
       batch_size <- self$batch_size %||% dim(Xs)[1L]
       n_batches  <- ceiling(dim(Xs)[1L] / batch_size)
-      Xs_list    <- .split_first_axis(Xs, n_batches)
-      ys_list    <- .split_first_axis(as.matrix(ys), n_batches)
+      Xs_split   <- asub(Xs, seq.int(to = nrow(Xs), by = batch_size), dim =1)
+      ys_split   <- asub(as.matrix(ys), seq.int(to = nrow(ys), by = batch_size), dim =1)
 
       batch_outputs <- Map(list, Xs_list, ys_list) %>%
         lapply(function(pair) {
@@ -448,7 +446,7 @@ TabICLRegressor <- R6Class(
       n_total    <- dim(Xs)[1L]
       batch_size <- self$batch_size %||% n_total
       n_batches  <- ceiling(n_total / batch_size)
-      Xs_list    <- .split_first_axis(Xs, n_batches)
+      Xs_split   <- asub(Xs, seq.int(to = nrow(Xs), by = batch_size), dim =1)
 
       # Compute per-batch offsets for slicing the cache
       offsets <- c(1L, cumsum(rep(batch_size, n_batches - 1L)) + 1L)
@@ -629,7 +627,7 @@ TabICLRegressor <- R6Class(
             if (is.list(r)) r[[key]] else r
           })
 
-          arr <- .concat_first_axis(per_method)
+          arr <- abind(per_method, along = 1)
           n_est  <- dim(arr)[1L]
           n_samp <- dim(arr)[2L]
 

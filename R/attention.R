@@ -10,7 +10,7 @@ NULL
 
 #' Global flag for Flash Attention 3 usage
 #'
-#' @keywords internal
+#' @noRd
 .flash_attn3_enabled <- TRUE
 
 
@@ -51,7 +51,7 @@ flash_attn3_toggle <- function(enabled) {
 #' Check if Flash Attention 3 is available and enabled
 #'
 #' @return Logical. `TRUE` if Flash Attention 3 can be used.
-#' @keywords internal
+#' @noRd
 .is_flash_attn3_available <- function() {
   # Check if flash-attn package is installed and loaded
   # In R, we check for the presence of the underlying C++ binding
@@ -84,7 +84,7 @@ flash_attn3_toggle <- function(enabled) {
 #' @return Attention output tensor of shape `(.., nh, tgt_len, hs)` preserving
 #'   the original batch dimensions of the input.
 #'
-#' @keywords internal
+#' @noRd
 sdpa_with_flattened_batch <- function(q, k, v, attn_mask = NULL,
                                        dropout_p = 0, ssmax_layer = NULL) {
   # Store original shape for restoration
@@ -214,7 +214,7 @@ sdpa_with_flattened_batch <- function(q, k, v, attn_mask = NULL,
 #'   - `k`: shape `(.., num_heads, src_len, head_dim)`
 #'   - `v`: shape `(.., num_heads, src_len, head_dim)`
 #'
-#' @keywords internal
+#' @noRd
 multi_head_attention_forward <- function(
   query,
   num_heads,

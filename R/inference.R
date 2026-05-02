@@ -9,7 +9,7 @@
 #'   \item{OFFLOAD_AUTO}{Automatically choose based on available memory}
 #' }
 #'
-#' @keywords internal
+#' @noRd
 #' @importFrom torch nn_module torch_tensor torch_empty torch_zeros
 #' @importFrom torch torch_cat torch_stack torch_transpose
 #' @importFrom torch torch_reshape torch_clone
@@ -38,7 +38,7 @@ OFFLOAD_AUTO <- "auto"
 #' Memory profiling was conducted using float32 without automatic mixed precision (AMP).
 #' When using AMP, actual memory usage will be lower than the estimates.
 #'
-#' @keywords internal
+#' @noRd
 memory_estimator <- list(
   # Coefficients for memory estimation: [c1, c2, c3] for each encoder
   coefficients = list(
@@ -78,7 +78,7 @@ memory_estimator <- list(
 #' cli_inform("Estimated peak memory: {mem_mb:.1f} MB")
 #' }
 #'
-#' @keywords internal
+#' @noRd
 #' @noRd
 memory_estimator$estimate_peak_mem <- function(batch_size, seq_len, enc_name,
                                                 include_inputs = TRUE, in_dim = NULL) {
@@ -124,7 +124,7 @@ memory_estimator$estimate_peak_mem <- function(batch_size, seq_len, enc_name,
 #'
 #' @return Integer. Estimated batch size that fits within target memory constraints.
 #'
-#' @keywords internal
+#' @noRd
 #' @noRd
 memory_estimator$estimate_batch_size <- function(seq_len, target_memory, enc_name,
                                                   include_inputs = TRUE, in_dim = NULL) {
@@ -163,7 +163,7 @@ memory_estimator$estimate_batch_size <- function(seq_len, target_memory, enc_nam
 #'
 #' @return A list with class `"OffloadReason"`.
 #'
-#' @keywords internal
+#' @noRd
 offload_reason <- function(key, detail = NULL) {
   structure(
     list(key = key, detail = detail),
@@ -174,7 +174,7 @@ offload_reason <- function(key, detail = NULL) {
 #' Format OffloadReason for display
 #' @param x An OffloadReason object
 #' @param ... Additional arguments (unused)
-#' @keywords internal
+#' @noRd
 format.OffloadReason <- function(x, ...) {
   if (is.null(x$detail)) {
     x$key
@@ -209,7 +209,7 @@ format.OffloadReason <- function(x, ...) {
 #'
 #' @return A list with class `"OffloadConfig"`.
 #'
-#' @keywords internal
+#' @noRd
 offload_config <- function(
   mode = OFFLOAD_AUTO,
   auto_offload_threshold = 0.5,
@@ -344,7 +344,7 @@ pinned_buffer_pool <- R6::R6Class(
 #' @param shape Integer vector. Tensor shape.
 #' @param dtype torch.dtype. Tensor dtype.
 #' @return Character. Unique key string.
-#' @keywords internal
+#' @noRd
 .make_buffer_key <- function(shape, dtype) {
   # dtype is an externalptr, use its address or a string representation
   dtype_str <- tryCatch(dtype$to_string(), error = function(e) "unknown")
@@ -522,7 +522,7 @@ disk_tensor <- R6::R6Class(
 #' Resolve torch dtype to storage dtype for disk
 #' @param dtype torch.dtype
 #' @return List with storage_dtype and needs_view flag
-#' @keywords internal
+#' @noRd
 .resolve_dtype_for_disk <- function(dtype) {
   # Simplified: in production, handle bfloat16 -> uint16 mapping
   if (identical(dtype, torch_bfloat16())) {
@@ -535,7 +535,7 @@ disk_tensor <- R6::R6Class(
 #' Load tensor from disk (simplified implementation)
 #'
 #' TODO swith to safetensors::safe_load_file()
-#' @keywords internal
+#' @noRd
 .load_tensor_from_disk <- function(path, shape, dtype) {
   # In production: use bigmemory, ff, or custom binary reader
   # This is a placeholder that returns zeros
@@ -544,7 +544,7 @@ disk_tensor <- R6::R6Class(
 
 #' Save tensor to disk (simplified implementation)
 #' TODO swith to safetensors::safe_save_file()
-#' @keywords internal
+#' @noRd
 .save_tensor_to_disk <- function(tensor, path, dtype) {
   # In production: write binary data efficiently
   invisible(NULL)
@@ -699,7 +699,7 @@ async_copy_manager <- R6::R6Class(
 #' @param x Value to check
 #' @param y Default value
 #' @return x if not NULL, else y
-#' @keywords internal
+#' @noRd
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 
@@ -906,7 +906,7 @@ inference_manager <- R6::R6Class(
     #' @param dtype torch.dtype. Tensor dtype.
     #' @param repet Integer. Multiplier for size estimation (default: `1L`).
     #' @return Numeric. Estimated size in MB.
-    #' @keywords internal
+    #' @noRd
     .estimate_tensor_mb = function(shape, dtype, repet = 1L) {
       bytes_per_element <- torch_tensor(0, dtype = dtype)$element_size()
       (bytes_per_element * prod(shape) * as.integer(repet) / (1024^2))
@@ -943,7 +943,7 @@ inference_manager <- R6::R6Class(
     #' @param cpu_free_mb Numeric. Free CPU memory in MB.
     #' @param disk_free_mb Numeric. Free disk space in MB.
     #' @return List with `mode` (character) and `reason` (OffloadReason).
-    #' @keywords internal
+    #' @noRd
     .resolve_offload_mode = function(output_mb, gpu_free_mb, cpu_free_mb, disk_free_mb) {
       has_gpu <- gpu_free_mb > 0
       has_disk <- !is.null(private$disk_offload_dir)
@@ -1042,7 +1042,7 @@ inference_manager <- R6::R6Class(
     #' @param shape Integer vector. Output shape.
     #' @param dtype torch.dtype. Output dtype.
     #' @return List with `buffer` (Tensor or DiskTensor) and `info` (list).
-    #' @keywords internal
+    #' @noRd
     .allocate_output_buffer = function(mode, shape, dtype) {
       info <- list(mode = mode, shape = shape, dtype = as.character(dtype))
       output_mb <- self$.estimate_tensor_mb(shape, dtype)
@@ -1103,7 +1103,7 @@ inference_manager <- R6::R6Class(
     #
     #' @param tensor Tensor. Input tensor.
     #' @return Tensor on execution device.
-    #' @keywords internal
+    #' @noRd
     .to_exe_device = function(tensor) {
       if (inherits(tensor, "torch_tensor") &&
           private$exe_device$type == "cuda" &&
@@ -1118,7 +1118,7 @@ inference_manager <- R6::R6Class(
     #
     #' @param inputs Named list. Input dictionary.
     #' @return Named list with tensors on execution device.
-    #' @keywords internal
+    #' @noRd
     .prepare_inputs = function(inputs) {
       prepared <- list()
       for (name in names(inputs)) {
@@ -1137,7 +1137,7 @@ inference_manager <- R6::R6Class(
     #' @param forward_fn Function. Model forward function.
     #' @param inputs Named list. Prepared inputs.
     #' @return Tensor. Forward output.
-    #' @keywords internal
+    #' @noRd
     .run_forward = function(forward_fn, inputs) {
       # Toggle Flash Attention 3
       restore_fa3 <- flash_attn3_toggle(private$use_fa3)
@@ -1376,7 +1376,7 @@ inference_manager <- R6::R6Class(
     #' @param batch_dims Integer vector. Batch dimension sizes.
     #' @param batch_size Integer. Target batch size.
     #' @return Integer vector. Split sizes for each dimension.
-    #' @keywords internal
+    #' @noRd
     .compute_split_sizes = function(batch_dims, batch_size) {
       elements_left <- as.integer(batch_size)
       split_sizes <- integer(length(batch_dims))
@@ -1400,7 +1400,7 @@ inference_manager <- R6::R6Class(
     #' @param batch_dims Integer vector. Batch dimensions.
     #' @param split_sizes Integer vector. Split sizes.
     #' @return Integer. Total number of batches.
-    #' @keywords internal
+    #' @noRd
     .compute_n_batches = function(batch_dims, split_sizes) {
       n <- 1L
       for (i in seq_along(batch_dims)) {
@@ -1415,7 +1415,7 @@ inference_manager <- R6::R6Class(
     #' @param batch_dims Integer vector. Batch dimensions.
     #' @param split_sizes Integer vector. Split sizes.
     #' @return Iterator yielding list(batch_dict, indices).
-    #' @keywords internal
+    #' @noRd
     .create_multidim_batches = function(inputs, batch_dims, split_sizes) {
       # Build slice lists for each dimension
       slices_list <- lapply(seq_along(batch_dims), function(i) {

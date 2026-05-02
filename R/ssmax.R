@@ -18,7 +18,7 @@ NULL
 #'
 #' @return A 0-d tensor containing \code{log(max(n, 1))}.
 #'
-#' @keywords internal
+#' @noRd
 .logn <- function(n, device, dtype) {
   torch_tensor(log(max(n, 1)), device = device, dtype = dtype)
 }

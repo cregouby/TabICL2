@@ -8,7 +8,7 @@ Tabular In-Context Learning (TabICL) classifier with an ensemble of
 transformed dataset views.
 }
 \section{Super class}{
-\code{\link[TabICL2:TabICLBaseEstimator]{TabICLBaseEstimator}} -> \code{TabICLClassifier}
+\code{TabICLBaseEstimator} -> \code{TabICLClassifier}
 }
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}
@@ -81,13 +81,13 @@ transformed dataset views.
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".build_inference_config"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.build_inference_config'><code>TabICLBaseEstimator$.build_inference_config()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".more_tags"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.more_tags'><code>TabICLBaseEstimator$.more_tags()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".move_cache_to_device"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.move_cache_to_device'><code>TabICLBaseEstimator$.move_cache_to_device()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".resolve_amp_fa3"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.resolve_amp_fa3'><code>TabICLBaseEstimator$.resolve_amp_fa3()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".resolve_device"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.resolve_device'><code>TabICLBaseEstimator$.resolve_device()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".sklearn_tags"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.sklearn_tags'><code>TabICLBaseEstimator$.sklearn_tags()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id="save"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-save'><code>TabICLBaseEstimator$save()</code></a></span></li>
+  <li><code>TabICLBaseEstimator$.build_inference_config()</code></li>
+  <li><code>TabICLBaseEstimator$.more_tags()</code></li>
+  <li><code>TabICLBaseEstimator$.move_cache_to_device()</code></li>
+  <li><code>TabICLBaseEstimator$.resolve_amp_fa3()</code></li>
+  <li><code>TabICLBaseEstimator$.resolve_device()</code></li>
+  <li><code>TabICLBaseEstimator$.sklearn_tags()</code></li>
+  <li><code>TabICLBaseEstimator$save()</code></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

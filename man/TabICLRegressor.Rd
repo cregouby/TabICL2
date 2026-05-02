@@ -57,7 +57,7 @@ checkpoint.  Default: \code{NULL}.}
 \code{\link{TabICLBaseEstimator}}
 }
 \section{Super class}{
-\code{\link[TabICL2:TabICLBaseEstimator]{TabICLBaseEstimator}} -> \code{TabICLRegressor}
+\code{TabICLBaseEstimator} -> \code{TabICLRegressor}
 }
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}
@@ -115,13 +115,13 @@ normalization method, or \code{NULL}.}
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".build_inference_config"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.build_inference_config'><code>TabICLBaseEstimator$.build_inference_config()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".more_tags"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.more_tags'><code>TabICLBaseEstimator$.more_tags()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".move_cache_to_device"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.move_cache_to_device'><code>TabICLBaseEstimator$.move_cache_to_device()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".resolve_amp_fa3"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.resolve_amp_fa3'><code>TabICLBaseEstimator$.resolve_amp_fa3()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".resolve_device"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.resolve_device'><code>TabICLBaseEstimator$.resolve_device()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id=".sklearn_tags"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-.sklearn_tags'><code>TabICLBaseEstimator$.sklearn_tags()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="TabICL2" data-topic="TabICLBaseEstimator" data-id="save"><a href='../../TabICL2/html/TabICLBaseEstimator.html#method-TabICLBaseEstimator-save'><code>TabICLBaseEstimator$save()</code></a></span></li>
+  <li><code>TabICLBaseEstimator$.build_inference_config()</code></li>
+  <li><code>TabICLBaseEstimator$.more_tags()</code></li>
+  <li><code>TabICLBaseEstimator$.move_cache_to_device()</code></li>
+  <li><code>TabICLBaseEstimator$.resolve_amp_fa3()</code></li>
+  <li><code>TabICLBaseEstimator$.resolve_device()</code></li>
+  <li><code>TabICLBaseEstimator$.sklearn_tags()</code></li>
+  <li><code>TabICLBaseEstimator$save()</code></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}
@@ -156,15 +156,46 @@ normalization method, or \code{NULL}.}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{n_estimators}}{Number of ensemble estimators.}
-      \item{\code{norm_methods}}{Normalization methods (character vector or NULL).}
-      \item{\code{feat_shuffle_method}}{Feature permutation strategy.}
-      \item{\code{outlier_threshold}}{Z-score threshold for outlier clipping.}
-      \item{\code{batch_size}}{Batch size for inference (integer or NULL).}
-      \item{\code{kv_cache}}{Caching mode (logical or string).}
-      \item{\code{model_path}}{Path to checkpoint file.}
-      \item{\code{allow_auto_download}}{Whether to auto-download checkpoint.}
-      \item{\code{checkpoint_version}}{Checkpoint version string.}
+      \item{\code{n_estimators}}{\code{integer(1)} Number of ensemble estimators.
+Default \code{8L}.}
+      \item{\code{norm_methods}}{\code{character} or \code{NULL}. Normalization
+methods. Default \code{NULL} (uses \code{c("none", "power")}).}
+      \item{\code{feat_shuffle_method}}{\code{character(1)} Feature permutation
+strategy. Default \code{"latin"}.}
+      \item{\code{outlier_threshold}}{\code{double(1)} Z-score threshold for
+outlier clipping. Default \code{4.0}.}
+      \item{\code{batch_size}}{\code{integer(1)} or \code{NULL}. Batch size for
+inference. Default \code{8L}.}
+      \item{\code{kv_cache}}{\code{logical(1)} or \code{character(1)}. Caching mode.
+Default \code{FALSE}.}
+      \item{\code{model_path}}{\code{character(1)} or \code{NULL}. Path to
+checkpoint. Default \code{NULL}.}
+      \item{\code{allow_auto_download}}{\code{logical(1)}. Whether to auto-download
+checkpoint from Hugging Face Hub. Default \code{TRUE}.}
+      \item{\code{checkpoint_version}}{\code{character(1)}. Checkpoint version
+string. Default \code{"tabicl-regressor-v2-20260212.ckpt"}.}
+      \item{\code{device}}{\code{character(1)} or \code{NULL}. Torch device.
+Passed to \code{\link{TabICLBaseEstimator}}.}
+      \item{\code{use_amp}}{\code{character(1)} or \code{logical(1)}. Automatic
+mixed precision setting. Default \code{"auto"}.
+Passed to \code{\link{TabICLBaseEstimator}}.}
+      \item{\code{use_fa3}}{\code{character(1)} or \code{logical(1)}`. Flash
+Attention v3 setting. Default \code{"auto"}.
+Passed to \code{\link{TabICLBaseEstimator}}.}
+      \item{\code{offload_mode}}{\code{character(1)}. Model offloading strategy.
+Default \code{"auto"}.
+Passed to \code{\link{TabICLBaseEstimator}}.}
+      \item{\code{disk_offload_dir}}{\code{character(1)} or \code{NULL}. Directory
+for disk offloading. Default \code{NULL}.
+Passed to \code{\link{TabICLBaseEstimator}}.}
+      \item{\code{random_state}}{\code{integer(1)} or \code{NULL}. Random seed.
+Default \code{42L}.}
+      \item{\code{n_jobs}}{\code{integer(1)} or \code{NULL}. Number of parallel
+threads. Default \code{NULL}.}
+      \item{\code{verbose}}{\code{logical(1)}. Print progress. Default \code{FALSE}.}
+      \item{\code{inference_config}}{\code{InferenceConfig} or \code{NULL}. Custom
+inference configuration. Default \code{NULL}.
+Passed to \code{\link{TabICLBaseEstimator}}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -241,6 +272,13 @@ necessary.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{TabICLRegressor$.load_model(progress = TRUE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{progress}}{Show download progress}
+    }
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{

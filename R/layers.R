@@ -11,7 +11,7 @@ NULL
 # #'
 # #' reuse data.tree Node data model
 # #'
-# #' @keywords internal
+# #' @noRd
 # ClassNode <- data.tree::Node
 
 #' One-hot encoding combined with linear projection
@@ -715,7 +715,7 @@ induced_self_attention_block <- nn_module(
 
 #' Canonical mask helper for attention
 #'
-#' @keywords internal
+#' @noRd
 .canonical_mask <- function(mask, mask_name, other_type, other_name, target_type, check_other = TRUE) {
   if (is.null(mask)) {
     return(NULL)
@@ -731,7 +731,7 @@ induced_self_attention_block <- nn_module(
 
 #' Check if value is NULL or extract dtype from tensor
 #'
-#' @keywords internal
+#' @noRd
 .none_or_dtype <- function(x) {
   if (is.null(x)) {
     return(NULL)
