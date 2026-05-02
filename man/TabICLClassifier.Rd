@@ -76,6 +76,10 @@ transformed dataset views.
     \item \href{#method-TabICLClassifier-fit}{\code{TabICLClassifier$fit()}}
     \item \href{#method-TabICLClassifier-predict_proba}{\code{TabICLClassifier$predict_proba()}}
     \item \href{#method-TabICLClassifier-predict}{\code{TabICLClassifier$predict()}}
+    \item \href{#method-TabICLClassifier-.load_model}{\code{TabICLClassifier$.load_model()}}
+    \item \href{#method-TabICLClassifier-.build_kv_cache}{\code{TabICLClassifier$.build_kv_cache()}}
+    \item \href{#method-TabICLClassifier-.batch_forward}{\code{TabICLClassifier$.batch_forward()}}
+    \item \href{#method-TabICLClassifier-.batch_forward_with_cache}{\code{TabICLClassifier$.batch_forward_with_cache()}}
     \item \href{#method-TabICLClassifier-clone}{\code{TabICLClassifier$clone()}}
   }
 }
@@ -230,6 +234,95 @@ that are entirely \code{NA} are treated as masked features (SHAP).}
   }
   \subsection{Returns}{
     Vector of predicted class labels.
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-TabICLClassifier-.load_model"></a>}}
+\if{latex}{\out{\hypertarget{method-TabICLClassifier-.load_model}{}}}
+\subsection{\code{TabICLClassifier$.load_model()}}{
+  Load the pre-trained TabICL model from a checkpoint.
+
+Resolves the checkpoint source via \code{model_path} and
+\code{checkpoint_version}, downloading from Hugging Face Hub if
+necessary.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLClassifier$.load_model(progress = TRUE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{progress}}{Show download progress}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{self}, invisibly.
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-TabICLClassifier-.build_kv_cache"></a>}}
+\if{latex}{\out{\hypertarget{method-TabICLClassifier-.build_kv_cache}{}}}
+\subsection{\code{TabICLClassifier$.build_kv_cache()}}{
+  Pre-compute KV caches for training data across all
+ensemble batches.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLClassifier$.build_kv_cache()}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-TabICLClassifier-.batch_forward"></a>}}
+\if{latex}{\out{\hypertarget{method-TabICLClassifier-.batch_forward}{}}}
+\subsection{\code{TabICLClassifier$.batch_forward()}}{
+  Batched forward pass without KV cache.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLClassifier$.batch_forward(Xs, ys)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Xs}}{\code{array(n_datasets, n_samples, n_features)}.}
+      \item{\code{ys}}{\code{array(n_datasets, train_size)}.}
+      \item{\code{output_type}}{\code{character} vector of output types.}
+      \item{\code{alphas}}{\code{numeric} vector of quantile levels, or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    a list of [test_size, n_classes] matrices, one per estimator.
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-TabICLClassifier-.batch_forward_with_cache"></a>}}
+\if{latex}{\out{\hypertarget{method-TabICLClassifier-.batch_forward_with_cache}{}}}
+\subsection{\code{TabICLClassifier$.batch_forward_with_cache()}}{
+  Batched forward pass using a pre-computed KV cache.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLClassifier$.batch_forward_with_cache(Xs_test, kv_cache)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{kv_cache}}{A \code{TabICLCache} for all estimators.}
+      \item{\code{Xs}}{\code{array(n_datasets, test_size, n_features)}.}
+      \item{\code{output_type}}{\code{character} vector of output types.}
+      \item{\code{alphas}}{\code{numeric} vector or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    a list of [test_size, n_classes] matrices, one per estimator.
   }
 }
 

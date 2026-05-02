@@ -352,52 +352,54 @@ TabICLClassifier <- R6::R6Class(
       proba <- self$predict_proba(X)
       y_idx <- max.col(proba, ties.method = "first") - 1L
       self$classes_[y_idx + 1L]
-    }
-  ),
+    },
 
-  private = list(
+    #' @description Load the pre-trained TabICL model from a checkpoint.
+    #'
+    #' Resolves the checkpoint source via \code{model_path} and
+    #' \code{checkpoint_version}, downloading from Hugging Face Hub if
+    #' necessary.
+    #'
+    #' @param progress Show download progress
+    #'
+    #' @return \code{self}, invisibly.
+    .load_model = function(progress = TRUE) {
+      path <- .resolve_checkpoint_path(
+        model_path = self$model_path,
+        checkpoint_version = self$checkpoint_version,
+        allow_auto_download = self$allow_auto_download,
+        progress = progress && self$verbose
+      )
 
-    .load_model = function() {
-      valid <- c(.ckpt_v1, .ckpt_v1_1, .ckpt_v2)
-      filename <- self$checkpoint_version
-      if (!filename %in% valid)
-        value_error(
-          "Invalid checkpoint_version '{filename}'. Valid options: {paste(valid, collapse = ', ')}."
-        )
+      cli_inform("Loading checkpoint from {.file {path}}")
 
-      # path <- if (is.null(self$model_path)) {
-      #   .hf_download(filename, allow_auto_download = self$allow_auto_download)
-      # } else {
-      #   mp <- self$model_path
-      #   if (file.exists(mp)) {
-      #     mp
-      #   } else if (self$allow_auto_download) {
-      #     .hf_download(
-      #       filename, dest_path = mp, allow_auto_download = TRUE
-      #     )
-      #   } else {
-      #     value_error(
-      #       "Checkpoint not found at '{mp}' and allow_auto_download is FALSE."
-      #     )
-      #   }
-      # }
-      path <- download_and_cache()
+      checkpoint <- tryCatch(
+        torch_load(path, device = "cpu"),
+        error = function(e) {
+          runtime_error("Failed to load checkpoint: {e$message}")
+        }
+      )
 
-      checkpoint <- torch::torch_load(path, device = "cpu")
-
-      if (is.null(checkpoint[["config"]]))
-        stop("Checkpoint missing 'config' key.", call. = FALSE)
-      if (is.null(checkpoint[["state_dict"]]))
-        stop("Checkpoint missing 'state_dict' key.", call. = FALSE)
+      if (is.null(checkpoint[["config"]])) {
+        runtime_error("Checkpoint missing 'config' key.")
+      }
+      if (is.null(checkpoint[["state_dict"]])) {
+        runtime_error("Checkpoint missing 'state_dict' key.")
+      }
 
       self$model_path_   <- path
       self$model_config_ <- checkpoint[["config"]]
-      self$model_        <- do.call(TabICL, as.list(checkpoint[["config"]]))
+
+      self$model_ <- do.call(TabICL, as.list(checkpoint[["config"]]))
       self$model_$load_state_dict(checkpoint[["state_dict"]])
       self$model_$eval()
+
+      cli_inform("Model loaded successfully with {length(checkpoint[['state_dict']])} parameters")
       invisible(NULL)
     },
 
+    #' @description Pre-compute KV caches for training data across all
+    #'   ensemble batches.
     .build_kv_cache = function() {
       train_data           <- self$ensemble_generator_$transform(X = NULL, mode = "train")
       self$model_kv_cache_ <- list()
@@ -438,7 +440,14 @@ TabICLClassifier <- R6::R6Class(
       invisible(NULL)
     },
 
-    # Returns a list of [test_size, n_classes] matrices, one per estimator.
+    #' @description Batched forward pass without KV cache.
+    #'
+    #' @param Xs `array(n_datasets, n_samples, n_features)`.
+    #' @param ys `array(n_datasets, train_size)`.
+    #' @param output_type `character` vector of output types.
+    #' @param alphas `numeric` vector of quantile levels, or \code{NULL}.
+    #'
+    #' @return a list of \[test_size, n_classes\] matrices, one per estimator.
     .batch_forward = function(Xs, ys) {
       n_total   <- dim(Xs)[1L]
       bs        <- self$batch_size %||% n_total
@@ -473,7 +482,14 @@ TabICLClassifier <- R6::R6Class(
       outputs
     },
 
-    # Returns a list of [test_size, n_classes] matrices, one per estimator.
+    #' @description Batched forward pass using a pre-computed KV cache.
+    #'
+    #' @param Xs `array(n_datasets, test_size, n_features)`.
+    #' @param kv_cache A \code{TabICLCache} for all estimators.
+    #' @param output_type `character` vector of output types.
+    #' @param alphas `numeric` vector or \code{NULL}.
+    #'
+    #' @return a list of \[test_size, n_classes\] matrices, one per estimator.
     .batch_forward_with_cache = function(Xs_test, kv_cache) {
       n_total   <- dim(Xs_test)[1L]
       bs        <- self$batch_size %||% n_total
