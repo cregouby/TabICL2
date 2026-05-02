@@ -5,93 +5,94 @@
 \title{Shuffler: generate permutations for ensemble diversity}
 \description{
 Shuffler: generate permutations for ensemble diversity
-
-Shuffler: generate permutations for ensemble diversity
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{n_elements}}{Number of elements.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{n_elements}}{Number of elements.}
 
-\item{\code{method}}{Shuffling method.}
+    \item{\code{method}}{Shuffling method.}
 
-\item{\code{max_elements_for_latin}}{Latin square size limit.}
+    \item{\code{max_elements_for_latin}}{Latin square size limit.}
 
-\item{\code{random_state}}{RNG seed.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{random_state}}{RNG seed.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Shuffler-new}{\code{Shuffler$new()}}
-\item \href{#method-Shuffler-shuffle}{\code{Shuffler$shuffle()}}
-\item \href{#method-Shuffler-clone}{\code{Shuffler$clone()}}
-}
+  \itemize{
+    \item \href{#method-Shuffler-initialize}{\code{Shuffler$new()}}
+    \item \href{#method-Shuffler-shuffle}{\code{Shuffler$shuffle()}}
+    \item \href{#method-Shuffler-clone}{\code{Shuffler$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Shuffler-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Shuffler-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{Shuffler}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Shuffler$new(
+\if{html}{\out{<a id="method-Shuffler-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Shuffler-initialize}{}}}
+\subsection{\code{Shuffler$new()}}{
+  Create a new \code{Shuffler}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Shuffler$new(
   n_elements,
   method = "latin",
   max_elements_for_latin = 4000L,
   random_state = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{n_elements}}{Integer number of elements.}
+      \item{\code{method}}{Shuffling strategy.}
+      \item{\code{max_elements_for_latin}}{Integer size limit for Latin squares.}
+      \item{\code{random_state}}{Integer seed or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n_elements}}{Integer number of elements.}
-
-\item{\code{method}}{Shuffling strategy.}
-
-\item{\code{max_elements_for_latin}}{Integer size limit for Latin squares.}
-
-\item{\code{random_state}}{Integer seed or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Shuffler-shuffle"></a>}}
 \if{latex}{\out{\hypertarget{method-Shuffler-shuffle}{}}}
-\subsection{Method \code{shuffle()}}{
-Generate \code{n_estimators} shuffling patterns.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Shuffler$shuffle(n_estimators)}\if{html}{\out{</div>}}
+\subsection{\code{Shuffler$shuffle()}}{
+  Generate \code{n_estimators} shuffling patterns.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Shuffler$shuffle(n_estimators)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{n_estimators}}{Number of permutations to generate.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of integer permutation vectors (1-indexed).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n_estimators}}{Number of permutations to generate.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A list of integer permutation vectors (1-indexed).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Shuffler-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Shuffler-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Shuffler$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Shuffler$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Shuffler$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

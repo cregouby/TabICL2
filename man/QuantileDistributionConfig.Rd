@@ -44,55 +44,57 @@ and tail inference parameters for quantile distribution estimation.
 }
 
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{TOL}}{General numerical tolerance (default: 1e-6).}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{TOL}}{General numerical tolerance (default: 1e-6).}
 
-\item{\code{MIN_SLOPE}}{Minimum allowed slope dQ/dα (default: 1e-6).}
+    \item{\code{MIN_SLOPE}}{Minimum allowed slope dQ/dα (default: 1e-6).}
 
-\item{\code{MAX_SLOPE}}{Maximum allowed slope dQ/dα (default: 1e6).}
+    \item{\code{MAX_SLOPE}}{Maximum allowed slope dQ/dα (default: 1e6).}
 
-\item{\code{MIN_BETA}}{Minimum tail scale parameter β (default: 0.01).}
+    \item{\code{MIN_BETA}}{Minimum tail scale parameter β (default: 0.01).}
 
-\item{\code{MAX_BETA}}{Maximum tail scale parameter β (default: 100.0).}
+    \item{\code{MAX_BETA}}{Maximum tail scale parameter β (default: 100.0).}
 
-\item{\code{MIN_ETA}}{Minimum GPD shape parameter η (default: -0.49).}
+    \item{\code{MIN_ETA}}{Minimum GPD shape parameter η (default: -0.49).}
 
-\item{\code{MAX_ETA}}{Maximum GPD shape parameter η (default: 0.49).}
+    \item{\code{MAX_ETA}}{Maximum GPD shape parameter η (default: 0.49).}
 
-\item{\code{ETA_TOLERANCE}}{Threshold for treating η ≈ 0 (default: 0.01).}
+    \item{\code{ETA_TOLERANCE}}{Threshold for treating η ≈ 0 (default: 0.01).}
 
-\item{\code{MAX_LOG_RATIO}}{Maximum log(ratio) (default: 15.0).}
+    \item{\code{MAX_LOG_RATIO}}{Maximum log(ratio) (default: 15.0).}
 
-\item{\code{MAX_EXPONENT}}{Maximum exponent before exp() (default: 15.0).}
+    \item{\code{MAX_EXPONENT}}{Maximum exponent before exp() (default: 15.0).}
 
-\item{\code{MAX_CRPS}}{Maximum CRPS value (default: 1e4).}
+    \item{\code{MAX_CRPS}}{Maximum CRPS value (default: 1e4).}
 
-\item{\code{TAIL_QUANTILES_FOR_ESTIMATION}}{Number of tail quantiles (default: 20).}
-}
-\if{html}{\out{</div>}}
+    \item{\code{TAIL_QUANTILES_FOR_ESTIMATION}}{Number of tail quantiles (default: 20).}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-QuantileDistributionConfig-clone}{\code{QuantileDistributionConfig$clone()}}
-}
+  \itemize{
+    \item \href{#method-QuantileDistributionConfig-clone}{\code{QuantileDistributionConfig$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistributionConfig-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistributionConfig-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistributionConfig$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistributionConfig$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistributionConfig$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

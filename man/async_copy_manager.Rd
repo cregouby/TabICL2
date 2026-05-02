@@ -20,119 +20,129 @@ GPU computation to overlap with data movement.
 
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-AsyncCopyManager-new}{\code{async_copy_manager$new()}}
-\item \href{#method-AsyncCopyManager-submit_copy}{\code{async_copy_manager$submit_copy()}}
-\item \href{#method-AsyncCopyManager-drain_all}{\code{async_copy_manager$drain_all()}}
-\item \href{#method-AsyncCopyManager-get_bytes_written}{\code{async_copy_manager$get_bytes_written()}}
-\item \href{#method-AsyncCopyManager-reset_bytes_counter}{\code{async_copy_manager$reset_bytes_counter()}}
-\item \href{#method-AsyncCopyManager-clear}{\code{async_copy_manager$clear()}}
-\item \href{#method-AsyncCopyManager-clone}{\code{async_copy_manager$clone()}}
-}
+  \itemize{
+    \item \href{#method-AsyncCopyManager-initialize}{\code{AsyncCopyManager$new()}}
+    \item \href{#method-AsyncCopyManager-submit_copy}{\code{AsyncCopyManager$submit_copy()}}
+    \item \href{#method-AsyncCopyManager-drain_all}{\code{AsyncCopyManager$drain_all()}}
+    \item \href{#method-AsyncCopyManager-get_bytes_written}{\code{AsyncCopyManager$get_bytes_written()}}
+    \item \href{#method-AsyncCopyManager-reset_bytes_counter}{\code{AsyncCopyManager$reset_bytes_counter()}}
+    \item \href{#method-AsyncCopyManager-clear}{\code{AsyncCopyManager$clear()}}
+    \item \href{#method-AsyncCopyManager-clone}{\code{AsyncCopyManager$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AsyncCopyManager-new"></a>}}
-\if{latex}{\out{\hypertarget{method-AsyncCopyManager-new}{}}}
-\subsection{Method \code{new()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$new(device, max_pending = 4L, buffer_pool = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-AsyncCopyManager-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-AsyncCopyManager-initialize}{}}}
+\subsection{\code{AsyncCopyManager$new()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{AsyncCopyManager$new(device, max_pending = 4L, buffer_pool = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{device}}{torch.device. CUDA device.}
+      \item{\code{max_pending}}{Integer. Max pending copies.}
+      \item{\code{buffer_pool}}{PinnedBufferPool or NULL.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{device}}{torch.device. CUDA device.}
-
-\item{\code{max_pending}}{Integer. Max pending copies.}
-
-\item{\code{buffer_pool}}{PinnedBufferPool or NULL.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-submit_copy"></a>}}
 \if{latex}{\out{\hypertarget{method-AsyncCopyManager-submit_copy}{}}}
-\subsection{Method \code{submit_copy()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$submit_copy(gpu_tensor, target, indices)}\if{html}{\out{</div>}}
+\subsection{\code{AsyncCopyManager$submit_copy()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{AsyncCopyManager$submit_copy(gpu_tensor, target, indices)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{gpu_tensor}}{Tensor. Source tensor on GPU.}
+      \item{\code{target}}{Tensor or DiskTensor. Target storage.}
+      \item{\code{indices}}{List. Indices where to write in target.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{gpu_tensor}}{Tensor. Source tensor on GPU.}
-
-\item{\code{target}}{Tensor or DiskTensor. Target storage.}
-
-\item{\code{indices}}{List. Indices where to write in target.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-drain_all"></a>}}
 \if{latex}{\out{\hypertarget{method-AsyncCopyManager-drain_all}{}}}
-\subsection{Method \code{drain_all()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$drain_all()}\if{html}{\out{</div>}}
+\subsection{\code{AsyncCopyManager$drain_all()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{AsyncCopyManager$drain_all()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Numeric. Total bytes written in MB.
+  }
 }
 
-\subsection{Returns}{
-Numeric. Total bytes written in MB.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-get_bytes_written"></a>}}
 \if{latex}{\out{\hypertarget{method-AsyncCopyManager-get_bytes_written}{}}}
-\subsection{Method \code{get_bytes_written()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$get_bytes_written()}\if{html}{\out{</div>}}
+\subsection{\code{AsyncCopyManager$get_bytes_written()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{AsyncCopyManager$get_bytes_written()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Numeric.
+  }
 }
 
-\subsection{Returns}{
-Numeric.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-reset_bytes_counter"></a>}}
 \if{latex}{\out{\hypertarget{method-AsyncCopyManager-reset_bytes_counter}{}}}
-\subsection{Method \code{reset_bytes_counter()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$reset_bytes_counter()}\if{html}{\out{</div>}}
+\subsection{\code{AsyncCopyManager$reset_bytes_counter()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{AsyncCopyManager$reset_bytes_counter()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL
+  }
 }
 
-\subsection{Returns}{
-NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-clear"></a>}}
 \if{latex}{\out{\hypertarget{method-AsyncCopyManager-clear}{}}}
-\subsection{Method \code{clear()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$clear()}\if{html}{\out{</div>}}
+\subsection{\code{AsyncCopyManager$clear()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{AsyncCopyManager$clear()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL
+  }
 }
 
-\subsection{Returns}{
-NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AsyncCopyManager-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-AsyncCopyManager-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{async_copy_manager$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{AsyncCopyManager$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{AsyncCopyManager$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

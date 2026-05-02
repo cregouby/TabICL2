@@ -10,157 +10,164 @@ Supports slicing, device transfer, concatenation and
 pre-allocation.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{kv}}{Named \code{list} mapping layer indices (as}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{kv}}{Named \code{list} mapping layer indices (as}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-KVCache-new}{\code{KVCache$new()}}
-\item \href{#method-KVCache-is_populated}{\code{KVCache$is_populated()}}
-\item \href{#method-KVCache-subset}{\code{KVCache$subset()}}
-\item \href{#method-KVCache-assign}{\code{KVCache$assign()}}
-\item \href{#method-KVCache-to}{\code{KVCache$to()}}
-\item \href{#method-KVCache-preallocate}{\code{KVCache$preallocate()}}
-\item \href{#method-KVCache-clone}{\code{KVCache$clone()}}
-}
+  \itemize{
+    \item \href{#method-KVCache-initialize}{\code{KVCache$new()}}
+    \item \href{#method-KVCache-is_populated}{\code{KVCache$is_populated()}}
+    \item \href{#method-KVCache-subset}{\code{KVCache$subset()}}
+    \item \href{#method-KVCache-assign}{\code{KVCache$assign()}}
+    \item \href{#method-KVCache-to}{\code{KVCache$to()}}
+    \item \href{#method-KVCache-preallocate}{\code{KVCache$preallocate()}}
+    \item \href{#method-KVCache-clone}{\code{KVCache$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-KVCache-new"></a>}}
-\if{latex}{\out{\hypertarget{method-KVCache-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new (empty) KVCache.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KVCache$new(kv = list())}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-KVCache-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-KVCache-initialize}{}}}
+\subsection{\code{KVCache$new()}}{
+  Create a new (empty) KVCache.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KVCache$new(kv = list())}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{kv}}{Named list of \code{KVCacheEntry} objects.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{kv}}{Named list of \code{KVCacheEntry} objects.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-is_populated"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-is_populated}{}}}
-\subsection{Method \code{is_populated()}}{
-Check whether any layer entry contains valid data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KVCache$is_populated()}\if{html}{\out{</div>}}
+\subsection{\code{KVCache$is_populated()}}{
+  Check whether any layer entry contains valid data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KVCache$is_populated()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}
+  }
 }
 
-\subsection{Returns}{
-\code{logical(1)}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-subset"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-subset}{}}}
-\subsection{Method \code{subset()}}{
-Slice all entries along the batch dimension.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KVCache$subset(start, end)}\if{html}{\out{</div>}}
+\subsection{\code{KVCache$subset()}}{
+  Slice all entries along the batch dimension.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KVCache$subset(start, end)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
+      \item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{KVCache} with sliced entries.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
-
-\item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{KVCache} with sliced entries.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-assign"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-assign}{}}}
-\subsection{Method \code{assign()}}{
-Write batch-sliced entries into this pre-allocated
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KVCache$assign(start, end, other)}\if{html}{\out{</div>}}
+\subsection{\code{KVCache$assign()}}{
+  Write batch-sliced entries into this pre-allocated
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KVCache$assign(start, end, other)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
+      \item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
+      \item{\code{other}}{A \code{KVCache} whose entries are copied in.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
-
-\item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
-
-\item{\code{other}}{A \code{KVCache} whose entries are copied in.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-to"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-to}{}}}
-\subsection{Method \code{to()}}{
-Move all entries to a device and optionally cast dtype.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KVCache$to(device, dtype = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{KVCache$to()}}{
+  Move all entries to a device and optionally cast dtype.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KVCache$to(device, dtype = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{device}}{Target device.}
+      \item{\code{dtype}}{Target torch dtype, or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{KVCache}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{device}}{Target device.}
-
-\item{\code{dtype}}{Target torch dtype, or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{KVCache}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-preallocate"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-preallocate}{}}}
-\subsection{Method \code{preallocate()}}{
-Pre-allocate K/V tensors based on shapes from a
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KVCache$preallocate(reference, batch_shape, device = "cpu", dtype = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{KVCache$preallocate()}}{
+  Pre-allocate K/V tensors based on shapes from a
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KVCache$preallocate(reference, batch_shape, device = "cpu", dtype = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{reference}}{A \code{KVCache} from a single batch whose}
+      \item{\code{batch_shape}}{\code{integer} vector for the leading dimensions.}
+      \item{\code{device}}{Device string (default \code{"cpu"}).}
+      \item{\code{dtype}}{Target dtype, or \code{NULL} to use reference dtype.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{reference}}{A \code{KVCache} from a single batch whose}
-
-\item{\code{batch_shape}}{\code{integer} vector for the leading dimensions.}
-
-\item{\code{device}}{Device string (default \code{"cpu"}).}
-
-\item{\code{dtype}}{Target dtype, or \code{NULL} to use reference dtype.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KVCache-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-KVCache-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KVCache$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{KVCache$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KVCache$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

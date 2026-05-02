@@ -4,92 +4,91 @@
 \alias{InferenceConfig}
 \title{InferenceConfig: Container for TabICL inference configuration}
 \description{
-InferenceConfig: Container for TabICL inference configuration
-
-InferenceConfig: Container for TabICL inference configuration
-}
-\details{
 Holds \code{\link{MgrConfig}} objects for the three transformer components
 of TabICL: column-wise embedding (\code{COL_CONFIG}), row-wise interaction
 (\code{ROW_CONFIG}), and in-context learning (\code{ICL_CONFIG}).
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{COL_CONFIG}}{\code{MgrConfig} for the column embedding transformer.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{COL_CONFIG}}{\code{MgrConfig} for the column embedding transformer.}
 
-\item{\code{ROW_CONFIG}}{\code{MgrConfig} for the row interaction transformer.}
+    \item{\code{ROW_CONFIG}}{\code{MgrConfig} for the row interaction transformer.}
 
-\item{\code{ICL_CONFIG}}{\code{MgrConfig} for the in-context learning transformer.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{ICL_CONFIG}}{\code{MgrConfig} for the in-context learning transformer.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-InferenceConfig-new}{\code{InferenceConfig$new()}}
-\item \href{#method-InferenceConfig-update_from_dict}{\code{InferenceConfig$update_from_dict()}}
-\item \href{#method-InferenceConfig-clone}{\code{InferenceConfig$clone()}}
-}
+  \itemize{
+    \item \href{#method-InferenceConfig-initialize}{\code{InferenceConfig$new()}}
+    \item \href{#method-InferenceConfig-update_from_dict}{\code{InferenceConfig$update_from_dict()}}
+    \item \href{#method-InferenceConfig-clone}{\code{InferenceConfig$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-InferenceConfig-new"></a>}}
-\if{latex}{\out{\hypertarget{method-InferenceConfig-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{InferenceConfig} with default settings.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InferenceConfig$new(COL_CONFIG = NULL, ROW_CONFIG = NULL, ICL_CONFIG = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-InferenceConfig-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-InferenceConfig-initialize}{}}}
+\subsection{\code{InferenceConfig$new()}}{
+  Create a new \code{InferenceConfig} with default settings.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceConfig$new(COL_CONFIG = NULL, ROW_CONFIG = NULL, ICL_CONFIG = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{COL_CONFIG}}{A \code{MgrConfig}, named list, or \code{NULL} for
+defaults.}
+      \item{\code{ROW_CONFIG}}{A \code{MgrConfig}, named list, or \code{NULL} for
+defaults.}
+      \item{\code{ICL_CONFIG}}{A \code{MgrConfig}, named list, or \code{NULL} for
+defaults.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{COL_CONFIG}}{A \code{MgrConfig}, named list, or \code{NULL} for
-defaults.}
-
-\item{\code{ROW_CONFIG}}{A \code{MgrConfig}, named list, or \code{NULL} for
-defaults.}
-
-\item{\code{ICL_CONFIG}}{A \code{MgrConfig}, named list, or \code{NULL} for
-defaults.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceConfig-update_from_dict"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceConfig-update_from_dict}{}}}
-\subsection{Method \code{update_from_dict()}}{
-Update sub-configurations from a nested named list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InferenceConfig$update_from_dict(config_dict)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{config_dict}}{A named list with keys \code{"COL_CONFIG"},
+\subsection{\code{InferenceConfig$update_from_dict()}}{
+  Update sub-configurations from a nested named list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceConfig$update_from_dict(config_dict)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{config_dict}}{A named list with keys \code{"COL_CONFIG"},
 \code{"ROW_CONFIG"}, and/or \code{"ICL_CONFIG"}, each mapping to a
 named list of parameter overrides.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceConfig-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceConfig-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InferenceConfig$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceConfig$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceConfig$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

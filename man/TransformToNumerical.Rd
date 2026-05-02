@@ -4,127 +4,130 @@
 \alias{TransformToNumerical}
 \title{Transform non-numerical data to a numeric matrix}
 \description{
-Transform non-numerical data to a numeric matrix
-
-Transform non-numerical data to a numeric matrix
-}
-\details{
 Detects and converts categorical, boolean, and text columns to ordinal
 integers (unknown/NA → -1) and imputes numeric columns with column means.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{verbose}}{Print column classification info.}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{verbose}}{Print column classification info.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-TransformToNumerical-new}{\code{TransformToNumerical$new()}}
-\item \href{#method-TransformToNumerical-fit}{\code{TransformToNumerical$fit()}}
-\item \href{#method-TransformToNumerical-transform}{\code{TransformToNumerical$transform()}}
-\item \href{#method-TransformToNumerical-fit_transform}{\code{TransformToNumerical$fit_transform()}}
-\item \href{#method-TransformToNumerical-clone}{\code{TransformToNumerical$clone()}}
-}
+  \itemize{
+    \item \href{#method-TransformToNumerical-initialize}{\code{TransformToNumerical$new()}}
+    \item \href{#method-TransformToNumerical-fit}{\code{TransformToNumerical$fit()}}
+    \item \href{#method-TransformToNumerical-transform}{\code{TransformToNumerical$transform()}}
+    \item \href{#method-TransformToNumerical-fit_transform}{\code{TransformToNumerical$fit_transform()}}
+    \item \href{#method-TransformToNumerical-clone}{\code{TransformToNumerical$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-TransformToNumerical-new"></a>}}
-\if{latex}{\out{\hypertarget{method-TransformToNumerical-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{TransformToNumerical}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TransformToNumerical$new(verbose = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-TransformToNumerical-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-TransformToNumerical-initialize}{}}}
+\subsection{\code{TransformToNumerical$new()}}{
+  Create a new \code{TransformToNumerical}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TransformToNumerical$new(verbose = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{verbose}}{Logical.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{verbose}}{Logical.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TransformToNumerical-fit"></a>}}
 \if{latex}{\out{\hypertarget{method-TransformToNumerical-fit}{}}}
-\subsection{Method \code{fit()}}{
-Fit to training data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TransformToNumerical$fit(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{TransformToNumerical$fit()}}{
+  Fit to training data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TransformToNumerical$fit(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Matrix or data.frame.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Matrix or data.frame.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TransformToNumerical-transform"></a>}}
 \if{latex}{\out{\hypertarget{method-TransformToNumerical-transform}{}}}
-\subsection{Method \code{transform()}}{
-Transform data to numeric matrix.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TransformToNumerical$transform(X)}\if{html}{\out{</div>}}
+\subsection{\code{TransformToNumerical$transform()}}{
+  Transform data to numeric matrix.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TransformToNumerical$transform(X)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Matrix or data.frame.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Numeric matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Matrix or data.frame.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Numeric matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TransformToNumerical-fit_transform"></a>}}
 \if{latex}{\out{\hypertarget{method-TransformToNumerical-fit_transform}{}}}
-\subsection{Method \code{fit_transform()}}{
-Fit then transform.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TransformToNumerical$fit_transform(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{TransformToNumerical$fit_transform()}}{
+  Fit then transform.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TransformToNumerical$fit_transform(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Matrix or data.frame.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Numeric matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Matrix or data.frame.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Numeric matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TransformToNumerical-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-TransformToNumerical-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TransformToNumerical$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{TransformToNumerical$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TransformToNumerical$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

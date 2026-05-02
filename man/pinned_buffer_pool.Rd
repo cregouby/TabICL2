@@ -23,94 +23,103 @@ pool$put(buf)  # Return to pool for reuse
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-PinnedBufferPool-new}{\code{pinned_buffer_pool$new()}}
-\item \href{#method-PinnedBufferPool-get}{\code{pinned_buffer_pool$get()}}
-\item \href{#method-PinnedBufferPool-put}{\code{pinned_buffer_pool$put()}}
-\item \href{#method-PinnedBufferPool-clear}{\code{pinned_buffer_pool$clear()}}
-\item \href{#method-PinnedBufferPool-clone}{\code{pinned_buffer_pool$clone()}}
-}
+  \itemize{
+    \item \href{#method-PinnedBufferPool-initialize}{\code{PinnedBufferPool$new()}}
+    \item \href{#method-PinnedBufferPool-get}{\code{PinnedBufferPool$get()}}
+    \item \href{#method-PinnedBufferPool-put}{\code{PinnedBufferPool$put()}}
+    \item \href{#method-PinnedBufferPool-clear}{\code{PinnedBufferPool$clear()}}
+    \item \href{#method-PinnedBufferPool-clone}{\code{PinnedBufferPool$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PinnedBufferPool-new"></a>}}
-\if{latex}{\out{\hypertarget{method-PinnedBufferPool-new}{}}}
-\subsection{Method \code{new()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pinned_buffer_pool$new(max_buffers_per_shape = 4L)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-PinnedBufferPool-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-PinnedBufferPool-initialize}{}}}
+\subsection{\code{PinnedBufferPool$new()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PinnedBufferPool$new(max_buffers_per_shape = 4L)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{max_buffers_per_shape}}{Integer. Maximum buffers per (shape, dtype)}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{max_buffers_per_shape}}{Integer. Maximum buffers per (shape, dtype)}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PinnedBufferPool-get"></a>}}
 \if{latex}{\out{\hypertarget{method-PinnedBufferPool-get}{}}}
-\subsection{Method \code{get()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pinned_buffer_pool$get(shape, dtype)}\if{html}{\out{</div>}}
+\subsection{\code{PinnedBufferPool$get()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PinnedBufferPool$get(shape, dtype)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{shape}}{Integer vector. Shape of the tensor.}
+      \item{\code{dtype}}{torch.dtype. Data type of the tensor.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A pinned CPU tensor.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{shape}}{Integer vector. Shape of the tensor.}
-
-\item{\code{dtype}}{torch.dtype. Data type of the tensor.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A pinned CPU tensor.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PinnedBufferPool-put"></a>}}
 \if{latex}{\out{\hypertarget{method-PinnedBufferPool-put}{}}}
-\subsection{Method \code{put()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pinned_buffer_pool$put(buf)}\if{html}{\out{</div>}}
+\subsection{\code{PinnedBufferPool$put()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PinnedBufferPool$put(buf)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{buf}}{Tensor. Buffer to return.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{buf}}{Tensor. Buffer to return.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PinnedBufferPool-clear"></a>}}
 \if{latex}{\out{\hypertarget{method-PinnedBufferPool-clear}{}}}
-\subsection{Method \code{clear()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pinned_buffer_pool$clear()}\if{html}{\out{</div>}}
+\subsection{\code{PinnedBufferPool$clear()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PinnedBufferPool$clear()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A cleared private pool
+  }
 }
 
-\subsection{Returns}{
-A cleared private pool
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PinnedBufferPool-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-PinnedBufferPool-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{pinned_buffer_pool$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{PinnedBufferPool$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PinnedBufferPool$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

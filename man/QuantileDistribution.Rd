@@ -12,778 +12,842 @@ Wraps a set of predicted quantiles into a proper distribution with:
 }
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{cfg}}{Configuration object}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{cfg}}{Configuration object}
 
-\item{\code{tol}}{Numerical tolerance}
+    \item{\code{tol}}{Numerical tolerance}
 
-\item{\code{tail_type}}{Type of tail ("exp" or "gpd")}
+    \item{\code{tail_type}}{Type of tail ("exp" or "gpd")}
 
-\item{\code{batch_shape}}{Batch shape}
+    \item{\code{batch_shape}}{Batch shape}
 
-\item{\code{num_quantiles}}{Number of quantiles}
+    \item{\code{num_quantiles}}{Number of quantiles}
 
-\item{\code{alpha_levels}}{Probability levels}
+    \item{\code{alpha_levels}}{Probability levels}
 
-\item{\code{quantiles}}{Quantile values}
+    \item{\code{quantiles}}{Quantile values}
 
-\item{\code{alpha_lo}}{Lower alpha boundaries}
+    \item{\code{alpha_lo}}{Lower alpha boundaries}
 
-\item{\code{alpha_hi}}{Upper alpha boundaries}
+    \item{\code{alpha_hi}}{Upper alpha boundaries}
 
-\item{\code{q_lo}}{Lower quantile boundaries}
+    \item{\code{q_lo}}{Lower quantile boundaries}
 
-\item{\code{q_hi}}{Upper quantile boundaries}
+    \item{\code{q_hi}}{Upper quantile boundaries}
 
-\item{\code{delta_alpha}}{Alpha differences}
+    \item{\code{delta_alpha}}{Alpha differences}
 
-\item{\code{delta_q}}{Quantile differences}
+    \item{\code{delta_q}}{Quantile differences}
 
-\item{\code{slopes}}{Segment slopes}
+    \item{\code{slopes}}{Segment slopes}
 
-\item{\code{num_segments}}{Number of segments}
+    \item{\code{num_segments}}{Number of segments}
 
-\item{\code{alpha_l}}{Left boundary alpha}
+    \item{\code{alpha_l}}{Left boundary alpha}
 
-\item{\code{alpha_r}}{Right boundary alpha}
+    \item{\code{alpha_r}}{Right boundary alpha}
 
-\item{\code{q_l}}{Left boundary quantile}
+    \item{\code{q_l}}{Left boundary quantile}
 
-\item{\code{q_r}}{Right boundary quantile}
+    \item{\code{q_r}}{Right boundary quantile}
 
-\item{\code{alpha_lo_1d}}{1D alpha lower boundaries}
+    \item{\code{alpha_lo_1d}}{1D alpha lower boundaries}
 
-\item{\code{alpha_hi_1d}}{1D alpha upper boundaries}
+    \item{\code{alpha_hi_1d}}{1D alpha upper boundaries}
 
-\item{\code{beta_l}}{Left tail beta}
+    \item{\code{beta_l}}{Left tail beta}
 
-\item{\code{beta_r}}{Right tail beta}
+    \item{\code{beta_r}}{Right tail beta}
 
-\item{\code{tail_a_l}}{Left tail coefficient a}
+    \item{\code{tail_a_l}}{Left tail coefficient a}
 
-\item{\code{tail_b_l}}{Left tail coefficient b}
+    \item{\code{tail_b_l}}{Left tail coefficient b}
 
-\item{\code{tail_a_r}}{Right tail coefficient a}
+    \item{\code{tail_a_r}}{Right tail coefficient a}
 
-\item{\code{tail_b_r}}{Right tail coefficient b}
+    \item{\code{tail_b_r}}{Right tail coefficient b}
 
-\item{\code{eta_l}}{Left tail GPD shape}
+    \item{\code{eta_l}}{Left tail GPD shape}
 
-\item{\code{mu_l}}{Left tail GPD scale}
+    \item{\code{mu_l}}{Left tail GPD scale}
 
-\item{\code{eta_r}}{Right tail GPD shape}
+    \item{\code{eta_r}}{Right tail GPD shape}
 
-\item{\code{mu_r}}{Right tail GPD scale}
-}
-\if{html}{\out{</div>}}
+    \item{\code{mu_r}}{Right tail GPD scale}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-QuantileDistribution-new}{\code{QuantileDistribution$new()}}
-\item \href{#method-QuantileDistribution-.setup_spline}{\code{QuantileDistribution$.setup_spline()}}
-\item \href{#method-QuantileDistribution-.setup_tails}{\code{QuantileDistribution$.setup_tails()}}
-\item \href{#method-QuantileDistribution-icdf}{\code{QuantileDistribution$icdf()}}
-\item \href{#method-QuantileDistribution-.expand_to_alpha}{\code{QuantileDistribution$.expand_to_alpha()}}
-\item \href{#method-QuantileDistribution-.icdf_left_tail}{\code{QuantileDistribution$.icdf_left_tail()}}
-\item \href{#method-QuantileDistribution-.icdf_right_tail}{\code{QuantileDistribution$.icdf_right_tail()}}
-\item \href{#method-QuantileDistribution-.icdf_gpd_left}{\code{QuantileDistribution$.icdf_gpd_left()}}
-\item \href{#method-QuantileDistribution-.icdf_gpd_right}{\code{QuantileDistribution$.icdf_gpd_right()}}
-\item \href{#method-QuantileDistribution-.icdf_spline}{\code{QuantileDistribution$.icdf_spline()}}
-\item \href{#method-QuantileDistribution-cdf}{\code{QuantileDistribution$cdf()}}
-\item \href{#method-QuantileDistribution-.expand_to_z}{\code{QuantileDistribution$.expand_to_z()}}
-\item \href{#method-QuantileDistribution-.cdf_left_tail}{\code{QuantileDistribution$.cdf_left_tail()}}
-\item \href{#method-QuantileDistribution-.cdf_right_tail}{\code{QuantileDistribution$.cdf_right_tail()}}
-\item \href{#method-QuantileDistribution-.cdf_spline}{\code{QuantileDistribution$.cdf_spline()}}
-\item \href{#method-QuantileDistribution-.icdf_derivative}{\code{QuantileDistribution$.icdf_derivative()}}
-\item \href{#method-QuantileDistribution-.deriv_left_tail}{\code{QuantileDistribution$.deriv_left_tail()}}
-\item \href{#method-QuantileDistribution-.deriv_right_tail}{\code{QuantileDistribution$.deriv_right_tail()}}
-\item \href{#method-QuantileDistribution-.deriv_spline}{\code{QuantileDistribution$.deriv_spline()}}
-\item \href{#method-QuantileDistribution-log_prob}{\code{QuantileDistribution$log_prob()}}
-\item \href{#method-QuantileDistribution-pdf}{\code{QuantileDistribution$pdf()}}
-\item \href{#method-QuantileDistribution-mean}{\code{QuantileDistribution$mean()}}
-\item \href{#method-QuantileDistribution-.mean_exp_analytical}{\code{QuantileDistribution$.mean_exp_analytical()}}
-\item \href{#method-QuantileDistribution-.mean_gpd_analytical}{\code{QuantileDistribution$.mean_gpd_analytical()}}
-\item \href{#method-QuantileDistribution-variance}{\code{QuantileDistribution$variance()}}
-\item \href{#method-QuantileDistribution-.variance_exp_analytical}{\code{QuantileDistribution$.variance_exp_analytical()}}
-\item \href{#method-QuantileDistribution-.variance_gpd_analytical}{\code{QuantileDistribution$.variance_gpd_analytical()}}
-\item \href{#method-QuantileDistribution-stddev}{\code{QuantileDistribution$stddev()}}
-\item \href{#method-QuantileDistribution-crps}{\code{QuantileDistribution$crps()}}
-\item \href{#method-QuantileDistribution-.crps_left_tail}{\code{QuantileDistribution$.crps_left_tail()}}
-\item \href{#method-QuantileDistribution-.crps_left_tail_exp}{\code{QuantileDistribution$.crps_left_tail_exp()}}
-\item \href{#method-QuantileDistribution-.crps_left_tail_gpd}{\code{QuantileDistribution$.crps_left_tail_gpd()}}
-\item \href{#method-QuantileDistribution-.crps_right_tail}{\code{QuantileDistribution$.crps_right_tail()}}
-\item \href{#method-QuantileDistribution-.crps_right_tail_exp}{\code{QuantileDistribution$.crps_right_tail_exp()}}
-\item \href{#method-QuantileDistribution-.crps_right_tail_gpd}{\code{QuantileDistribution$.crps_right_tail_gpd()}}
-\item \href{#method-QuantileDistribution-.crps_spline}{\code{QuantileDistribution$.crps_spline()}}
-\item \href{#method-QuantileDistribution-pinball}{\code{QuantileDistribution$pinball()}}
-\item \href{#method-QuantileDistribution-sample}{\code{QuantileDistribution$sample()}}
-\item \href{#method-QuantileDistribution-clone}{\code{QuantileDistribution$clone()}}
-}
+  \itemize{
+    \item \href{#method-QuantileDistribution-initialize}{\code{QuantileDistribution$new()}}
+    \item \href{#method-QuantileDistribution-.setup_spline}{\code{QuantileDistribution$.setup_spline()}}
+    \item \href{#method-QuantileDistribution-.setup_tails}{\code{QuantileDistribution$.setup_tails()}}
+    \item \href{#method-QuantileDistribution-icdf}{\code{QuantileDistribution$icdf()}}
+    \item \href{#method-QuantileDistribution-.expand_to_alpha}{\code{QuantileDistribution$.expand_to_alpha()}}
+    \item \href{#method-QuantileDistribution-.icdf_left_tail}{\code{QuantileDistribution$.icdf_left_tail()}}
+    \item \href{#method-QuantileDistribution-.icdf_right_tail}{\code{QuantileDistribution$.icdf_right_tail()}}
+    \item \href{#method-QuantileDistribution-.icdf_gpd_left}{\code{QuantileDistribution$.icdf_gpd_left()}}
+    \item \href{#method-QuantileDistribution-.icdf_gpd_right}{\code{QuantileDistribution$.icdf_gpd_right()}}
+    \item \href{#method-QuantileDistribution-.icdf_spline}{\code{QuantileDistribution$.icdf_spline()}}
+    \item \href{#method-QuantileDistribution-cdf}{\code{QuantileDistribution$cdf()}}
+    \item \href{#method-QuantileDistribution-.expand_to_z}{\code{QuantileDistribution$.expand_to_z()}}
+    \item \href{#method-QuantileDistribution-.cdf_left_tail}{\code{QuantileDistribution$.cdf_left_tail()}}
+    \item \href{#method-QuantileDistribution-.cdf_right_tail}{\code{QuantileDistribution$.cdf_right_tail()}}
+    \item \href{#method-QuantileDistribution-.cdf_spline}{\code{QuantileDistribution$.cdf_spline()}}
+    \item \href{#method-QuantileDistribution-.icdf_derivative}{\code{QuantileDistribution$.icdf_derivative()}}
+    \item \href{#method-QuantileDistribution-.deriv_left_tail}{\code{QuantileDistribution$.deriv_left_tail()}}
+    \item \href{#method-QuantileDistribution-.deriv_right_tail}{\code{QuantileDistribution$.deriv_right_tail()}}
+    \item \href{#method-QuantileDistribution-.deriv_spline}{\code{QuantileDistribution$.deriv_spline()}}
+    \item \href{#method-QuantileDistribution-log_prob}{\code{QuantileDistribution$log_prob()}}
+    \item \href{#method-QuantileDistribution-pdf}{\code{QuantileDistribution$pdf()}}
+    \item \href{#method-QuantileDistribution-mean}{\code{QuantileDistribution$mean()}}
+    \item \href{#method-QuantileDistribution-.mean_exp_analytical}{\code{QuantileDistribution$.mean_exp_analytical()}}
+    \item \href{#method-QuantileDistribution-.mean_gpd_analytical}{\code{QuantileDistribution$.mean_gpd_analytical()}}
+    \item \href{#method-QuantileDistribution-variance}{\code{QuantileDistribution$variance()}}
+    \item \href{#method-QuantileDistribution-.variance_exp_analytical}{\code{QuantileDistribution$.variance_exp_analytical()}}
+    \item \href{#method-QuantileDistribution-.variance_gpd_analytical}{\code{QuantileDistribution$.variance_gpd_analytical()}}
+    \item \href{#method-QuantileDistribution-stddev}{\code{QuantileDistribution$stddev()}}
+    \item \href{#method-QuantileDistribution-crps}{\code{QuantileDistribution$crps()}}
+    \item \href{#method-QuantileDistribution-.crps_left_tail}{\code{QuantileDistribution$.crps_left_tail()}}
+    \item \href{#method-QuantileDistribution-.crps_left_tail_exp}{\code{QuantileDistribution$.crps_left_tail_exp()}}
+    \item \href{#method-QuantileDistribution-.crps_left_tail_gpd}{\code{QuantileDistribution$.crps_left_tail_gpd()}}
+    \item \href{#method-QuantileDistribution-.crps_right_tail}{\code{QuantileDistribution$.crps_right_tail()}}
+    \item \href{#method-QuantileDistribution-.crps_right_tail_exp}{\code{QuantileDistribution$.crps_right_tail_exp()}}
+    \item \href{#method-QuantileDistribution-.crps_right_tail_gpd}{\code{QuantileDistribution$.crps_right_tail_gpd()}}
+    \item \href{#method-QuantileDistribution-.crps_spline}{\code{QuantileDistribution$.crps_spline()}}
+    \item \href{#method-QuantileDistribution-pinball}{\code{QuantileDistribution$pinball()}}
+    \item \href{#method-QuantileDistribution-sample}{\code{QuantileDistribution$sample()}}
+    \item \href{#method-QuantileDistribution-clone}{\code{QuantileDistribution$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-QuantileDistribution-new"></a>}}
-\if{latex}{\out{\hypertarget{method-QuantileDistribution-new}{}}}
-\subsection{Method \code{new()}}{
-Initialize QuantileDistribution
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$new(
+\if{html}{\out{<a id="method-QuantileDistribution-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-QuantileDistribution-initialize}{}}}
+\subsection{\code{QuantileDistribution$new()}}{
+  Initialize QuantileDistribution
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$new(
   quantiles,
   alpha_levels = NULL,
   tail_type = "exp",
   fix_crossing = TRUE,
   crossing_method = "sort"
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{quantiles}}{Tensor. Predicted quantile values.}
+      \item{\code{alpha_levels}}{Tensor or NULL. Probability levels.}
+      \item{\code{tail_type}}{Character. "exp" or "gpd".}
+      \item{\code{fix_crossing}}{Logical. Fix quantile crossing?}
+      \item{\code{crossing_method}}{Character. Method for fixing crossing.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{quantiles}}{Tensor. Predicted quantile values.}
-
-\item{\code{alpha_levels}}{Tensor or NULL. Probability levels.}
-
-\item{\code{tail_type}}{Character. "exp" or "gpd".}
-
-\item{\code{fix_crossing}}{Logical. Fix quantile crossing?}
-
-\item{\code{crossing_method}}{Character. Method for fixing crossing.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.setup_spline"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.setup_spline}{}}}
-\subsection{Method \code{.setup_spline()}}{
-Setup linear spline segments
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.setup_spline()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.setup_spline()}}{
+  Setup linear spline segments
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.setup_spline()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.setup_tails"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.setup_tails}{}}}
-\subsection{Method \code{.setup_tails()}}{
-Setup tail parameters
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.setup_tails()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.setup_tails()}}{
+  Setup tail parameters
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.setup_tails()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-icdf"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-icdf}{}}}
-\subsection{Method \code{icdf()}}{
-Compute quantile function Q(α) = F^(-1)(α)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$icdf(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$icdf()}}{
+  Compute quantile function Q(α) = F^(-1)(α)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$icdf(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Quantile values Q(α).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. Quantile values Q(α).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.expand_to_alpha"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.expand_to_alpha}{}}}
-\subsection{Method \code{.expand_to_alpha()}}{
-Expand batch parameter to match alpha shape
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.expand_to_alpha(param, alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.expand_to_alpha()}}{
+  Expand batch parameter to match alpha shape
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.expand_to_alpha(param, alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{param}}{Tensor. Parameter estimates of the tail function.}
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{param}}{Tensor. Parameter estimates of the tail function.}
-
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_left_tail"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.icdf_left_tail}{}}}
-\subsection{Method \code{.icdf_left_tail()}}{
-Left tail quantile
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_left_tail(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.icdf_left_tail()}}{
+  Left tail quantile
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.icdf_left_tail(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_right_tail"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.icdf_right_tail}{}}}
-\subsection{Method \code{.icdf_right_tail()}}{
-Right tail quantile
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_right_tail(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.icdf_right_tail()}}{
+  Right tail quantile
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.icdf_right_tail(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_gpd_left"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.icdf_gpd_left}{}}}
-\subsection{Method \code{.icdf_gpd_left()}}{
-GPD left tail
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_gpd_left(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.icdf_gpd_left()}}{
+  GPD left tail
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.icdf_gpd_left(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_gpd_right"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.icdf_gpd_right}{}}}
-\subsection{Method \code{.icdf_gpd_right()}}{
-GPD right tail
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_gpd_right(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.icdf_gpd_right()}}{
+  GPD right tail
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.icdf_gpd_right(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_spline"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.icdf_spline}{}}}
-\subsection{Method \code{.icdf_spline()}}{
-Piecewise linear quantile interpolation
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_spline(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.icdf_spline()}}{
+  Piecewise linear quantile interpolation
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.icdf_spline(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-cdf"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-cdf}{}}}
-\subsection{Method \code{cdf()}}{
-Compute CDF F(z) = P(Z ≤ z)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$cdf(z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$cdf()}}{
+  Compute CDF F(z) = P(Z ≤ z)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$cdf(z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. CDF values in [0, 1].
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. CDF values in [0, 1].
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.expand_to_z"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.expand_to_z}{}}}
-\subsection{Method \code{.expand_to_z()}}{
-Expand batch parameter to match z shape
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.expand_to_z(param, z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.expand_to_z()}}{
+  Expand batch parameter to match z shape
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.expand_to_z(param, z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{param}}{Tensor. Parameter estimates of the tail function.}
+      \item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{param}}{Tensor. Parameter estimates of the tail function.}
-
-\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.cdf_left_tail"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.cdf_left_tail}{}}}
-\subsection{Method \code{.cdf_left_tail()}}{
-CDF in left tail region
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.cdf_left_tail(z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.cdf_left_tail()}}{
+  CDF in left tail region
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.cdf_left_tail(z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.cdf_right_tail"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.cdf_right_tail}{}}}
-\subsection{Method \code{.cdf_right_tail()}}{
-CDF in right tail region
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.cdf_right_tail(z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.cdf_right_tail()}}{
+  CDF in right tail region
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.cdf_right_tail(z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.cdf_spline"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.cdf_spline}{}}}
-\subsection{Method \code{.cdf_spline()}}{
-CDF in spline region
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.cdf_spline(z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.cdf_spline()}}{
+  CDF in spline region
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.cdf_spline(z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Values at which to evaluate CDF.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Values at which to evaluate CDF.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.icdf_derivative"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.icdf_derivative}{}}}
-\subsection{Method \code{.icdf_derivative()}}{
-Compute dQ/dα derivative
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.icdf_derivative(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.icdf_derivative()}}{
+  Compute dQ/dα derivative
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.icdf_derivative(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.deriv_left_tail"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.deriv_left_tail}{}}}
-\subsection{Method \code{.deriv_left_tail()}}{
-Left tail derivative
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.deriv_left_tail(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.deriv_left_tail()}}{
+  Left tail derivative
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.deriv_left_tail(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.deriv_right_tail"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.deriv_right_tail}{}}}
-\subsection{Method \code{.deriv_right_tail()}}{
-Right tail derivative
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.deriv_right_tail(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.deriv_right_tail()}}{
+  Right tail derivative
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.deriv_right_tail(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.deriv_spline"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.deriv_spline}{}}}
-\subsection{Method \code{.deriv_spline()}}{
-Spline derivative
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.deriv_spline(alpha)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.deriv_spline()}}{
+  Spline derivative
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.deriv_spline(alpha)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{alpha}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{alpha}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-log_prob"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-log_prob}{}}}
-\subsection{Method \code{log_prob()}}{
-Compute log PDF
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$log_prob(z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$log_prob()}}{
+  Compute log PDF
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$log_prob(z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Values at which to evaluate log density.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Log probability density values.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Values at which to evaluate log density.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. Log probability density values.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-pdf"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-pdf}{}}}
-\subsection{Method \code{pdf()}}{
-Compute PDF
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$pdf(z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$pdf()}}{
+  Compute PDF
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$pdf(z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Values at which to evaluate PDF.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. PDF values (non-negative).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Values at which to evaluate PDF.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. PDF values (non-negative).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-mean"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-mean}{}}}
-\subsection{Method \code{mean()}}{
-Compute mean E[Z]
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$mean()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$mean()}}{
+  Compute mean E[Z]
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$mean()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Expected value. Shape: \verb{(*batch_shape,)}.
+  }
 }
 
-\subsection{Returns}{
-Tensor. Expected value. Shape: \verb{(*batch_shape,)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.mean_exp_analytical"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.mean_exp_analytical}{}}}
-\subsection{Method \code{.mean_exp_analytical()}}{
-Analytical mean for exponential tails
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.mean_exp_analytical()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.mean_exp_analytical()}}{
+  Analytical mean for exponential tails
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.mean_exp_analytical()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.mean_gpd_analytical"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.mean_gpd_analytical}{}}}
-\subsection{Method \code{.mean_gpd_analytical()}}{
-Analytical mean for GPD tails
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.mean_gpd_analytical()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.mean_gpd_analytical()}}{
+  Analytical mean for GPD tails
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.mean_gpd_analytical()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-variance"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-variance}{}}}
-\subsection{Method \code{variance()}}{
-Compute variance
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$variance()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$variance()}}{
+  Compute variance
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$variance()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Variance (non-negative). Shape: \verb{(*batch_shape,)}.
+  }
 }
 
-\subsection{Returns}{
-Tensor. Variance (non-negative). Shape: \verb{(*batch_shape,)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.variance_exp_analytical"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.variance_exp_analytical}{}}}
-\subsection{Method \code{.variance_exp_analytical()}}{
-Analytical variance for exponential tails
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.variance_exp_analytical()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.variance_exp_analytical()}}{
+  Analytical variance for exponential tails
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.variance_exp_analytical()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.variance_gpd_analytical"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.variance_gpd_analytical}{}}}
-\subsection{Method \code{.variance_gpd_analytical()}}{
-Analytical variance for GPD tails
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.variance_gpd_analytical()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.variance_gpd_analytical()}}{
+  Analytical variance for GPD tails
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.variance_gpd_analytical()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-stddev"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-stddev}{}}}
-\subsection{Method \code{stddev()}}{
-Compute standard deviation
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$stddev()}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$stddev()}}{
+  Compute standard deviation
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$stddev()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Standard deviation. Shape: \verb{(*batch_shape,)}.
+  }
 }
 
-\subsection{Returns}{
-Tensor. Standard deviation. Shape: \verb{(*batch_shape,)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-crps"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-crps}{}}}
-\subsection{Method \code{crps()}}{
-Compute analytical CRPS (Continuous Ranked Probability Score)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$crps(z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$crps()}}{
+  Compute analytical CRPS (Continuous Ranked Probability Score)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$crps(z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. CRPS values (non-negative, lower is better). Shape: same as z.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. CRPS values (non-negative, lower is better). Shape: same as z.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_left_tail"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.crps_left_tail}{}}}
-\subsection{Method \code{.crps_left_tail()}}{
-CRPS contribution from left tail
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_left_tail(z, alpha_z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.crps_left_tail()}}{
+  CRPS contribution from left tail
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.crps_left_tail(z, alpha_z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+      \item{\code{alpha_z}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
-
-\item{\code{alpha_z}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_left_tail_exp"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.crps_left_tail_exp}{}}}
-\subsection{Method \code{.crps_left_tail_exp()}}{
-Exponential left tail CRPS
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_left_tail_exp(z, alpha_z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.crps_left_tail_exp()}}{
+  Exponential left tail CRPS
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.crps_left_tail_exp(z, alpha_z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+      \item{\code{alpha_z}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
-
-\item{\code{alpha_z}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_left_tail_gpd"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.crps_left_tail_gpd}{}}}
-\subsection{Method \code{.crps_left_tail_gpd()}}{
-GPD left tail CRPS
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_left_tail_gpd(z, alpha_z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.crps_left_tail_gpd()}}{
+  GPD left tail CRPS
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.crps_left_tail_gpd(z, alpha_z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+      \item{\code{alpha_z}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
-
-\item{\code{alpha_z}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_right_tail"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.crps_right_tail}{}}}
-\subsection{Method \code{.crps_right_tail()}}{
-CRPS contribution from right tail
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_right_tail(z, alpha_z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.crps_right_tail()}}{
+  CRPS contribution from right tail
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.crps_right_tail(z, alpha_z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+      \item{\code{alpha_z}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
-
-\item{\code{alpha_z}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_right_tail_exp"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.crps_right_tail_exp}{}}}
-\subsection{Method \code{.crps_right_tail_exp()}}{
-Exponential right tail CRPS
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_right_tail_exp(z, alpha_z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.crps_right_tail_exp()}}{
+  Exponential right tail CRPS
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.crps_right_tail_exp(z, alpha_z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+      \item{\code{alpha_z}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
-
-\item{\code{alpha_z}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_right_tail_gpd"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.crps_right_tail_gpd}{}}}
-\subsection{Method \code{.crps_right_tail_gpd()}}{
-GPD right tail CRPS
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_right_tail_gpd(z, alpha_z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.crps_right_tail_gpd()}}{
+  GPD right tail CRPS
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.crps_right_tail_gpd(z, alpha_z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+      \item{\code{alpha_z}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
-
-\item{\code{alpha_z}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-.crps_spline"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-.crps_spline}{}}}
-\subsection{Method \code{.crps_spline()}}{
-CRPS contribution from spline region
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$.crps_spline(z, alpha_z)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$.crps_spline()}}{
+  CRPS contribution from spline region
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$.crps_spline(z, alpha_z)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
+      \item{\code{alpha_z}}{Tensor. Probability levels.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)} or \verb{(*batch_shape, ...)}.}
-
-\item{\code{alpha_z}}{Tensor. Probability levels.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-pinball"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-pinball}{}}}
-\subsection{Method \code{pinball()}}{
-Numerical CRPS via pinball loss (for validation)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$pinball(z, num_quantiles = 999L)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$pinball()}}{
+  Numerical CRPS via pinball loss (for validation)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$pinball(z, num_quantiles = 999L)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)}.}
+      \item{\code{num_quantiles}}{Integer. Number of quantile levels for integration.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Approximate CRPS values. Shape: \verb{(*batch_shape,)}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{z}}{Tensor. Observation values. Shape: \verb{(*batch_shape,)}.}
-
-\item{\code{num_quantiles}}{Integer. Number of quantile levels for integration.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. Approximate CRPS values. Shape: \verb{(*batch_shape,)}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-sample"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-sample}{}}}
-\subsection{Method \code{sample()}}{
-Draw samples from the distribution
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$sample(sample_shape = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$sample()}}{
+  Draw samples from the distribution
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$sample(sample_shape = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{sample_shape}}{torch.Size. Shape of the sample.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Samples from the distribution.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{sample_shape}}{torch.Size. Shape of the sample.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. Samples from the distribution.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantileDistribution-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantileDistribution-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantileDistribution$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{QuantileDistribution$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantileDistribution$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

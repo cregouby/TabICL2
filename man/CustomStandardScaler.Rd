@@ -4,159 +4,162 @@
 \alias{CustomStandardScaler}
 \title{CustomStandardScaler: z-score standardisation with output clipping}
 \description{
-CustomStandardScaler: z-score standardisation with output clipping
-
-CustomStandardScaler: z-score standardisation with output clipping
-}
-\details{
 Wraps \code{step_normalize_clip()}: z = (x - mean) / (sd + epsilon), clipped.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{clip_min}}{Lower clip bound.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{clip_min}}{Lower clip bound.}
 
-\item{\code{clip_max}}{Upper clip bound.}
+    \item{\code{clip_max}}{Upper clip bound.}
 
-\item{\code{epsilon}}{Denominator stabiliser.}
+    \item{\code{epsilon}}{Denominator stabiliser.}
 
-\item{\code{mean_}}{Per-feature means (set after \verb{$fit()}).}
+    \item{\code{mean_}}{Per-feature means (set after \verb{$fit()}).}
 
-\item{\code{scale_}}{Per-feature sds (set after \verb{$fit()}).}
-}
-\if{html}{\out{</div>}}
+    \item{\code{scale_}}{Per-feature sds (set after \verb{$fit()}).}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-CustomStandardScaler-new}{\code{CustomStandardScaler$new()}}
-\item \href{#method-CustomStandardScaler-fit}{\code{CustomStandardScaler$fit()}}
-\item \href{#method-CustomStandardScaler-transform}{\code{CustomStandardScaler$transform()}}
-\item \href{#method-CustomStandardScaler-inverse_transform}{\code{CustomStandardScaler$inverse_transform()}}
-\item \href{#method-CustomStandardScaler-fit_transform}{\code{CustomStandardScaler$fit_transform()}}
-\item \href{#method-CustomStandardScaler-clone}{\code{CustomStandardScaler$clone()}}
-}
+  \itemize{
+    \item \href{#method-CustomStandardScaler-initialize}{\code{CustomStandardScaler$new()}}
+    \item \href{#method-CustomStandardScaler-fit}{\code{CustomStandardScaler$fit()}}
+    \item \href{#method-CustomStandardScaler-transform}{\code{CustomStandardScaler$transform()}}
+    \item \href{#method-CustomStandardScaler-inverse_transform}{\code{CustomStandardScaler$inverse_transform()}}
+    \item \href{#method-CustomStandardScaler-fit_transform}{\code{CustomStandardScaler$fit_transform()}}
+    \item \href{#method-CustomStandardScaler-clone}{\code{CustomStandardScaler$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-CustomStandardScaler-new"></a>}}
-\if{latex}{\out{\hypertarget{method-CustomStandardScaler-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{CustomStandardScaler}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CustomStandardScaler$new(clip_min = -100, clip_max = 100, epsilon = 1e-06)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-CustomStandardScaler-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-CustomStandardScaler-initialize}{}}}
+\subsection{\code{CustomStandardScaler$new()}}{
+  Create a new \code{CustomStandardScaler}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CustomStandardScaler$new(clip_min = -100, clip_max = 100, epsilon = 1e-06)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{clip_min}}{Numeric lower clip bound.}
+      \item{\code{clip_max}}{Numeric upper clip bound.}
+      \item{\code{epsilon}}{Numeric denominator stabiliser.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{clip_min}}{Numeric lower clip bound.}
-
-\item{\code{clip_max}}{Numeric upper clip bound.}
-
-\item{\code{epsilon}}{Numeric denominator stabiliser.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CustomStandardScaler-fit"></a>}}
 \if{latex}{\out{\hypertarget{method-CustomStandardScaler-fit}{}}}
-\subsection{Method \code{fit()}}{
-Fit: compute mean and sd.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CustomStandardScaler$fit(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{CustomStandardScaler$fit()}}{
+  Fit: compute mean and sd.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CustomStandardScaler$fit(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix or vector.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix or vector.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CustomStandardScaler-transform"></a>}}
 \if{latex}{\out{\hypertarget{method-CustomStandardScaler-transform}{}}}
-\subsection{Method \code{transform()}}{
-Standardise and clip.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CustomStandardScaler$transform(X)}\if{html}{\out{</div>}}
+\subsection{\code{CustomStandardScaler$transform()}}{
+  Standardise and clip.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CustomStandardScaler$transform(X)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix or vector.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Scaled, clipped output (same shape as input).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix or vector.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Scaled, clipped output (same shape as input).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CustomStandardScaler-inverse_transform"></a>}}
 \if{latex}{\out{\hypertarget{method-CustomStandardScaler-inverse_transform}{}}}
-\subsection{Method \code{inverse_transform()}}{
-Inverse transform: recover original scale.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CustomStandardScaler$inverse_transform(X)}\if{html}{\out{</div>}}
+\subsection{\code{CustomStandardScaler$inverse_transform()}}{
+  Inverse transform: recover original scale.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CustomStandardScaler$inverse_transform(X)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix or vector.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data in original scale.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix or vector.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data in original scale.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CustomStandardScaler-fit_transform"></a>}}
 \if{latex}{\out{\hypertarget{method-CustomStandardScaler-fit_transform}{}}}
-\subsection{Method \code{fit_transform()}}{
-Fit then transform.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CustomStandardScaler$fit_transform(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{CustomStandardScaler$fit_transform()}}{
+  Fit then transform.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CustomStandardScaler$fit_transform(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix or vector.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Scaled, clipped output.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix or vector.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Scaled, clipped output.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CustomStandardScaler-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-CustomStandardScaler-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CustomStandardScaler$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{CustomStandardScaler$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CustomStandardScaler$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

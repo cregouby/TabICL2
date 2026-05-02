@@ -4,143 +4,143 @@
 \alias{RTDLQuantileTransformer}
 \title{RTDLQuantileTransformer: quantile transformer adapted for tabular deep learning}
 \description{
-RTDLQuantileTransformer: quantile transformer adapted for tabular deep learning
-
-RTDLQuantileTransformer: quantile transformer adapted for tabular deep learning
-}
-\details{
 Wraps \code{step_quantile_normal_rtdl()} in a recipe.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{noise}}{Noise magnitude.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{noise}}{Noise magnitude.}
 
-\item{\code{n_quantiles}}{Maximum quantile count.}
+    \item{\code{n_quantiles}}{Maximum quantile count.}
 
-\item{\code{output_distribution}}{Target distribution.}
+    \item{\code{output_distribution}}{Target distribution.}
 
-\item{\code{random_state}}{RNG seed.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{random_state}}{RNG seed.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-RTDLQuantileTransformer-new}{\code{RTDLQuantileTransformer$new()}}
-\item \href{#method-RTDLQuantileTransformer-fit}{\code{RTDLQuantileTransformer$fit()}}
-\item \href{#method-RTDLQuantileTransformer-transform}{\code{RTDLQuantileTransformer$transform()}}
-\item \href{#method-RTDLQuantileTransformer-fit_transform}{\code{RTDLQuantileTransformer$fit_transform()}}
-\item \href{#method-RTDLQuantileTransformer-clone}{\code{RTDLQuantileTransformer$clone()}}
-}
+  \itemize{
+    \item \href{#method-RTDLQuantileTransformer-initialize}{\code{RTDLQuantileTransformer$new()}}
+    \item \href{#method-RTDLQuantileTransformer-fit}{\code{RTDLQuantileTransformer$fit()}}
+    \item \href{#method-RTDLQuantileTransformer-transform}{\code{RTDLQuantileTransformer$transform()}}
+    \item \href{#method-RTDLQuantileTransformer-fit_transform}{\code{RTDLQuantileTransformer$fit_transform()}}
+    \item \href{#method-RTDLQuantileTransformer-clone}{\code{RTDLQuantileTransformer$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-RTDLQuantileTransformer-new"></a>}}
-\if{latex}{\out{\hypertarget{method-RTDLQuantileTransformer-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{RTDLQuantileTransformer}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RTDLQuantileTransformer$new(
+\if{html}{\out{<a id="method-RTDLQuantileTransformer-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-RTDLQuantileTransformer-initialize}{}}}
+\subsection{\code{RTDLQuantileTransformer$new()}}{
+  Create a new \code{RTDLQuantileTransformer}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{RTDLQuantileTransformer$new(
   noise = 0.001,
   n_quantiles = 1000L,
   output_distribution = "normal",
   random_state = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{noise}}{Numeric noise level.}
+      \item{\code{n_quantiles}}{Integer maximum quantile count.}
+      \item{\code{output_distribution}}{\code{"normal"} (uniform not yet supported).}
+      \item{\code{random_state}}{Integer seed or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{noise}}{Numeric noise level.}
-
-\item{\code{n_quantiles}}{Integer maximum quantile count.}
-
-\item{\code{output_distribution}}{\code{"normal"} (uniform not yet supported).}
-
-\item{\code{random_state}}{Integer seed or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RTDLQuantileTransformer-fit"></a>}}
 \if{latex}{\out{\hypertarget{method-RTDLQuantileTransformer-fit}{}}}
-\subsection{Method \code{fit()}}{
-Fit: compute quantiles from (optionally noised) training data.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RTDLQuantileTransformer$fit(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{RTDLQuantileTransformer$fit()}}{
+  Fit: compute quantiles from (optionally noised) training data.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{RTDLQuantileTransformer$fit(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RTDLQuantileTransformer-transform"></a>}}
 \if{latex}{\out{\hypertarget{method-RTDLQuantileTransformer-transform}{}}}
-\subsection{Method \code{transform()}}{
-Transform using the fitted quantile recipe.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RTDLQuantileTransformer$transform(X)}\if{html}{\out{</div>}}
+\subsection{\code{RTDLQuantileTransformer$transform()}}{
+  Transform using the fitted quantile recipe.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{RTDLQuantileTransformer$transform(X)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Transformed matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Transformed matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RTDLQuantileTransformer-fit_transform"></a>}}
 \if{latex}{\out{\hypertarget{method-RTDLQuantileTransformer-fit_transform}{}}}
-\subsection{Method \code{fit_transform()}}{
-Fit then transform.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RTDLQuantileTransformer$fit_transform(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{RTDLQuantileTransformer$fit_transform()}}{
+  Fit then transform.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{RTDLQuantileTransformer$fit_transform(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Transformed matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Transformed matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-RTDLQuantileTransformer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-RTDLQuantileTransformer-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{RTDLQuantileTransformer$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{RTDLQuantileTransformer$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{RTDLQuantileTransformer$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

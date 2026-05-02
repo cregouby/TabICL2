@@ -15,162 +15,170 @@ transformer).
 }
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{col_cache}}{A \code{\link{KVCache}} for ColEmbedding.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{col_cache}}{A \code{\link{KVCache}} for ColEmbedding.}
 
-\item{\code{row_repr}}{Cached row representations, or \code{NULL}.}
+    \item{\code{row_repr}}{Cached row representations, or \code{NULL}.}
 
-\item{\code{icl_cache}}{A \code{\link{KVCache}} for ICLearning.}
+    \item{\code{icl_cache}}{A \code{\link{KVCache}} for ICLearning.}
 
-\item{\code{train_shape}}{\code{integer(3)} \code{c(batch_size, train_size,num_features)}
+    \item{\code{train_shape}}{\code{integer(3)} \code{c(batch_size, train_size,num_features)}
 describing the training data shape the cache}
 
-\item{\code{num_classes}}{\code{integer(1)} or \code{NULL}. Number of}
-}
-\if{html}{\out{</div>}}
+    \item{\code{num_classes}}{\code{integer(1)} or \code{NULL}. Number of}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-TabICLCache-new}{\code{TabICLCache$new()}}
-\item \href{#method-TabICLCache-cache_type}{\code{TabICLCache$cache_type()}}
-\item \href{#method-TabICLCache-cache_size_mb}{\code{TabICLCache$cache_size_mb()}}
-\item \href{#method-TabICLCache-is_empty}{\code{TabICLCache$is_empty()}}
-\item \href{#method-TabICLCache-slice_batch}{\code{TabICLCache$slice_batch()}}
-\item \href{#method-TabICLCache-to}{\code{TabICLCache$to()}}
-\item \href{#method-TabICLCache-clone}{\code{TabICLCache$clone()}}
-}
+  \itemize{
+    \item \href{#method-TabICLCache-initialize}{\code{TabICLCache$new()}}
+    \item \href{#method-TabICLCache-cache_type}{\code{TabICLCache$cache_type()}}
+    \item \href{#method-TabICLCache-cache_size_mb}{\code{TabICLCache$cache_size_mb()}}
+    \item \href{#method-TabICLCache-is_empty}{\code{TabICLCache$is_empty()}}
+    \item \href{#method-TabICLCache-slice_batch}{\code{TabICLCache$slice_batch()}}
+    \item \href{#method-TabICLCache-to}{\code{TabICLCache$to()}}
+    \item \href{#method-TabICLCache-clone}{\code{TabICLCache$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-TabICLCache-new"></a>}}
-\if{latex}{\out{\hypertarget{method-TabICLCache-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new TabICLCache.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TabICLCache$new(
+\if{html}{\out{<a id="method-TabICLCache-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-TabICLCache-initialize}{}}}
+\subsection{\code{TabICLCache$new()}}{
+  Create a new TabICLCache.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLCache$new(
   col_cache = NULL,
   row_repr = NULL,
   icl_cache = NULL,
   train_shape = c(0L, 0L, 0L),
   num_classes = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{col_cache}}{A \code{KVCache}, or \code{NULL} (default:}
+      \item{\code{row_repr}}{\code{tensor} or \code{NULL}.}
+      \item{\code{icl_cache}}{A \code{KVCache}, or \code{NULL} (default:}
+      \item{\code{train_shape}}{\code{integer(3)}.}
+      \item{\code{num_classes}}{\code{integer(1)} or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{col_cache}}{A \code{KVCache}, or \code{NULL} (default:}
-
-\item{\code{row_repr}}{\code{tensor} or \code{NULL}.}
-
-\item{\code{icl_cache}}{A \code{KVCache}, or \code{NULL} (default:}
-
-\item{\code{train_shape}}{\code{integer(3)}.}
-
-\item{\code{num_classes}}{\code{integer(1)} or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-cache_type"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-cache_type}{}}}
-\subsection{Method \code{cache_type()}}{
-Return the cache type: \code{"kv"}, \code{"repr"},
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TabICLCache$cache_type()}\if{html}{\out{</div>}}
+\subsection{\code{TabICLCache$cache_type()}}{
+  Return the cache type: \code{"kv"}, \code{"repr"},
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLCache$cache_type()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{character(1)}
+  }
 }
 
-\subsection{Returns}{
-\code{character(1)}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-cache_size_mb"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-cache_size_mb}{}}}
-\subsection{Method \code{cache_size_mb()}}{
-Return the approximate memory occupied by cached
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TabICLCache$cache_size_mb()}\if{html}{\out{</div>}}
+\subsection{\code{TabICLCache$cache_size_mb()}}{
+  Return the approximate memory occupied by cached
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLCache$cache_size_mb()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{numeric(1)}
+  }
 }
 
-\subsection{Returns}{
-\code{numeric(1)}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-is_empty"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-is_empty}{}}}
-\subsection{Method \code{is_empty()}}{
-Check whether this cache is empty (no col_cache
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TabICLCache$is_empty()}\if{html}{\out{</div>}}
+\subsection{\code{TabICLCache$is_empty()}}{
+  Check whether this cache is empty (no col_cache
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLCache$is_empty()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{logical(1)}
+  }
 }
 
-\subsection{Returns}{
-\code{logical(1)}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-slice_batch"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-slice_batch}{}}}
-\subsection{Method \code{slice_batch()}}{
-Slice this cache along the batch dimension.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TabICLCache$slice_batch(start, end)}\if{html}{\out{</div>}}
+\subsection{\code{TabICLCache$slice_batch()}}{
+  Slice this cache along the batch dimension.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLCache$slice_batch(start, end)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
+      \item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{TabICLCache} with sliced tensors.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{start}}{\code{integer(1)} 1-indexed start (inclusive).}
-
-\item{\code{end}}{\code{integer(1)} 1-indexed end (inclusive).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{TabICLCache} with sliced tensors.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-to"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-to}{}}}
-\subsection{Method \code{to()}}{
-Move all cached tensors to a device and
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TabICLCache$to(device, dtype = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{TabICLCache$to()}}{
+  Move all cached tensors to a device and
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLCache$to(device, dtype = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{device}}{Target device.}
+      \item{\code{dtype}}{Target torch dtype, or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{TabICLCache}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{device}}{Target device.}
-
-\item{\code{dtype}}{Target torch dtype, or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{TabICLCache}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-TabICLCache-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-TabICLCache-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TabICLCache$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{TabICLCache$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{TabICLCache$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

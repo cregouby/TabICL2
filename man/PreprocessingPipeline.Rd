@@ -4,11 +4,6 @@
 \alias{PreprocessingPipeline}
 \title{PreprocessingPipeline: normalisation and outlier clipping for tabular data}
 \description{
-PreprocessingPipeline: normalisation and outlier clipping for tabular data
-
-PreprocessingPipeline: normalisation and outlier clipping for tabular data
-}
-\details{
 Builds a \code{recipes} pipeline combining:
 \enumerate{
 \item \code{step_normalize_clip} (z-score + clip)
@@ -19,132 +14,138 @@ or nothing for \code{"none"})
 }
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{normalization_method}}{Normalisation method.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{normalization_method}}{Normalisation method.}
 
-\item{\code{outlier_threshold}}{Outlier Z-score threshold.}
+    \item{\code{outlier_threshold}}{Outlier Z-score threshold.}
 
-\item{\code{random_state}}{RNG seed.}
+    \item{\code{random_state}}{RNG seed.}
 
-\item{\code{X_transformed_}}{Transformed training data (set after \verb{$fit()}).}
-}
-\if{html}{\out{</div>}}
+    \item{\code{X_transformed_}}{Transformed training data (set after \verb{$fit()}).}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-PreprocessingPipeline-new}{\code{PreprocessingPipeline$new()}}
-\item \href{#method-PreprocessingPipeline-fit}{\code{PreprocessingPipeline$fit()}}
-\item \href{#method-PreprocessingPipeline-transform}{\code{PreprocessingPipeline$transform()}}
-\item \href{#method-PreprocessingPipeline-fit_transform}{\code{PreprocessingPipeline$fit_transform()}}
-\item \href{#method-PreprocessingPipeline-clone}{\code{PreprocessingPipeline$clone()}}
-}
+  \itemize{
+    \item \href{#method-PreprocessingPipeline-initialize}{\code{PreprocessingPipeline$new()}}
+    \item \href{#method-PreprocessingPipeline-fit}{\code{PreprocessingPipeline$fit()}}
+    \item \href{#method-PreprocessingPipeline-transform}{\code{PreprocessingPipeline$transform()}}
+    \item \href{#method-PreprocessingPipeline-fit_transform}{\code{PreprocessingPipeline$fit_transform()}}
+    \item \href{#method-PreprocessingPipeline-clone}{\code{PreprocessingPipeline$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-PreprocessingPipeline-new"></a>}}
-\if{latex}{\out{\hypertarget{method-PreprocessingPipeline-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{PreprocessingPipeline}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PreprocessingPipeline$new(
+\if{html}{\out{<a id="method-PreprocessingPipeline-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-PreprocessingPipeline-initialize}{}}}
+\subsection{\code{PreprocessingPipeline$new()}}{
+  Create a new \code{PreprocessingPipeline}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PreprocessingPipeline$new(
   normalization_method = "power",
   outlier_threshold = 4,
   random_state = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{normalization_method}}{Character normalisation method.}
+      \item{\code{outlier_threshold}}{Numeric outlier threshold.}
+      \item{\code{random_state}}{Integer seed or \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{normalization_method}}{Character normalisation method.}
-
-\item{\code{outlier_threshold}}{Numeric outlier threshold.}
-
-\item{\code{random_state}}{Integer seed or \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PreprocessingPipeline-fit"></a>}}
 \if{latex}{\out{\hypertarget{method-PreprocessingPipeline-fit}{}}}
-\subsection{Method \code{fit()}}{
-Fit the pipeline.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PreprocessingPipeline$fit(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{PreprocessingPipeline$fit()}}{
+  Fit the pipeline.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PreprocessingPipeline$fit(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PreprocessingPipeline-transform"></a>}}
 \if{latex}{\out{\hypertarget{method-PreprocessingPipeline-transform}{}}}
-\subsection{Method \code{transform()}}{
-Apply the pipeline.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PreprocessingPipeline$transform(X)}\if{html}{\out{</div>}}
+\subsection{\code{PreprocessingPipeline$transform()}}{
+  Apply the pipeline.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PreprocessingPipeline$transform(X)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Preprocessed matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Preprocessed matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PreprocessingPipeline-fit_transform"></a>}}
 \if{latex}{\out{\hypertarget{method-PreprocessingPipeline-fit_transform}{}}}
-\subsection{Method \code{fit_transform()}}{
-Fit then transform.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PreprocessingPipeline$fit_transform(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{PreprocessingPipeline$fit_transform()}}{
+  Fit then transform.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PreprocessingPipeline$fit_transform(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Preprocessed matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Preprocessed matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-PreprocessingPipeline-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-PreprocessingPipeline-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{PreprocessingPipeline$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{PreprocessingPipeline$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{PreprocessingPipeline$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

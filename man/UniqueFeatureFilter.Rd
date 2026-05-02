@@ -4,133 +4,136 @@
 \alias{UniqueFeatureFilter}
 \title{UniqueFeatureFilter: remove features with fewer than \code{threshold + 1} unique values}
 \description{
-UniqueFeatureFilter: remove features with fewer than \code{threshold + 1} unique values
-
-UniqueFeatureFilter: remove features with fewer than \code{threshold + 1} unique values
-}
-\details{
 Wraps \code{recipes::step_zv()} internally.  For \code{threshold = 1} (default) this
 matches sklearn's behaviour exactly.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{threshold}}{Uniqueness threshold.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{threshold}}{Uniqueness threshold.}
 
-\item{\code{features_to_keep_}}{Logical mask of retained features (set after \verb{$fit()}).}
+    \item{\code{features_to_keep_}}{Logical mask of retained features (set after \verb{$fit()}).}
 
-\item{\code{n_features_in_}}{Input feature count (set after \verb{$fit()}).}
+    \item{\code{n_features_in_}}{Input feature count (set after \verb{$fit()}).}
 
-\item{\code{n_features_out_}}{Output feature count (set after \verb{$fit()}).}
-}
-\if{html}{\out{</div>}}
+    \item{\code{n_features_out_}}{Output feature count (set after \verb{$fit()}).}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-UniqueFeatureFilter-new}{\code{UniqueFeatureFilter$new()}}
-\item \href{#method-UniqueFeatureFilter-fit}{\code{UniqueFeatureFilter$fit()}}
-\item \href{#method-UniqueFeatureFilter-transform}{\code{UniqueFeatureFilter$transform()}}
-\item \href{#method-UniqueFeatureFilter-fit_transform}{\code{UniqueFeatureFilter$fit_transform()}}
-\item \href{#method-UniqueFeatureFilter-clone}{\code{UniqueFeatureFilter$clone()}}
-}
+  \itemize{
+    \item \href{#method-UniqueFeatureFilter-initialize}{\code{UniqueFeatureFilter$new()}}
+    \item \href{#method-UniqueFeatureFilter-fit}{\code{UniqueFeatureFilter$fit()}}
+    \item \href{#method-UniqueFeatureFilter-transform}{\code{UniqueFeatureFilter$transform()}}
+    \item \href{#method-UniqueFeatureFilter-fit_transform}{\code{UniqueFeatureFilter$fit_transform()}}
+    \item \href{#method-UniqueFeatureFilter-clone}{\code{UniqueFeatureFilter$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-UniqueFeatureFilter-new"></a>}}
-\if{latex}{\out{\hypertarget{method-UniqueFeatureFilter-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{UniqueFeatureFilter}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{UniqueFeatureFilter$new(threshold = 1L)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-UniqueFeatureFilter-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-UniqueFeatureFilter-initialize}{}}}
+\subsection{\code{UniqueFeatureFilter$new()}}{
+  Create a new \code{UniqueFeatureFilter}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{UniqueFeatureFilter$new(threshold = 1L)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{threshold}}{Integer uniqueness threshold.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{threshold}}{Integer uniqueness threshold.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-UniqueFeatureFilter-fit"></a>}}
 \if{latex}{\out{\hypertarget{method-UniqueFeatureFilter-fit}{}}}
-\subsection{Method \code{fit()}}{
-Fit: identify zero-variance features.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{UniqueFeatureFilter$fit(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{UniqueFeatureFilter$fit()}}{
+  Fit: identify zero-variance features.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{UniqueFeatureFilter$fit(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-UniqueFeatureFilter-transform"></a>}}
 \if{latex}{\out{\hypertarget{method-UniqueFeatureFilter-transform}{}}}
-\subsection{Method \code{transform()}}{
-Drop low-variance features.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{UniqueFeatureFilter$transform(X)}\if{html}{\out{</div>}}
+\subsection{\code{UniqueFeatureFilter$transform()}}{
+  Drop low-variance features.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{UniqueFeatureFilter$transform(X)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Filtered numeric matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Filtered numeric matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-UniqueFeatureFilter-fit_transform"></a>}}
 \if{latex}{\out{\hypertarget{method-UniqueFeatureFilter-fit_transform}{}}}
-\subsection{Method \code{fit_transform()}}{
-Fit then transform.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{UniqueFeatureFilter$fit_transform(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{UniqueFeatureFilter$fit_transform()}}{
+  Fit then transform.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{UniqueFeatureFilter$fit_transform(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Filtered numeric matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Filtered numeric matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-UniqueFeatureFilter-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-UniqueFeatureFilter-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{UniqueFeatureFilter$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{UniqueFeatureFilter$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{UniqueFeatureFilter$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

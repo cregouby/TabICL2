@@ -8,8 +8,6 @@ An \code{InferenceManager} object.
 }
 \description{
 Manages memory-efficient model inference by automatically batching inputs
-
-Manages memory-efficient model inference by automatically batching inputs
 }
 \section{Key Features}{
 
@@ -48,52 +46,53 @@ result <- mgr(
 \keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-InferenceManager-new}{\code{inference_manager$new()}}
-\item \href{#method-InferenceManager-configure}{\code{inference_manager$configure()}}
-\item \href{#method-InferenceManager-get_available_cpu_memory}{\code{inference_manager$get_available_cpu_memory()}}
-\item \href{#method-InferenceManager-get_available_gpu_memory}{\code{inference_manager$get_available_gpu_memory()}}
-\item \href{#method-InferenceManager-get_available_disk_space}{\code{inference_manager$get_available_disk_space()}}
-\item \href{#method-InferenceManager-.estimate_tensor_mb}{\code{inference_manager$.estimate_tensor_mb()}}
-\item \href{#method-InferenceManager-estimate_safe_batch_size}{\code{inference_manager$estimate_safe_batch_size()}}
-\item \href{#method-InferenceManager-.resolve_offload_mode}{\code{inference_manager$.resolve_offload_mode()}}
-\item \href{#method-InferenceManager-.allocate_output_buffer}{\code{inference_manager$.allocate_output_buffer()}}
-\item \href{#method-InferenceManager-.to_exe_device}{\code{inference_manager$.to_exe_device()}}
-\item \href{#method-InferenceManager-.prepare_inputs}{\code{inference_manager$.prepare_inputs()}}
-\item \href{#method-InferenceManager-.run_forward}{\code{inference_manager$.run_forward()}}
-\item \href{#method-InferenceManager-forward}{\code{inference_manager$forward()}}
-\item \href{#method-InferenceManager-.compute_split_sizes}{\code{inference_manager$.compute_split_sizes()}}
-\item \href{#method-InferenceManager-.compute_n_batches}{\code{inference_manager$.compute_n_batches()}}
-\item \href{#method-InferenceManager-.create_multidim_batches}{\code{inference_manager$.create_multidim_batches()}}
-\item \href{#method-InferenceManager-clone}{\code{inference_manager$clone()}}
-}
+  \itemize{
+    \item \href{#method-InferenceManager-initialize}{\code{InferenceManager$new()}}
+    \item \href{#method-InferenceManager-configure}{\code{InferenceManager$configure()}}
+    \item \href{#method-InferenceManager-get_available_cpu_memory}{\code{InferenceManager$get_available_cpu_memory()}}
+    \item \href{#method-InferenceManager-get_available_gpu_memory}{\code{InferenceManager$get_available_gpu_memory()}}
+    \item \href{#method-InferenceManager-get_available_disk_space}{\code{InferenceManager$get_available_disk_space()}}
+    \item \href{#method-InferenceManager-.estimate_tensor_mb}{\code{InferenceManager$.estimate_tensor_mb()}}
+    \item \href{#method-InferenceManager-estimate_safe_batch_size}{\code{InferenceManager$estimate_safe_batch_size()}}
+    \item \href{#method-InferenceManager-.resolve_offload_mode}{\code{InferenceManager$.resolve_offload_mode()}}
+    \item \href{#method-InferenceManager-.allocate_output_buffer}{\code{InferenceManager$.allocate_output_buffer()}}
+    \item \href{#method-InferenceManager-.to_exe_device}{\code{InferenceManager$.to_exe_device()}}
+    \item \href{#method-InferenceManager-.prepare_inputs}{\code{InferenceManager$.prepare_inputs()}}
+    \item \href{#method-InferenceManager-.run_forward}{\code{InferenceManager$.run_forward()}}
+    \item \href{#method-InferenceManager-forward}{\code{InferenceManager$forward()}}
+    \item \href{#method-InferenceManager-.compute_split_sizes}{\code{InferenceManager$.compute_split_sizes()}}
+    \item \href{#method-InferenceManager-.compute_n_batches}{\code{InferenceManager$.compute_n_batches()}}
+    \item \href{#method-InferenceManager-.create_multidim_batches}{\code{InferenceManager$.create_multidim_batches()}}
+    \item \href{#method-InferenceManager-clone}{\code{InferenceManager$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-InferenceManager-new"></a>}}
-\if{latex}{\out{\hypertarget{method-InferenceManager-new}{}}}
-\subsection{Method \code{new()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$new(enc_name, out_dim, out_no_seq = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-InferenceManager-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-InferenceManager-initialize}{}}}
+\subsection{\code{InferenceManager$new()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$new(enc_name, out_dim, out_no_seq = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{enc_name}}{Character. Encoder name for memory estimation.}
+      \item{\code{out_dim}}{Integer. Output dimension.}
+      \item{\code{out_no_seq}}{Logical. Remove sequence dimension from output.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{enc_name}}{Character. Encoder name for memory estimation.}
-
-\item{\code{out_dim}}{Integer. Output dimension.}
-
-\item{\code{out_no_seq}}{Logical. Remove sequence dimension from output.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-configure"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-configure}{}}}
-\subsection{Method \code{configure()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$configure(
+\subsection{\code{InferenceManager$configure()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$configure(
   min_batch_size = 1L,
   safety_factor = 0.8,
   offload = OFFLOAD_AUTO,
@@ -113,374 +112,369 @@ result <- mgr(
   max_pinned_memory_mb = 32768,
   use_async = TRUE,
   async_depth = 4L
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{min_batch_size}}{Integer. Minimum batch size before error (default: \code{1L}).}
+      \item{\code{safety_factor}}{Numeric. Factor (0-1) for conservative memory usage (default: \code{0.8}).}
+      \item{\code{offload}}{Character or logical. Offload mode: \code{"auto"}, \code{"gpu"}, \code{"cpu"},}
+      \item{\code{auto_offload_threshold}}{Numeric. GPU memory threshold for auto offload}
+      \item{\code{device}}{Character or torch.device. Device for computation (default: auto-detect).}
+      \item{\code{use_amp}}{Logical. Use automatic mixed precision (default: \code{TRUE}).}
+      \item{\code{use_fa3}}{Logical. Use Flash Attention 3 (default: \code{TRUE}).}
+      \item{\code{verbose}}{Logical. Show progress bars and logging (default: \code{FALSE}).}
+      \item{\code{disk_offload_dir}}{Character or NULL. Directory for disk offloading.}
+      \item{\code{disk_min_free_mb}}{Numeric. Minimum free disk space in MB (default: \code{1024}).}
+      \item{\code{disk_flush_mb}}{Numeric. Flush memmap after this many MB (default: \code{8192}).}
+      \item{\code{disk_cleanup}}{Logical. Auto-cleanup disk files (default: \code{TRUE}).}
+      \item{\code{disk_file_prefix}}{Character. Prefix for disk file names.}
+      \item{\code{disk_dtype}}{torch.dtype or NULL. Override dtype for disk storage.}
+      \item{\code{cpu_safety_factor}}{Numeric. CPU memory safety margin (default: \code{0.85}).}
+      \item{\code{disk_safety_factor}}{Numeric. Disk space safety margin (default: \code{0.95}).}
+      \item{\code{max_pinned_memory_mb}}{Numeric. Max pinned memory in MB (default: \code{32768}).}
+      \item{\code{use_async}}{Logical. Use async D2H copy (default: \code{TRUE}).}
+      \item{\code{async_depth}}{Integer. Max pending async copies (default: \code{4L}).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{min_batch_size}}{Integer. Minimum batch size before error (default: \code{1L}).}
-
-\item{\code{safety_factor}}{Numeric. Factor (0-1) for conservative memory usage (default: \code{0.8}).}
-
-\item{\code{offload}}{Character or logical. Offload mode: \code{"auto"}, \code{"gpu"}, \code{"cpu"},}
-
-\item{\code{auto_offload_threshold}}{Numeric. GPU memory threshold for auto offload}
-
-\item{\code{device}}{Character or torch.device. Device for computation (default: auto-detect).}
-
-\item{\code{use_amp}}{Logical. Use automatic mixed precision (default: \code{TRUE}).}
-
-\item{\code{use_fa3}}{Logical. Use Flash Attention 3 (default: \code{TRUE}).}
-
-\item{\code{verbose}}{Logical. Show progress bars and logging (default: \code{FALSE}).}
-
-\item{\code{disk_offload_dir}}{Character or NULL. Directory for disk offloading.}
-
-\item{\code{disk_min_free_mb}}{Numeric. Minimum free disk space in MB (default: \code{1024}).}
-
-\item{\code{disk_flush_mb}}{Numeric. Flush memmap after this many MB (default: \code{8192}).}
-
-\item{\code{disk_cleanup}}{Logical. Auto-cleanup disk files (default: \code{TRUE}).}
-
-\item{\code{disk_file_prefix}}{Character. Prefix for disk file names.}
-
-\item{\code{disk_dtype}}{torch.dtype or NULL. Override dtype for disk storage.}
-
-\item{\code{cpu_safety_factor}}{Numeric. CPU memory safety margin (default: \code{0.85}).}
-
-\item{\code{disk_safety_factor}}{Numeric. Disk space safety margin (default: \code{0.95}).}
-
-\item{\code{max_pinned_memory_mb}}{Numeric. Max pinned memory in MB (default: \code{32768}).}
-
-\item{\code{use_async}}{Logical. Use async D2H copy (default: \code{TRUE}).}
-
-\item{\code{async_depth}}{Integer. Max pending async copies (default: \code{4L}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-get_available_cpu_memory"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-get_available_cpu_memory}{}}}
-\subsection{Method \code{get_available_cpu_memory()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$get_available_cpu_memory()}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$get_available_cpu_memory()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$get_available_cpu_memory()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Numeric. Available CPU memory in MB.
+  }
 }
 
-\subsection{Returns}{
-Numeric. Available CPU memory in MB.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-get_available_gpu_memory"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-get_available_gpu_memory}{}}}
-\subsection{Method \code{get_available_gpu_memory()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$get_available_gpu_memory()}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$get_available_gpu_memory()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$get_available_gpu_memory()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Numeric. Available GPU memory in MB, or 0.0 if CUDA unavailable.
+  }
 }
 
-\subsection{Returns}{
-Numeric. Available GPU memory in MB, or 0.0 if CUDA unavailable.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-get_available_disk_space"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-get_available_disk_space}{}}}
-\subsection{Method \code{get_available_disk_space()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$get_available_disk_space(path)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$get_available_disk_space()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$get_available_disk_space(path)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character or NULL. Path to check.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Numeric. Available disk space in MB, or 0.0 if unavailable.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character or NULL. Path to check.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Numeric. Available disk space in MB, or 0.0 if unavailable.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.estimate_tensor_mb"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.estimate_tensor_mb}{}}}
-\subsection{Method \code{.estimate_tensor_mb()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.estimate_tensor_mb(shape, dtype, repet = 1L)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$.estimate_tensor_mb()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.estimate_tensor_mb(shape, dtype, repet = 1L)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{shape}}{Integer vector. Tensor shape.}
+      \item{\code{dtype}}{torch.dtype. Tensor dtype.}
+      \item{\code{repet}}{Integer. Multiplier for size estimation (default: \code{1L}).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Numeric. Estimated size in MB.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{shape}}{Integer vector. Tensor shape.}
-
-\item{\code{dtype}}{torch.dtype. Tensor dtype.}
-
-\item{\code{repet}}{Integer. Multiplier for size estimation (default: \code{1L}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Numeric. Estimated size in MB.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-estimate_safe_batch_size"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-estimate_safe_batch_size}{}}}
-\subsection{Method \code{estimate_safe_batch_size()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$estimate_safe_batch_size(
+\subsection{\code{InferenceManager$estimate_safe_batch_size()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$estimate_safe_batch_size(
   seq_len,
   include_inputs = TRUE,
   in_dim = NULL,
   max_bs = 50000L
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{seq_len}}{Integer. Sequence length.}
+      \item{\code{include_inputs}}{Logical. Include input tensor memory (default: \code{TRUE}).}
+      \item{\code{in_dim}}{Integer or NULL. Input dimension.}
+      \item{\code{max_bs}}{Integer. Maximum batch size cap (default: \code{50000L}).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List with \code{available_mem} (numeric) and \code{safe_bs} (integer).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{seq_len}}{Integer. Sequence length.}
-
-\item{\code{include_inputs}}{Logical. Include input tensor memory (default: \code{TRUE}).}
-
-\item{\code{in_dim}}{Integer or NULL. Input dimension.}
-
-\item{\code{max_bs}}{Integer. Maximum batch size cap (default: \code{50000L}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-List with \code{available_mem} (numeric) and \code{safe_bs} (integer).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.resolve_offload_mode"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.resolve_offload_mode}{}}}
-\subsection{Method \code{.resolve_offload_mode()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.resolve_offload_mode(
+\subsection{\code{InferenceManager$.resolve_offload_mode()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.resolve_offload_mode(
   output_mb,
   gpu_free_mb,
   cpu_free_mb,
   disk_free_mb
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{output_mb}}{Numeric. Output size in MB.}
+      \item{\code{gpu_free_mb}}{Numeric. Free GPU memory in MB.}
+      \item{\code{cpu_free_mb}}{Numeric. Free CPU memory in MB.}
+      \item{\code{disk_free_mb}}{Numeric. Free disk space in MB.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List with \code{mode} (character) and \code{reason} (OffloadReason).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{output_mb}}{Numeric. Output size in MB.}
-
-\item{\code{gpu_free_mb}}{Numeric. Free GPU memory in MB.}
-
-\item{\code{cpu_free_mb}}{Numeric. Free CPU memory in MB.}
-
-\item{\code{disk_free_mb}}{Numeric. Free disk space in MB.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-List with \code{mode} (character) and \code{reason} (OffloadReason).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.allocate_output_buffer"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.allocate_output_buffer}{}}}
-\subsection{Method \code{.allocate_output_buffer()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.allocate_output_buffer(mode, shape, dtype)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$.allocate_output_buffer()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.allocate_output_buffer(mode, shape, dtype)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{mode}}{Character. Offload mode.}
+      \item{\code{shape}}{Integer vector. Output shape.}
+      \item{\code{dtype}}{torch.dtype. Output dtype.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List with \code{buffer} (Tensor or DiskTensor) and \code{info} (list).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{mode}}{Character. Offload mode.}
-
-\item{\code{shape}}{Integer vector. Output shape.}
-
-\item{\code{dtype}}{torch.dtype. Output dtype.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-List with \code{buffer} (Tensor or DiskTensor) and \code{info} (list).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.to_exe_device"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.to_exe_device}{}}}
-\subsection{Method \code{.to_exe_device()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.to_exe_device(tensor)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$.to_exe_device()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.to_exe_device(tensor)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{tensor}}{Tensor. Input tensor.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor on execution device.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{tensor}}{Tensor. Input tensor.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor on execution device.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.prepare_inputs"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.prepare_inputs}{}}}
-\subsection{Method \code{.prepare_inputs()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.prepare_inputs(inputs)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$.prepare_inputs()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.prepare_inputs(inputs)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{inputs}}{Named list. Input dictionary.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Named list with tensors on execution device.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{Named list. Input dictionary.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Named list with tensors on execution device.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.run_forward"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.run_forward}{}}}
-\subsection{Method \code{.run_forward()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.run_forward(forward_fn, inputs)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$.run_forward()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.run_forward(forward_fn, inputs)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{forward_fn}}{Function. Model forward function.}
+      \item{\code{inputs}}{Named list. Prepared inputs.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Forward output.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{forward_fn}}{Function. Model forward function.}
-
-\item{\code{inputs}}{Named list. Prepared inputs.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. Forward output.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-forward"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-forward}{}}}
-\subsection{Method \code{forward()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$forward(
+\subsection{\code{InferenceManager$forward()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$forward(
   forward_fn,
   inputs,
   auto_batch = TRUE,
   output_repeat = 1L
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{forward_fn}}{Function. Model forward function.}
+      \item{\code{inputs}}{Named list. OrderedDict of inputs (first must be tensor).}
+      \item{\code{auto_batch}}{Logical. Enable automatic batching (default: \code{TRUE}).}
+      \item{\code{output_repeat}}{Integer. Memory estimation multiplier for output}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Tensor. Combined output from all batches.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{forward_fn}}{Function. Model forward function.}
-
-\item{\code{inputs}}{Named list. OrderedDict of inputs (first must be tensor).}
-
-\item{\code{auto_batch}}{Logical. Enable automatic batching (default: \code{TRUE}).}
-
-\item{\code{output_repeat}}{Integer. Memory estimation multiplier for output}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Tensor. Combined output from all batches.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.compute_split_sizes"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.compute_split_sizes}{}}}
-\subsection{Method \code{.compute_split_sizes()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.compute_split_sizes(batch_dims, batch_size)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$.compute_split_sizes()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.compute_split_sizes(batch_dims, batch_size)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{batch_dims}}{Integer vector. Batch dimension sizes.}
+      \item{\code{batch_size}}{Integer. Target batch size.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Integer vector. Split sizes for each dimension.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{batch_dims}}{Integer vector. Batch dimension sizes.}
-
-\item{\code{batch_size}}{Integer. Target batch size.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Integer vector. Split sizes for each dimension.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.compute_n_batches"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.compute_n_batches}{}}}
-\subsection{Method \code{.compute_n_batches()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.compute_n_batches(batch_dims, split_sizes)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$.compute_n_batches()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.compute_n_batches(batch_dims, split_sizes)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{batch_dims}}{Integer vector. Batch dimensions.}
+      \item{\code{split_sizes}}{Integer vector. Split sizes.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Integer. Total number of batches.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{batch_dims}}{Integer vector. Batch dimensions.}
-
-\item{\code{split_sizes}}{Integer vector. Split sizes.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Integer. Total number of batches.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-.create_multidim_batches"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-.create_multidim_batches}{}}}
-\subsection{Method \code{.create_multidim_batches()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$.create_multidim_batches(inputs, batch_dims, split_sizes)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$.create_multidim_batches()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$.create_multidim_batches(inputs, batch_dims, split_sizes)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{inputs}}{Named list. Input dictionary.}
+      \item{\code{batch_dims}}{Integer vector. Batch dimensions.}
+      \item{\code{split_sizes}}{Integer vector. Split sizes.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Iterator yielding list(batch_dict, indices).
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{Named list. Input dictionary.}
-
-\item{\code{batch_dims}}{Integer vector. Batch dimensions.}
-
-\item{\code{split_sizes}}{Integer vector. Split sizes.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Iterator yielding list(batch_dict, indices).
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InferenceManager-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-InferenceManager-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{inference_manager$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{InferenceManager$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InferenceManager$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

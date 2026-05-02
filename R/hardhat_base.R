@@ -1,7 +1,4 @@
-#' @importFrom torch torch_device torch_float32 cuda_is_available
-#'   torch_float16 torch_bfloat16 nn_module
-#' @importFrom cli cli_inform cli_warn cli_abort
-#' @importFrom glue glue
+#' @importFrom torch torch_device torch_float32 cuda_is_available torch_float16 torch_bfloat16 nn_module
 #' @importFrom utils packageVersion
 #' @keywords internal
 NULL
@@ -91,7 +88,7 @@ TabICLBaseEstimator <- R6::R6Class(
     #'
     #' TODO : improve it through tabnet:::get_device_from_config
     #' @return A proper torch_device()
-    #' @keywords internal
+    #' @noRd
     .resolve_device = function() {
       self$device_ <- if (is.null(self$device)) {
         torch_device(if (cuda_is_available()) "cuda" else "cpu")
@@ -105,7 +102,7 @@ TabICLBaseEstimator <- R6::R6Class(
     #' Resolve the "auto" option for use_amp and use_fa3
     #'
     #' @return A list with use_amp and use_fa3 boolean values
-    #' @keywords internal
+    #' @noRd
     .resolve_amp_fa3 = function() {
       n_samples <- if (!is.null(self$n_samples_in_)) {
         self$n_samples_in_
@@ -145,7 +142,7 @@ TabICLBaseEstimator <- R6::R6Class(
     #' Build the inference configuration from init parameters
     #'
     #' @return A proper config list
-    #' @keywords internal
+    #' @noRd
     .build_inference_config = function() {
       amp_fa3 <- self$.resolve_amp_fa3()
       use_amp <- amp_fa3$use_amp
@@ -194,7 +191,7 @@ TabICLBaseEstimator <- R6::R6Class(
     #' Move KV cache to the current device, auto-upcasting if needed
     #'
     #' @return nothing
-    #' @keywords internal
+    #' @noRd
     .move_cache_to_device = function() {
       if (!exists("model_kv_cache_", envir = self, inherits = FALSE) ||
           is.null(self$model_kv_cache_)) {
@@ -240,7 +237,7 @@ TabICLBaseEstimator <- R6::R6Class(
     #' @param save_model_weights Include model weights in file
     #' @param save_training_data Include training data
     #' @param save_kv_cache Include KV cache
-    #' @keywords internal
+    #' @noRd
     save = function(path, save_model_weights = FALSE, save_training_data = TRUE,
                    save_kv_cache = TRUE) {
       # check_is_fitted equivalent would go here

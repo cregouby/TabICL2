@@ -4,130 +4,133 @@
 \alias{OutlierRemover}
 \title{OutlierRemover: clip extreme values using a two-stage Z-score approach}
 \description{
-OutlierRemover: clip extreme values using a two-stage Z-score approach
-
-OutlierRemover: clip extreme values using a two-stage Z-score approach
-}
-\details{
 Wraps \code{step_clip_outliers()} in a recipes pipeline.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{threshold}}{Z-score threshold.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{threshold}}{Z-score threshold.}
 
-\item{\code{lower_bounds_}}{Per-feature lower clip bounds (set after \verb{$fit()}).}
+    \item{\code{lower_bounds_}}{Per-feature lower clip bounds (set after \verb{$fit()}).}
 
-\item{\code{upper_bounds_}}{Per-feature upper clip bounds (set after \verb{$fit()}).}
-}
-\if{html}{\out{</div>}}
+    \item{\code{upper_bounds_}}{Per-feature upper clip bounds (set after \verb{$fit()}).}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-OutlierRemover-new}{\code{OutlierRemover$new()}}
-\item \href{#method-OutlierRemover-fit}{\code{OutlierRemover$fit()}}
-\item \href{#method-OutlierRemover-transform}{\code{OutlierRemover$transform()}}
-\item \href{#method-OutlierRemover-fit_transform}{\code{OutlierRemover$fit_transform()}}
-\item \href{#method-OutlierRemover-clone}{\code{OutlierRemover$clone()}}
-}
+  \itemize{
+    \item \href{#method-OutlierRemover-initialize}{\code{OutlierRemover$new()}}
+    \item \href{#method-OutlierRemover-fit}{\code{OutlierRemover$fit()}}
+    \item \href{#method-OutlierRemover-transform}{\code{OutlierRemover$transform()}}
+    \item \href{#method-OutlierRemover-fit_transform}{\code{OutlierRemover$fit_transform()}}
+    \item \href{#method-OutlierRemover-clone}{\code{OutlierRemover$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-OutlierRemover-new"></a>}}
-\if{latex}{\out{\hypertarget{method-OutlierRemover-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new \code{OutlierRemover}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OutlierRemover$new(threshold = 4)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-OutlierRemover-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-OutlierRemover-initialize}{}}}
+\subsection{\code{OutlierRemover$new()}}{
+  Create a new \code{OutlierRemover}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OutlierRemover$new(threshold = 4)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{threshold}}{Numeric Z-score threshold.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{threshold}}{Numeric Z-score threshold.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-OutlierRemover-fit"></a>}}
 \if{latex}{\out{\hypertarget{method-OutlierRemover-fit}{}}}
-\subsection{Method \code{fit()}}{
-Fit: compute clipping bounds.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OutlierRemover$fit(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{OutlierRemover$fit()}}{
+  Fit: compute clipping bounds.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OutlierRemover$fit(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-OutlierRemover-transform"></a>}}
 \if{latex}{\out{\hypertarget{method-OutlierRemover-transform}{}}}
-\subsection{Method \code{transform()}}{
-Clip values using learned log-based soft bounds.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OutlierRemover$transform(X)}\if{html}{\out{</div>}}
+\subsection{\code{OutlierRemover$transform()}}{
+  Clip values using learned log-based soft bounds.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OutlierRemover$transform(X)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Clipped numeric matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Clipped numeric matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-OutlierRemover-fit_transform"></a>}}
 \if{latex}{\out{\hypertarget{method-OutlierRemover-fit_transform}{}}}
-\subsection{Method \code{fit_transform()}}{
-Fit then transform.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OutlierRemover$fit_transform(X, y = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{OutlierRemover$fit_transform()}}{
+  Fit then transform.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OutlierRemover$fit_transform(X, y = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{X}}{Numeric matrix.}
+      \item{\code{y}}{Ignored.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Clipped numeric matrix.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{X}}{Numeric matrix.}
-
-\item{\code{y}}{Ignored.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Clipped numeric matrix.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-OutlierRemover-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-OutlierRemover-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{OutlierRemover$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{OutlierRemover$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{OutlierRemover$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -1,8 +1,7 @@
 #' @importFrom R6 R6Class
-#' @importFrom recipes recipe prep bake add_step step rand_id recipes_eval_select
-#'   is_trained sel2char print_step check_type step_zv step_normalize
-#'   step_YeoJohnson all_predictors all_numeric_predictors all_nominal_predictors
-#'   step_impute_mean step_integer step_novel step_unknown step_string2factor
+#' @importFrom recipes recipe prep bake add_step step rand_id recipes_eval_select is_trained sel2char print_step check_type step_zv step_normalize
+#' @importFrom recipes step_YeoJohnson all_predictors all_numeric_predictors all_nominal_predictors
+#' @importFrom recipes step_impute_mean step_integer step_novel step_unknown step_string2factor
 #' @importFrom rlang enquos
 
 .to_num_matrix <- function(X) {

@@ -1,36 +1,24 @@
-#' @importFrom torch torch_tensor with_no_grad
+#' @importFrom torch torch_tensor with_no_grad torch_load load_state_dict
 #' @importFrom R6 R6Class
-#' @importFrom cli cli_inform cli_warn
+#' @importFrom utils download.file
+#' @importFrom cli cli_inform cli_warn cli_abort
+#' @importFrom tools md5sum
 #' @importFrom utils download.file
 #' @keywords internal
 NULL
 
-.ckpt_v1   <- "tabicl-classifier-v1-20250208.ckpt"
-.ckpt_v1_1 <- "tabicl-classifier-v1.1-20250506.ckpt"
-.ckpt_v2   <- "tabicl-classifier-v2-20260212.ckpt"
-
-.hf_download <- function(filename, dest_path = NULL, allow_auto_download = TRUE) {
-  repo_id  <- "jingang/TabICL"
-  url      <- paste0("https://huggingface.co/", repo_id, "/resolve/main/", filename)
-
-  if (is.null(dest_path)) {
-    cache_dir <- file.path(path.expand("~"), ".cache", "tabicl")
-    dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
-    dest_path <- file.path(cache_dir, filename)
-  }
-
-  if (file.exists(dest_path)) return(dest_path)
-
-  if (!allow_auto_download) {
-    value_error(
-      "Checkpoint '{filename}' not found and automatic download is disabled."
-    )
-  }
-
-  cli_inform("Downloading checkpoint '{filename}' from Hugging Face Hub ({repo_id}).")
-  download.file(url, destfile = dest_path, mode = "wb", quiet = TRUE)
-  dest_path
-}
+# Model registry: name -> c(url, md5, human_size)
+.classifier_model_urls <- list(
+  tabicl_classifier_v1 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1-20250208.ckpt",
+    "TODO_MD5_V1", "85 MB"),
+  tabicl_classifier_v1_1 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1.1-20250506.ckpt",
+    "TODO_MD5_V1_1", "87 MB"),
+  tabicl_classifier_v2 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v2-20260212.ckpt",
+    "TODO_MD5_V2", "92 MB")
+)
 
 #' TabICL Classifier
 #'
@@ -377,22 +365,23 @@ TabICLClassifier <- R6::R6Class(
           "Invalid checkpoint_version '{filename}'. Valid options: {paste(valid, collapse = ', ')}."
         )
 
-      path <- if (is.null(self$model_path)) {
-        .hf_download(filename, allow_auto_download = self$allow_auto_download)
-      } else {
-        mp <- self$model_path
-        if (file.exists(mp)) {
-          mp
-        } else if (self$allow_auto_download) {
-          .hf_download(
-            filename, dest_path = mp, allow_auto_download = TRUE
-          )
-        } else {
-          value_error(
-            "Checkpoint not found at '{mp}' and allow_auto_download is FALSE."
-          )
-        }
-      }
+      # path <- if (is.null(self$model_path)) {
+      #   .hf_download(filename, allow_auto_download = self$allow_auto_download)
+      # } else {
+      #   mp <- self$model_path
+      #   if (file.exists(mp)) {
+      #     mp
+      #   } else if (self$allow_auto_download) {
+      #     .hf_download(
+      #       filename, dest_path = mp, allow_auto_download = TRUE
+      #     )
+      #   } else {
+      #     value_error(
+      #       "Checkpoint not found at '{mp}' and allow_auto_download is FALSE."
+      #     )
+      #   }
+      # }
+      path <- download_and_cache()
 
       checkpoint <- torch::torch_load(path, device = "cpu")
 

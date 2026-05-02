@@ -39,126 +39,136 @@ dt$flush()
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-DiskTensor-new}{\code{disk_tensor$new()}}
-\item \href{#method-DiskTensor-tensor}{\code{disk_tensor$tensor()}}
-\item \href{#method-DiskTensor-get}{\code{disk_tensor$get()}}
-\item \href{#method-DiskTensor-set}{\code{disk_tensor$set()}}
-\item \href{#method-DiskTensor-flush}{\code{disk_tensor$flush()}}
-\item \href{#method-DiskTensor-nbytes}{\code{disk_tensor$nbytes()}}
-\item \href{#method-DiskTensor-clone}{\code{disk_tensor$clone()}}
-}
+  \itemize{
+    \item \href{#method-DiskTensor-initialize}{\code{DiskTensor$new()}}
+    \item \href{#method-DiskTensor-tensor}{\code{DiskTensor$tensor()}}
+    \item \href{#method-DiskTensor-get}{\code{DiskTensor$get()}}
+    \item \href{#method-DiskTensor-set}{\code{DiskTensor$set()}}
+    \item \href{#method-DiskTensor-flush}{\code{DiskTensor$flush()}}
+    \item \href{#method-DiskTensor-nbytes}{\code{DiskTensor$nbytes()}}
+    \item \href{#method-DiskTensor-clone}{\code{DiskTensor$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-DiskTensor-new"></a>}}
-\if{latex}{\out{\hypertarget{method-DiskTensor-new}{}}}
-\subsection{Method \code{new()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{disk_tensor$new(shape, dtype, path, cleanup = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-DiskTensor-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-DiskTensor-initialize}{}}}
+\subsection{\code{DiskTensor$new()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiskTensor$new(shape, dtype, path, cleanup = TRUE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{shape}}{Integer vector. Shape of the tensor.}
+      \item{\code{dtype}}{torch.dtype. Data type.}
+      \item{\code{path}}{Character. File path.}
+      \item{\code{cleanup}}{Logical. Auto-cleanup on GC.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{shape}}{Integer vector. Shape of the tensor.}
-
-\item{\code{dtype}}{torch.dtype. Data type.}
-
-\item{\code{path}}{Character. File path.}
-
-\item{\code{cleanup}}{Logical. Auto-cleanup on GC.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-tensor"></a>}}
 \if{latex}{\out{\hypertarget{method-DiskTensor-tensor}{}}}
-\subsection{Method \code{tensor()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{disk_tensor$tensor()}\if{html}{\out{</div>}}
+\subsection{\code{DiskTensor$tensor()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiskTensor$tensor()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A torch tensor.
+  }
 }
 
-\subsection{Returns}{
-A torch tensor.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-get"></a>}}
 \if{latex}{\out{\hypertarget{method-DiskTensor-get}{}}}
-\subsection{Method \code{get()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{disk_tensor$get(indices)}\if{html}{\out{</div>}}
+\subsection{\code{DiskTensor$get()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiskTensor$get(indices)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indices}}{List of indices or slices.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A torch tensor.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indices}}{List of indices or slices.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A torch tensor.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-set"></a>}}
 \if{latex}{\out{\hypertarget{method-DiskTensor-set}{}}}
-\subsection{Method \code{set()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{disk_tensor$set(indices, value)}\if{html}{\out{</div>}}
+\subsection{\code{DiskTensor$set()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiskTensor$set(indices, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indices}}{List of indices.}
+      \item{\code{value}}{Tensor. Value to write.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indices}}{List of indices.}
-
-\item{\code{value}}{Tensor. Value to write.}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-flush"></a>}}
 \if{latex}{\out{\hypertarget{method-DiskTensor-flush}{}}}
-\subsection{Method \code{flush()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{disk_tensor$flush()}\if{html}{\out{</div>}}
+\subsection{\code{DiskTensor$flush()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiskTensor$flush()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible flush to disk
+  }
 }
 
-\subsection{Returns}{
-Invisible flush to disk
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-nbytes"></a>}}
 \if{latex}{\out{\hypertarget{method-DiskTensor-nbytes}{}}}
-\subsection{Method \code{nbytes()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{disk_tensor$nbytes()}\if{html}{\out{</div>}}
+\subsection{\code{DiskTensor$nbytes()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiskTensor$nbytes()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Integer. Size in bytes.
+  }
 }
 
-\subsection{Returns}{
-Integer. Size in bytes.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DiskTensor-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-DiskTensor-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{disk_tensor$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{DiskTensor$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DiskTensor$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
