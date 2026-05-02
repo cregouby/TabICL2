@@ -161,7 +161,7 @@ TabICLClassifier <- R6::R6Class(
         device           = device,
         use_amp          = use_amp,
         use_fa3          = use_fa3,
-        verbose          = as.integer(verbose),
+        verbose          = as.logical(verbose),
         offload_mode     = offload_mode,
         disk_offload_dir = disk_offload_dir,
         inference_config = inference_config
@@ -394,7 +394,7 @@ TabICLClassifier <- R6::R6Class(
         }
       }
 
-      checkpoint <- torch::torch_load(path, map_location = "cpu")
+      checkpoint <- torch::torch_load(path, device = "cpu")
 
       if (is.null(checkpoint[["config"]]))
         stop("Checkpoint missing 'config' key.", call. = FALSE)

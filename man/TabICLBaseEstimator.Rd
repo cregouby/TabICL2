@@ -59,7 +59,9 @@ Provides shared functionality for both classifier and regressor.
 
 \item{\code{n_samples_in_}}{Number of training samples (set by \code{$fit()}).}
 
-\item{\code{n_features_in_}}{Number of training features (set by \code{$fit()}).
+\item{\code{n_features_in_}}{Number of training features (set by \code{$fit()}).}
+
+\item{\code{model_kv_cache_}}{named list of tensor to cache (set by \code{$fit()}).
 Initialize the estimator}
 }
 \if{html}{\out{</div>}}

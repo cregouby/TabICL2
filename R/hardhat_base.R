@@ -48,6 +48,8 @@ TabICLBaseEstimator <- R6::R6Class(
     n_samples_in_ = NULL,
     #' @field n_features_in_ Number of training features (set by \code{$fit()}).
     n_features_in_ = NULL,
+    #' @field model_kv_cache_ named list of tensor to cache (set by \code{$fit()}).
+    model_kv_cache_ = NULL,
 
     #' Initialize the estimator
     #'

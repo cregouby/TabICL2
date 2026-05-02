@@ -151,7 +151,7 @@ test_that(".resolve_amp_fa3 handles missing n_samples_in_ n_features_in_", {
 })
 
 test_that(".build_inference_config creates config from NULL inference_config", {
-  estimator <- TabICLBaseEstimator$new(device = "cpu", verbose = 1)
+  estimator <- TabICLBaseEstimator$new(device = "cpu", verbose = TRUE)
   estimator$n_samples_in_ <- 1000
   estimator$n_features_in_ <- 50
   estimator$.resolve_device()
@@ -236,7 +236,7 @@ test_that(".sklearn_tags returns non_deterministic flag", {
 
 test_that("softmax handles empty input gracefully", {
   x <- numeric(0)
-  expect_error(softmax(x), "argument is of length zero")
+  expect_error(softmax(x), "must be an array or matrix")
 })
 
 test_that("softmax handles single value", {
