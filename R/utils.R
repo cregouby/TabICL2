@@ -89,7 +89,7 @@
 
 
 .get_checkpoint_info <- function(checkpoint_version) {
-  registry_names <- names(.classifier_model_urls)
+  registry_names <- names(.model_urls)
   matched <- registry_names[grepl(checkpoint_version, registry_names, fixed = TRUE)]
 
   if (length(matched) == 0) {
@@ -105,7 +105,7 @@
     )
   }
 
-  .classifier_model_urls[[matched[1]]]
+  .model_urls[[matched[1]]]
 }
 
 .resolve_checkpoint_path <- function(model_path, checkpoint_version, allow_auto_download, progress = TRUE) {

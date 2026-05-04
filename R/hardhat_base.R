@@ -3,6 +3,25 @@
 #' @noRd
 NULL
 
+10
+
+# Model registry: name -> c(url, md5, human_size)
+11
+
+.model_urls <- list(
+  tabicl_classifier_v1 = c(
+   "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1-20250208.ckpt",
+    "TODO_MD5_V1", "85 MB"),
+  tabicl_classifier_v1_1 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1.1-20250506.ckpt",
+    "TODO_MD5_V1_1", "87 MB"),
+  tabicl_classifier_v2 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v2-20260212.ckpt",
+    "TODO_MD5_V2", "92 MB"),
+  tabicl_regressor_v2 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-regressor-v2-20260212.ckpt",
+    "TODO_MD5_V2", "92 MB")
+)
 #' TabICL Base Estimator Class
 #'
 #' Base class for TabICL scikit-learn compatible estimators.
@@ -74,13 +93,6 @@ TabICLBaseEstimator <- R6::R6Class(
     #'
     #' @return A list with estimator tags
     .more_tags = function() {
-      list(non_deterministic = TRUE)
-    },
-
-    #' Get sklearn-compatible tags
-    #'
-    #' @return A list with tags
-    .sklearn_tags = function() {
       list(non_deterministic = TRUE)
     },
 
@@ -300,4 +312,183 @@ softmax <- function(x, axis = -1, temperature = 0.9) {
   e_x <- exp(sweep(x, MARGIN = axis, STATS = x_max, FUN = "-"))
   e_x_sum <- apply(e_x, MARGIN = axis, FUN = sum, na.rm = TRUE)
   sweep(e_x, MARGIN = axis, STATS = e_x_sum, FUN = "/")
+}
+
+#' Validate input data and set or check feature names and counts
+#'
+#' Standalone transcription of sklearn's \code{validate_data} function that
+#' works across different versions and leverages \code{{hardhat}} utilities
+#' wherever possible.
+#'
+#' @param estimator A list or environment representing the estimator instance.
+#' @param X Predictor data. Use \code{"no_validation"} to skip validation.
+#' @param y Outcome data. Use \code{NULL} or \code{"no_validation"} to skip.
+#' @param reset Logical. If \code{TRUE}, sets \code{n_features_in_} and
+#'   \code{feature_names_in_} on \code{estimator}.
+#' @param validate_separately \code{FALSE} or a list of two lists containing
+#'   parameters for \code{X} and \code{y} respectively.
+#' @param skip_check_array Logical. If \code{TRUE}, only names and dimensions
+#'   are checked.
+#' @param ... Additional arguments passed to internal check helpers.
+#'
+#' @return Validated \code{X}, \code{y}, or a named list with both.
+#'   The updated estimator is attached as an attribute
+#'   \code{"estimator"} because R uses pass by value semantics.
+#'
+#' @examples
+#' # Create a simple estimator list
+#' estimator <- list()
+#'
+#' # Validate predictors and outcomes jointly
+#' result <- validate_data(
+#'   estimator,
+#'   X = mtcars[, c("mpg", "wt")],
+#'   y = mtcars$am,
+#'   reset = TRUE
+#' )
+#'
+#' # Extract validated data and updated estimator
+#' X_validated <- result$X
+#' y_validated <- result$y
+#' estimator <- attr(result, "estimator")
+#'
+#' # Predict time: enforce consistency without resetting
+#' new_result <- validate_data(
+#'   estimator,
+#'   X = mtcars[1:5, c("mpg", "wt")],
+#'   y = "no_validation",
+#'   reset = FALSE
+#' )
+#' X_new <- new_result
+#' @export
+validate_data <- function(
+    estimator,
+    X = "no_validation",
+    y = "no_validation",
+    reset = TRUE,
+    validate_separately = FALSE,
+    skip_check_array = FALSE,
+    ...
+) {
+  check_params <- rlang::list2(...)
+
+  # Feature names check using hardhat equivalent
+  if (is.data.frame(X) && !identical(X, "no_validation")) {
+    if (isTRUE(reset) || is.null(estimator[["feature_names_in_"]])) {
+      estimator[["feature_names_in_"]] <- names(X)
+    } else {
+      hardhat::validate_column_names(
+        X,
+        original_names = estimator[["feature_names_in_"]]
+      )
+    }
+  }
+
+  # Sentinel checks
+  no_val_X <- is.character(X) && length(X) == 1L && identical(X, "no_validation")
+  no_val_y <- is.null(y) || (is.character(y) && length(y) == 1L && identical(y, "no_validation"))
+
+  if (no_val_X && no_val_y) {
+    rlang::abort("Validation should be done on X, y or both.")
+  }
+
+  default_check_params <- list(estimator = estimator)
+  check_params <- utils::modifyList(default_check_params, check_params)
+
+  # Internal check_array helper
+  check_array <- function(data, input_name = "X", ...) {
+    params <- list(...)
+
+    if (isTRUE(params[["ensure_2d"]])) {
+      if (is.atomic(data) && is.vector(data) && !is.matrix(data)) {
+        data <- matrix(data, ncol = 1L)
+      } else if (!is.matrix(data) && !is.data.frame(data) && !inherits(data, "Matrix")) {
+        rlang::abort(sprintf("%s must be a 2D array like object.", input_name))
+      }
+    }
+
+    if (isTRUE(params[["force_all_finite"]])) {
+      mat <- if (is.data.frame(data)) as.matrix(data) else data
+      if (any(is.infinite(mat) & !is.na(mat))) {
+        rlang::abort(sprintf("%s contains non finite values (inf or NaN).", input_name))
+      }
+    }
+
+    if (is.data.frame(data) && isTRUE(params[["ensure_predictors_numeric"]])) {
+      hardhat::check_predictors_are_numeric(data)
+    }
+
+    data
+  }
+
+  # Internal check_y helper using hardhat outcome checkers
+  check_y <- function(y, ...) {
+    y_df <- data.frame(y = y)
+
+    if (is.factor(y) || is.character(y)) {
+      hardhat::check_outcomes_are_factors(y_df)
+    } else if (is.numeric(y)) {
+      hardhat::check_outcomes_are_numeric(y_df)
+    } else {
+      rlang::abort(sprintf(
+        "Outcome type %s is not supported.",
+        class(y)[[1L]]
+      ))
+    }
+
+    y
+  }
+
+  # Main dispatch logic
+  if (skip_check_array) {
+    if (!no_val_X && no_val_y) {
+      out <- X
+    } else if (no_val_X && !no_val_y) {
+      out <- y
+    } else {
+      out <- list(X = X, y = y)
+    }
+  } else if (!no_val_X && no_val_y) {
+    out <- rlang::exec(check_array, X, input_name = "X", !!!check_params)
+  } else if (no_val_X && !no_val_y) {
+    out <- rlang::exec(check_y, y, !!!check_params)
+  } else {
+    if (is.list(validate_separately) && length(validate_separately) == 2L) {
+      check_X_params <- validate_separately[[1L]]
+      check_y_params <- validate_separately[[2L]]
+
+      if (!"estimator" %in% names(check_X_params)) {
+        check_X_params <- utils::modifyList(default_check_params, check_X_params)
+      }
+      X <- rlang::exec(check_array, X, input_name = "X", !!!check_X_params)
+
+      if (!"estimator" %in% names(check_y_params)) {
+        check_y_params <- utils::modifyList(default_check_params, check_y_params)
+      }
+      y <- rlang::exec(check_array, y, input_name = "y", !!!check_y_params)
+    } else {
+      processed <- hardhat::mold(X, y)
+      X <- processed$predictors
+      y <- processed$outcomes
+    }
+    out <- list(X = X, y = y)
+  }
+
+  # n_features check
+  if (!no_val_X && isTRUE(check_params[["ensure_2d"]])) {
+    n_features <- ncol(X)
+    if (isTRUE(reset) || is.null(estimator[["n_features_in_"]])) {
+      estimator[["n_features_in_"]] <- n_features
+    } else if (estimator[["n_features_in_"]] != n_features) {
+      rlang::abort(sprintf(
+        "X has %d features, but %s is expecting %d features.",
+        n_features,
+        deparse(substitute(estimator)),
+        estimator[["n_features_in_"]]
+      ))
+    }
+  }
+
+  attr(out, "estimator") <- estimator
+  out
 }

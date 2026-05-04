@@ -227,13 +227,6 @@ test_that(".more_tags returns non_deterministic flag", {
   expect_true(tags$non_deterministic)
 })
 
-test_that(".sklearn_tags returns non_deterministic flag", {
-  estimator <- TabICLBaseEstimator$new()
-  tags <- estimator$.sklearn_tags()
-  expect_true(is.list(tags))
-  expect_true(tags$non_deterministic)
-})
-
 test_that("softmax handles empty input gracefully", {
   x <- numeric(0)
   expect_error(softmax(x), "must be an array or matrix")

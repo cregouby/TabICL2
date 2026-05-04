@@ -1,5 +1,4 @@
 # Tests for sklearn compatibility and KV cache functionality
-# Transcribed from Python pytest
 
 # Helper function to generate classification data
 make_classification <- function(n_samples, n_features, random_state = NULL) {
@@ -28,10 +27,7 @@ make_regression <- function(n_samples, n_features, random_state = NULL) {
 
 
 # Sklearn-compatible estimator tests
-# Note: R does not have a direct equivalent to sklearn's parametrize_with_checks
-# These tests should be expanded manually based on specific requirements
-
-test_that("TabICLClassifier basic sklearn compatibility", {
+test_that("TabICLClassifier basic compatibility", {
 
   # n_estimators=2 ensures full preprocessing and ensembling pipeline is tested
   est <- TabICLClassifier$new(n_estimators = 2L)
@@ -52,11 +48,11 @@ test_that("TabICLClassifier basic sklearn compatibility", {
 })
 
 
-test_that("TabICLRegressor basic sklearn compatibility", {
+test_that("TabICLRegressor basic compatibility", {
   skip_if_not(exists("TabICLRegressor"), "TabICLRegressor not yet implemented")
 
   # n_estimators=2 ensures full preprocessing and ensembling pipeline is tested
-  est <- TabICLRegressor(n_estimators = 2L)
+  est <- TabICLRegressor$new(n_estimators = 2L)
 
   # Test that estimator has required methods
   expect_true(is.function(est$fit) || is.environment(est))
@@ -168,7 +164,7 @@ test_that("TabICLRegressor KV cache mode 'repr' matches no cache", {
 
   # Without cache
   reg <- TabICLRegressor$new(n_estimators = 2L)
-  reg <- reg$fit(X_train, y_train)
+  .classifier_model_urlsreg <- reg$fit(X_train, y_train)
   pred_no_cache <- reg$predict(X_test)
 
   # With repr cache

@@ -84,8 +84,9 @@ TabICLRegressor <- R6Class(
     allow_auto_download = TRUE,
 
     #' @field checkpoint_version Checkpoint version string.
-    checkpoint_version = "tabicl-regressor-v2-20260212.ckpt",
-
+    checkpoint_version = "tabicl-regressor-v2",
+    #' @field n_jobs CPU thread count.
+    n_jobs = NULL,
     #' @field y_scaler_ StandardScaler for target values (set by \code{fit}).
     y_scaler_ = NULL,
 
@@ -110,6 +111,8 @@ TabICLRegressor <- R6Class(
 
     #' @field ensemble_generator_ EnsembleGenerator (set by \code{fit}).
     ensemble_generator_ = NULL,
+    #' @field random_state RNG seed.
+    random_state         = 42L,
 
     #' @description Create a new TabICLRegressor.
     #' @param n_estimators `integer(1)` Number of ensemble estimators.
@@ -161,7 +164,7 @@ TabICLRegressor <- R6Class(
       kv_cache            = FALSE,
       model_path          = NULL,
       allow_auto_download = TRUE,
-      checkpoint_version  = "tabicl-regressor-v2-20260212.ckpt",
+      checkpoint_version  = "tabicl-regressor-v2",
       device              = NULL,
       use_amp             = "auto",
       use_fa3             = "auto",
@@ -220,7 +223,7 @@ TabICLRegressor <- R6Class(
       y <- validate_data(self, X, y, dtype = NULL, skip_check_array = TRUE)[[2L]]
 
       # Ensure y is numeric float32
-      storage.mode(y) <- "single"
+      # storage.mode(y) <- "single"
 
       # Flatten column-vector y
       if (is.matrix(y) && ncol(y) == 1L) {
@@ -511,7 +514,7 @@ TabICLRegressor <- R6Class(
     #'   \code{(n_samples, n_quantiles)}, or a named list when
     #'   multiple output types are requested.
     predict = function(X, output_type = "mean", alphas = NULL) {
-      check_is_fitted(self)
+      # check_is_fitted(self)
 
       # Reject 1D input
       if ((is.matrix(X) || is.array(X)) && length(dim(X)) == 1L) {
@@ -527,9 +530,7 @@ TabICLRegressor <- R6Class(
 
       if (!has_kv_cache && !has_training_data) {
         runtime_error(
-          "Cannot predict: this estimator was saved without training data ",
-          "and has no KV cache. Re-fit or load from a file saved with ",
-          "save_training_data=TRUE or save_kv_cache=TRUE."
+          "Cannot predict: this estimator was saved without training data and has no KV cache. Re-fit or load from a file saved with save_training_data=TRUE or save_kv_cache=TRUE."
         )
       }
 
@@ -542,8 +543,7 @@ TabICLRegressor <- R6Class(
         n_threads <- if (self$n_jobs > 0) {
           if (self$n_jobs > n_logical) {
             cli_warn(
-              "TabICL got n_jobs={self$n_jobs} but only {n_logical} ",
-              "logical cores. Only {n_logical} threads will be used."
+              "TabICL got n_jobs={self$n_jobs} but only {n_logical} logical cores. Only {n_logical} threads will be used."
             )
           }
           max(n_logical, self$n_jobs)

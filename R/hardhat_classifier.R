@@ -7,19 +7,6 @@
 #' @noRd
 NULL
 
-# Model registry: name -> c(url, md5, human_size)
-.classifier_model_urls <- list(
-  tabicl_classifier_v1 = c(
-    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1-20250208.ckpt",
-    "TODO_MD5_V1", "85 MB"),
-  tabicl_classifier_v1_1 = c(
-    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1.1-20250506.ckpt",
-    "TODO_MD5_V1_1", "87 MB"),
-  tabicl_classifier_v2 = c(
-    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v2-20260212.ckpt",
-    "TODO_MD5_V2", "92 MB")
-)
-
 #' TabICL Classifier
 #'
 #' Tabular In-Context Learning (TabICL) classifier with an ensemble of
@@ -88,7 +75,7 @@ TabICLClassifier <- R6::R6Class(
     #' @field allow_auto_download Allow automatic download.
     allow_auto_download  = TRUE,
     #' @field checkpoint_version Checkpoint filename.
-    checkpoint_version   = "tabicl-classifier-v2-20260212.ckpt",
+    checkpoint_version   = "tabicl-classifier-v2",
     #' @field n_jobs CPU thread count.
     n_jobs               = NULL,
     #' @field random_state RNG seed.
@@ -134,7 +121,7 @@ TabICLClassifier <- R6::R6Class(
       kv_cache             = FALSE,
       model_path           = NULL,
       allow_auto_download  = TRUE,
-      checkpoint_version   = "tabicl-classifier-v2-20260212.ckpt",
+      checkpoint_version   = "tabicl-classifier-v2",
       device               = NULL,
       use_amp              = "auto",
       use_fa3              = "auto",

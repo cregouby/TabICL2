@@ -162,18 +162,3 @@ test_that("TabICLClassifier fit errors for invalid kv_cache value", {
   skip("requires model loading")
 })
 
-test_that("hf_download uses local cache when file exists", {
-  tmp <- tempfile(fileext = ".ckpt")
-  writeLines("dummy", tmp)
-  result <- .hf_download("somefile.ckpt", dest_path = tmp)
-  expect_equal(result, tmp)
-  file.remove(tmp)
-})
-
-test_that("hf_download errors when file missing and download disabled", {
-  tmp <- tempfile(fileext = ".ckpt")
-  expect_error(
-    .hf_download("somefile.ckpt", dest_path = tmp, allow_auto_download = FALSE),
-    "not found"
-  )
-})

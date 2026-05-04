@@ -90,7 +90,6 @@ transformed dataset views.
   <li><code>TabICLBaseEstimator$.move_cache_to_device()</code></li>
   <li><code>TabICLBaseEstimator$.resolve_amp_fa3()</code></li>
   <li><code>TabICLBaseEstimator$.resolve_device()</code></li>
-  <li><code>TabICLBaseEstimator$.sklearn_tags()</code></li>
   <li><code>TabICLBaseEstimator$save()</code></li>
 </ul>
 </details>}}
@@ -114,7 +113,7 @@ transformed dataset views.
   kv_cache = FALSE,
   model_path = NULL,
   allow_auto_download = TRUE,
-  checkpoint_version = "tabicl-classifier-v2-20260212.ckpt",
+  checkpoint_version = "tabicl-classifier-v2",
   device = NULL,
   use_amp = "auto",
   use_fa3 = "auto",

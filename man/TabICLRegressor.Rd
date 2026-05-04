@@ -80,6 +80,8 @@ checkpoint.  Default: \code{NULL}.}
 
     \item{\code{checkpoint_version}}{Checkpoint version string.}
 
+    \item{\code{n_jobs}}{CPU thread count.}
+
     \item{\code{y_scaler_}}{StandardScaler for target values (set by \code{fit}).}
 
     \item{\code{model_}}{Loaded TabICL model (set by \code{fit}).}
@@ -96,6 +98,8 @@ normalization method, or \code{NULL}.}
     \item{\code{X_encoder_}}{TransformToNumerical encoder (set by \code{fit}).}
 
     \item{\code{ensemble_generator_}}{EnsembleGenerator (set by \code{fit}).}
+
+    \item{\code{random_state}}{RNG seed.}
   }
   \if{html}{\out{</div>}}
 }
@@ -120,7 +124,6 @@ normalization method, or \code{NULL}.}
   <li><code>TabICLBaseEstimator$.move_cache_to_device()</code></li>
   <li><code>TabICLBaseEstimator$.resolve_amp_fa3()</code></li>
   <li><code>TabICLBaseEstimator$.resolve_device()</code></li>
-  <li><code>TabICLBaseEstimator$.sklearn_tags()</code></li>
   <li><code>TabICLBaseEstimator$save()</code></li>
 </ul>
 </details>}}
@@ -140,7 +143,7 @@ normalization method, or \code{NULL}.}
   kv_cache = FALSE,
   model_path = NULL,
   allow_auto_download = TRUE,
-  checkpoint_version = "tabicl-regressor-v2-20260212.ckpt",
+  checkpoint_version = "tabicl-regressor-v2",
   device = NULL,
   use_amp = "auto",
   use_fa3 = "auto",
