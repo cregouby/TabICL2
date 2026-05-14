@@ -49,7 +49,6 @@ test_that("TabICLClassifier basic compatibility", {
 
 
 test_that("TabICLRegressor basic compatibility", {
-  skip_if_not(exists("TabICLRegressor"), "TabICLRegressor not yet implemented")
 
   # n_estimators=2 ensures full preprocessing and ensembling pipeline is tested
   est <- TabICLRegressor$new(n_estimators = 2L)
@@ -98,7 +97,6 @@ test_that("TabICLClassifier KV cache mode 'kv' matches no cache", {
 
 
 test_that("TabICLClassifier KV cache mode 'repr' matches no cache", {
-  skip_if_not(exists("TabICLClassifier"), "TabICLClassifier not yet implemented")
 
   data <- make_classification(n_samples = 50L, n_features = 5L, random_state = 42L)
   X <- data$X
@@ -126,7 +124,6 @@ test_that("TabICLClassifier KV cache mode 'repr' matches no cache", {
 # KV Cache tests for Regressor
 
 test_that("TabICLRegressor KV cache mode 'kv' matches no cache", {
-  skip_if_not(exists("TabICLRegressor"), "TabICLRegressor not yet implemented")
 
   data <- make_regression(n_samples = 50L, n_features = 5L, random_state = 42L)
   X <- data$X
@@ -152,7 +149,6 @@ test_that("TabICLRegressor KV cache mode 'kv' matches no cache", {
 
 
 test_that("TabICLRegressor KV cache mode 'repr' matches no cache", {
-  skip_if_not(exists("TabICLRegressor"), "TabICLRegressor not yet implemented")
 
   data <- make_regression(n_samples = 50L, n_features = 5L, random_state = 42L)
   X <- data$X

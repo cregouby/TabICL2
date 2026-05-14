@@ -45,46 +45,45 @@
     cache_path <- file.path(cache_path, prefix)
   }
   try(fs::dir_create(cache_path, recurse = TRUE), silent = TRUE)
-  dest <- file.path(cache_path, fs::path_sanitize(fs::path_file(url)))
+  dest_name <- fs::path_file(url)
+  dest_path <- file.path(cache_path, fs::path_sanitize(dest_name))
 
-  if (file.exists(dest)) {
+  if (file.exists(dest_path)) {
+    return(dest_path)
   }
 
-  temp_dest <- paste0(dest, ".tmp")
-  on.exit({
-    if (file.exists(temp_dest)) file.remove(temp_dest)
-  }, add = TRUE)
+  temp_dest <- paste0(dest_path, ".tmp")
+  # on.exit({
+  #   if (file.exists(temp_dest)) file.remove(temp_dest)
+  # }, add = TRUE)
 
   size_msg <- if (!is.null(size_hint)) paste0(" (~", size_hint, ")") else ""
   cli_inform(
-    "Downloading {.file {filename}}{size_msg} to {.file {cache_dir}}"
+    "Downloading {.file {dest_name}}{size_msg} to {.file {cache_path}}"
   )
 
   if (progress) {
-    download.file(
-      url, destfile = temp_dest, mode = "wb", quiet = FALSE,
-      extra = if (.Platform$OS.type == "windows") "-q" else "--progress=bar"
-    )
+    download.file(url, destfile = temp_dest, mode = "wb")
   } else {
     download.file(url, destfile = temp_dest, mode = "wb", quiet = TRUE)
   }
 
   if (!file.exists(temp_dest) || file.info(temp_dest)$size == 0) {
-    runtime_error("Download failed for {.url {url}}")
+    cli_abort("Download failed for {.url {url}}")
   }
 
   if (!is.null(md5)) {
     actual_md5 <- md5sum(temp_dest)
     if (!identical(actual_md5, md5)) {
       file.remove(temp_dest)
-      runtime_error(
-        "Corrupt file! Checksum mismatch for {.file {filename}}. Delete the file in {.file {cache_dir}} and try again."
+      cli_abort(
+        "Corrupt file! Checksum mismatch for {.file {dest_name}}. Delete the file in {.file {cache_path}} and try again."
       )
     }
   }
 
-  file.rename(temp_dest, dest)
-  dest
+  file.rename(temp_dest, dest_path)
+  dest_path
 }
 
 
@@ -136,9 +135,9 @@
 
   .download_and_cache(
     url = url,
-    filename = checkpoint_version,
     md5 = md5,
     size_hint = size,
     progress = progress
   )
+
 }

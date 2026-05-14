@@ -17,10 +17,10 @@ NULL
     "TODO_MD5_V1_1", "87 MB"),
   tabicl_classifier_v2 = c(
     "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v2-20260212.ckpt",
-    "TODO_MD5_V2", "92 MB"),
+    "2a6ac00c27192231f4b01393b1e1e3dd", "105 MB"),
   tabicl_regressor_v2 = c(
     "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-regressor-v2-20260212.ckpt",
-    "TODO_MD5_V2", "92 MB")
+    "e9b7c522e50a3fc6ad5cf3486dcebc46", "109 MB")
 )
 #' TabICL Base Estimator Class
 #'

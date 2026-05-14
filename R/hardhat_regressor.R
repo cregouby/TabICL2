@@ -7,7 +7,7 @@ NULL
 
 #' @title TabICLRegressor -- Tabular In-Context Learning Regressor
 #'
-#' @description scikit-learn-compatible regressor that applies TabICL
+#' @description regressor that applies TabICL
 #'   to tabular data regression.  Uses an ensemble of transformed
 #'   dataset views (different normalizations and feature permutations)
 #'   to improve predictions.
@@ -34,7 +34,7 @@ NULL
 #'     checkpoint.  Default: \code{NULL}.}
 #'   \item{`allow_auto_download`}{`logical(1)`. Default: \code{TRUE}.}
 #'   \item{`checkpoint_version`}{`character(1)`. Default:
-#'     \code{"tabicl-regressor-v2-20260212.ckpt"}.}
+#'     \code{"tabicl_regressor_v2"}.}
 #'   \item{`device`, `use_amp`, `use_fa3`, `offload_mode`,
 #'     `disk_offload_dir`, `random_state`, `n_jobs`, `verbose`,
 #'     `inference_config`}{See \code{\link{TabICLBaseEstimator}}.}
@@ -84,7 +84,7 @@ TabICLRegressor <- R6Class(
     allow_auto_download = TRUE,
 
     #' @field checkpoint_version Checkpoint version string.
-    checkpoint_version = "tabicl-regressor-v2",
+    checkpoint_version = "tabicl_regressor_v2",
     #' @field n_jobs CPU thread count.
     n_jobs = NULL,
     #' @field y_scaler_ StandardScaler for target values (set by \code{fit}).
@@ -132,7 +132,7 @@ TabICLRegressor <- R6Class(
     #' @param allow_auto_download `logical(1)`. Whether to auto-download
     #'   checkpoint from Hugging Face Hub. Default \code{TRUE}.
     #' @param checkpoint_version `character(1)`. Checkpoint version
-    #'   string. Default \code{"tabicl-regressor-v2-20260212.ckpt"}.
+    #'   string. Default \code{"tabicl_regressor_v2"}.
     #' @param device `character(1)` or \code{NULL}. Torch device.
     #'   Passed to \code{\link{TabICLBaseEstimator}}.
     #' @param use_amp `character(1)` or \code{logical(1)}. Automatic
@@ -164,7 +164,7 @@ TabICLRegressor <- R6Class(
       kv_cache            = FALSE,
       model_path          = NULL,
       allow_auto_download = TRUE,
-      checkpoint_version  = "tabicl-regressor-v2",
+      checkpoint_version  = "tabicl_regressor_v2",
       device              = NULL,
       use_amp             = "auto",
       use_fa3             = "auto",
@@ -299,7 +299,6 @@ TabICLRegressor <- R6Class(
       info <- .get_checkpoint_info(checkpoint_version)
       .download_and_cache(
         url = info[1],
-        filename = checkpoint_version,
         md5 = info[2],
         size_hint = info[3],
         cache_dir = cache_dir,
@@ -310,7 +309,7 @@ TabICLRegressor <- R6Class(
     #' @description Load the pre-trained TabICL model from a checkpoint.
     #'
     #' Resolves the checkpoint source via \code{model_path} and
-    #' \code{checkpoint_version}, downloading from Hugging Face Hub if
+    #' \code{checkpoint_version}, downloading from HuggingFace Hub if
     #' necessary.
     #'
     #' @param progress Show download progress
@@ -329,7 +328,7 @@ TabICLRegressor <- R6Class(
       checkpoint <- tryCatch(
         torch_load(path, device = "cpu"),
         error = function(e) {
-          runtime_error("Failed to load checkpoint: {e$message}")
+          cli_abort("Failed to load checkpoint: {e$message}")
         }
       )
 
