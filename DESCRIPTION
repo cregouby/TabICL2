@@ -8,17 +8,11 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports:
-    abind,
     cli (>= 3.6.6),
-    einops,
     fs,
     glue,
-    hardhat,
-    magrittr,
-    parallel,
-    R6,
+    purrr,
     rappdirs,
-    recipes,
     rlang,
     torch (>= 0.17.0)
 Suggests: 

@@ -1,41 +1,24 @@
-# thanks to {torchvision} for the following
-# download_and_cache <- function(url, redownload = FALSE, prefix = "TabICL2",  md5 = NULL, progress = TRUE) {
-#
-#   cache_path <- rappdirs::user_cache_dir("torch")
-#
-#   fs::dir_create(cache_path)
-#   if (!is.null(prefix)) {
-#     cache_path <- file.path(cache_path, prefix)
-#   }
-#   try(fs::dir_create(cache_path, recurse = TRUE), silent = TRUE)
-#   path <- file.path(cache_path, fs::path_sanitize(fs::path_file(url)))
-#
-#   if (!file.exists(path) || redownload) {
-#     # we should first download to a temporary file because
-#     # download probalems could cause hard to debug errors.
-#     tmp <- tempfile(fileext = fs::path_ext(path))
-#     on.exit({try({fs::file_delete(tmp)}, silent = TRUE)}, add = TRUE)
-#
-#     withr::with_options(
-#       list(timeout = max(600, getOption("timeout", default = 0))),
-#       utils::download.file(url, tmp, mode = "wb")
-#     )
-#     fs::file_move(tmp, path)
-#   } else {
-#     if (!is.null(md5)) {
-#       actual_md5 <- md5sum(path)
-#       if (!identical(actual_md5, md5)) {
-#         cli_warn(
-#           "Cached file {.file {path}} has mismatched checksum. please rerun with {.cmd redownload=TRUE}."
-#         )
-#         file.remove(path)
-#       }
-#     }
-#
-#   }
-#   path
-# }
+# currently unused
+.model_urls <- list(
+  tabicl_classifier_v1 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1-20250208.ckpt",
+    "TODO_MD5_V1", "85 MB"),
+  tabicl_classifier_v1_1 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1.1-20250506.ckpt",
+    "TODO_MD5_V1_1", "87 MB"),
+  tabicl_classifier_v2 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v2-20260212.pt",
+    "2a6ac00c27192231f4b01393b1e1e3dd", "105 MB"),
+  tabicl_regressor_v2 = c(
+    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-regressor-v2-20260212.pt",
+    "e9b7c522e50a3fc6ad5cf3486dcebc46", "109 MB")
+)
 
+# thanks to torchvision:::download_and_cache
+
+#' @importFrom utils download.file
+#' @importFrom fs path_file path_sanitize
+#' @importFrom tools md5sum
 .download_and_cache <- function(url, redownload = FALSE, prefix = "TabICL2", md5 = NULL, size_hint = NULL,
                                 cache_dir = NULL, progress = TRUE) {
   cache_path <- rappdirs::user_cache_dir("torch")
@@ -45,8 +28,8 @@
     cache_path <- file.path(cache_path, prefix)
   }
   try(fs::dir_create(cache_path, recurse = TRUE), silent = TRUE)
-  dest_name <- fs::path_file(url)
-  dest_path <- file.path(cache_path, fs::path_sanitize(dest_name))
+  dest_name <- path_file(url)
+  dest_path <- file.path(cache_path, path_sanitize(dest_name))
 
   if (file.exists(dest_path)) {
     return(dest_path)
