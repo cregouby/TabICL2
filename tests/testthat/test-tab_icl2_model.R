@@ -239,7 +239,7 @@ test_that("NanoTabICLv2 standardization uses training subset only", {
 })
 
 test_that("NanoTabICLv2 CLS token expansion matches batch and rows", {
-  model <- NanoTabICLv2(max_classes = 4L, out_dim = 4L, n_cls_cols = 3L)
+  model <- NanoTabICLv2(max_classes = 4L, out_dim = 4L, col_n_cls = 3L)
   n_batch <- 2L
   n_rows <- 5L
   expanded <- model$row_cls_tokens$expand(c(n_batch, n_rows, -1, -1))
@@ -248,9 +248,9 @@ test_that("NanoTabICLv2 CLS token expansion matches batch and rows", {
 
 test_that("NanoTabICLv2 output MLP produces correct final dimension", {
   embed_dim = 16L
-  n_cls_cols = 2L
-  model <- NanoTabICLv2(max_classes = 6L, out_dim = 6L, embed_dim = embed_dim, n_cls_cols = n_cls_cols)
-  icl_dim <- embed_dim * n_cls_cols
+  col_n_cls = 2L
+  model <- NanoTabICLv2(max_classes = 6L, out_dim = 6L, embed_dim = embed_dim, col_n_cls = col_n_cls)
+  icl_dim <- embed_dim * col_n_cls
   expect_tensor_shape(model$out_mlp[[1]]$weight, c(64L, icl_dim))
   expect_tensor_shape(model$out_mlp[[3]]$weight, c(6L, 64L))
 })
@@ -277,7 +277,7 @@ test_that("NanoTabICLv2 handles different embed_dim values", {
 test_that("NanoTabICLv2 handles different block counts", {
   model <- NanoTabICLv2(
     max_classes = 4L, out_dim = 4L,
-    col_num_blocks = 1L, row_num_blocks = 2L, icl_num_blocks = 4L
+    col_n_block = 1L, row_n_block = 2L, icl_n_block = 4L
   )
   expect_equal(length(model$col_blocks), 1L)
   expect_equal(length(model$row_blocks), 2L)
@@ -287,7 +287,7 @@ test_that("NanoTabICLv2 handles different block counts", {
 test_that("NanoTabICLv2 handles different nhead values", {
   model <- NanoTabICLv2(
     max_classes = 3L, out_dim = 3L,
-    col_nhead = 4L, row_nhead = 2L, icl_nhead = 8L, embed_dim = 32L
+    col_n_head = 4L, row_n_head = 2L, icl_n_head = 8L, embed_dim = 32L
   )
   expect_equal(model$col_blocks[[1]]$tfm1$num_heads, 4L)
   expect_equal(model$row_blocks[[1]]$num_heads, 2L)

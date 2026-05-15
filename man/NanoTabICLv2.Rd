@@ -8,15 +8,15 @@ NanoTabICLv2(
   max_classes,
   out_dim,
   embed_dim = 128L,
-  col_num_blocks = 3L,
-  row_num_blocks = 3L,
-  icl_num_blocks = 12L,
-  col_nhead = 8L,
-  row_nhead = 8L,
-  icl_nhead = 8L,
+  col_n_block = 3L,
+  row_n_block = 3L,
+  icl_n_block = 12L,
+  col_n_head = 8L,
+  row_n_head = 8L,
+  icl_n_head = 8L,
   feature_group_size = 3L,
-  n_cls_cols = 4L,
-  n_cls_rows = 128L
+  col_n_cls = 4L,
+  row_n_cls = 128L
 )
 }
 \arguments{
@@ -26,23 +26,23 @@ NanoTabICLv2(
 
 \item{embed_dim}{Embedding dimension for features}
 
-\item{col_num_blocks}{Number of column transformer blocks}
+\item{col_n_block}{Number of column transformer blocks}
 
-\item{row_num_blocks}{Number of row transformer blocks}
+\item{row_n_block}{Number of row transformer blocks}
 
-\item{icl_num_blocks}{Number of ICL transformer blocks}
+\item{icl_n_block}{Number of ICL transformer blocks}
 
-\item{col_nhead}{Number of attention heads for column blocks}
+\item{col_n_head}{Number of attention heads for column blocks}
 
-\item{row_nhead}{Number of attention heads for row blocks}
+\item{row_n_head}{Number of attention heads for row blocks}
 
-\item{icl_nhead}{Number of attention heads for ICL blocks}
+\item{icl_n_head}{Number of attention heads for ICL blocks}
 
 \item{feature_group_size}{Size of feature groups for repeated grouping}
 
-\item{n_cls_cols}{Number of CLS tokens per column}
+\item{col_n_cls}{Number of CLS tokens per column}
 
-\item{n_cls_rows}{Number of inducing vectors for column attention}
+\item{row_n_cls}{Number of inducing vectors for column attention}
 }
 \value{
 An nn_module ready for training/inference

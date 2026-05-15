@@ -224,15 +224,15 @@ InducedTransformerBlock <- torch::nn_module(
 #' @param max_classes Maximum number of classes (0 for regression)
 #' @param out_dim Output dimension (n_classes for classification, n_quantiles for regression)
 #' @param embed_dim Embedding dimension for features
-#' @param col_num_blocks Number of column transformer blocks
-#' @param row_num_blocks Number of row transformer blocks
-#' @param icl_num_blocks Number of ICL transformer blocks
-#' @param col_nhead Number of attention heads for column blocks
-#' @param row_nhead Number of attention heads for row blocks
-#' @param icl_nhead Number of attention heads for ICL blocks
+#' @param col_n_block Number of column transformer blocks
+#' @param row_n_block Number of row transformer blocks
+#' @param icl_n_block Number of ICL transformer blocks
+#' @param col_n_head Number of attention heads for column blocks
+#' @param row_n_head Number of attention heads for row blocks
+#' @param icl_n_head Number of attention heads for ICL blocks
 #' @param feature_group_size Size of feature groups for repeated grouping
-#' @param n_cls_cols Number of CLS tokens per column
-#' @param n_cls_rows Number of inducing vectors for column attention
+#' @param col_n_cls Number of CLS tokens per column
+#' @param row_n_cls Number of inducing vectors for column attention
 #' @return An nn_module ready for training/inference
 #' @export
 NanoTabICLv2 <- torch::nn_module(
@@ -242,18 +242,18 @@ NanoTabICLv2 <- torch::nn_module(
     max_classes,
     out_dim,
     embed_dim = 128L,
-    col_num_blocks = 3L,
-    row_num_blocks = 3L,
-    icl_num_blocks = 12L,
-    col_nhead = 8L,
-    row_nhead = 8L,
-    icl_nhead = 8L,
+    col_n_block = 3L,
+    row_n_block = 3L,
+    icl_n_block = 12L,
+    col_n_head = 8L,
+    row_n_head = 8L,
+    icl_n_head = 8L,
     feature_group_size = 3L,
-    n_cls_cols = 4L,
-    n_cls_rows = 128L
+    col_n_cls = 4L,
+    row_n_cls = 128L
   ) {
     self$feature_group_size <- feature_group_size
-    icl_dim <- embed_dim * n_cls_cols
+    icl_dim <- embed_dim * col_n_cls
 
     self$x_embed <- nn_linear(feature_group_size, embed_dim)
     self$y_embed_in <- if (max_classes > 0) {
@@ -268,37 +268,37 @@ NanoTabICLv2 <- torch::nn_module(
     }
 
     self$col_blocks <- nn_module_list(
-      purrr::map(seq_len(col_num_blocks), function(i) {
+      purrr::map(seq_len(col_n_block), function(i) {
         InducedTransformerBlock(
           embed_dim = embed_dim,
-          num_heads = col_nhead,
-          n_inducing = n_cls_rows,
+          num_heads = col_n_head,
+          n_inducing = row_n_cls,
           ssmax = TRUE
         )
       })
     )
 
     self$row_blocks <- nn_module_list(
-      purrr::map(seq_len(row_num_blocks), function(i) {
+      purrr::map(seq_len(row_n_block), function(i) {
         TransformerBlock(
           embed_dim = embed_dim,
-          num_heads = row_nhead,
+          num_heads = row_n_head,
           use_rope = TRUE
         )
       })
     )
 
     self$icl_blocks <- nn_module_list(
-      purrr::map(seq_len(icl_num_blocks), function(i) {
+      purrr::map(seq_len(icl_n_block), function(i) {
         TransformerBlock(
           embed_dim = icl_dim,
-          num_heads = icl_nhead,
+          num_heads = icl_n_head,
           ssmax = TRUE
         )
       })
     )
 
-    self$row_cls_tokens <- nn_parameter(0.02 * torch_randn(1, 1, n_cls_cols, embed_dim))
+    self$row_cls_tokens <- nn_parameter(0.02 * torch_randn(1, 1, col_n_cls, embed_dim))
     self$row_ln <- nn_layer_norm(embed_dim)
     self$out_ln <- nn_layer_norm(icl_dim)
     self$out_mlp <- .get_mlp(icl_dim, icl_dim * 2, out_dim)

@@ -14,7 +14,7 @@
     "e9b7c522e50a3fc6ad5cf3486dcebc46", "109 MB")
 )
 
-# thanks to torchvision:::download_and_cache
+# deeply inspired from to torchvision:::download_and_cache
 
 #' @importFrom utils download.file
 #' @importFrom fs path_file path_sanitize
