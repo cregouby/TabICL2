@@ -34,14 +34,14 @@ data—to make predictions without additional training.
   labeled examples in the prompt, without fine-tuning
 - **Universal Architecture**: Single model handles both classification
   and regression tasks
-- **Scalable Classification**: Hierarchical classification automatically
-  handles datasets with thousands of classes
+- **Scalable Classification**: Switch to hierarchical classification to
+  automatically handles datasets with thousands of classes (TO-BE)
 - **Efficient Inference**: KV-caching and representation caching for
-  fast batch predictions
+  fast batch predictions (TO-BE)
 - **Memory Management**: Automatic offloading to CPU or disk for
-  large-scale inference
+  large-scale inference (TO-BE)
 - **Distribution-Aware Embeddings**: Column embeddings capture
-  statistical properties of features using set transformers
+  statistical properties of features using set transformers (TO-BE)
 - **Flexible Attention**: Scalable softmax (SSMax) variants prevent
   attention saturation on long sequences
 
@@ -57,85 +57,51 @@ pak::pak("cregouby/TabICL2")
 
 ## Quick Start
 
-### Classification Example
+### Classification example
+
+As TabICLv2 use train and test input in a $\Gamma$ shape, we provide
+formula or recipe input with a {rsample} `rsplit` object for the `data`
+parameter :
 
 ``` r
-library(tabicl2)
-library(torch)
+library(TabICL2)
+suppressPackageStartupMessages(library(recipes))
+library(rsample)
 
-# Create a TabICL model for classification
-model <- TabICL(
-  max_classes = 10,           # Maximum classes (0 for regression)
-  num_quantiles = 10,         # Output dimension
-  col_embed_dim = 64,         # Column embedding dimension
-  row_d_model = 128,          # Row representation dimension
-  icl_d_model = 256,          # ICL transformer dimension
-  col_num_blocks = 2,         # Column transformer blocks
-  row_num_blocks = 2,         # Row transformer blocks
-  icl_num_blocks = 4,         # ICL transformer blocks
-  nhead = 8                   # Attention heads
-)
+data("attrition", package = "modeldata")
+attrition_split <- initial_split(attrition)
+  
+rec <- recipe(Attrition ~ ., data = training(attrition_split)) %>% 
+  step_normalize(all_numeric(), -all_outcomes())
 
-# Prepare your data
-# X: (batch, total_rows, features) - training + test rows concatenated
-# y_train: (batch, train_rows) - labels for training portion (0-based indices)
-batch_size <- 4
-train_size <- 20
-test_size <- 10
-n_features <- 15
-
-X <- torch_randn(batch_size, train_size + test_size, n_features)
-y_train <- torch_randint(0L, 5L, c(batch_size, train_size))  # 5 classes
-
-# Make predictions on test rows using training examples as context
-model$eval()
-with_no_grad({
-  predictions <- model(X, y_train, return_logits = FALSE)
-  # predictions: (batch, test_size, num_classes) with probabilities
-})
+fit <- tab_icl2(rec, data = attrition_split)
 
 # Get predicted classes
-predicted_classes <- predictions$argmax(dim = -1)
-print(predicted_classes)
+predicted_classes <- predict(fit, testing(attrition_split))
+predicted_classes
 ```
 
 ### Regression Example
 
 ``` r
-library(tabicl2)
-library(torch)
+library(TabICL2)
+library(rsample)
 
-# For regression, set max_classes = 0
-model <- TabICL(
-  max_classes = 0,            # 0 = regression mode
-  num_quantiles = 9,          # Predict 9 quantiles
-  col_embed_dim = 64,
-  row_d_model = 128,
-  icl_d_model = 256,
-  col_num_blocks = 2,
-  row_num_blocks = 2,
-  icl_num_blocks = 4,
-  nhead = 8
-)
+data("ames", package = "modeldata")
 
-# Prepare data
-X <- torch_randn(batch_size, train_size + test_size, n_features)
-y_train <- torch_randn(batch_size, train_size)  # Continuous targets
+ames_split <- initial_split(ames)
 
-# Predict quantiles for test rows
-model$eval()
-with_no_grad({
-  quantile_preds <- model(X, y_train)
-  # quantile_preds: (batch, test_size, num_quantiles)
-})
+fit <- tab_icl2(Sale_Price ~ ., data = ames_split)
 
-# Convert quantiles to mean and variance
-predictions <- QuantileToDistribution(quantile_preds, y_train)
-# predictions$mean: (batch, test_size, 1)
-# predictions$variance: (batch, test_size, 1)
+# Get predicted classes
+predicted_sale_price <- predict(fit, testing(ames_split))
+predicted_sale_price
 ```
 
-## Advanced Features
+## Advanced Features (Future)
+
+Current implementation relies on nanotabiclv2 and will support advanced
+features incrementally in the future.
 
 ### KV Caching for Fast Inference
 
@@ -246,32 +212,10 @@ examples:
 - For classification: outputs logits/probabilities for each class
 - For regression: outputs quantile predictions
 
-## How It Works
-
-``` r
-# Training mode: Learn to predict from in-context examples
-model$train()
-loss <- compute_loss(model(X_batch, y_train_batch), y_true)
-
-# Inference mode: Use learned patterns to make predictions
-model$eval()
-predictions <- model(X_new, y_context)
-```
-
 **Key Insight**: The model is trained on many different tabular
 datasets. At inference time, it uses the labeled examples you provide
 (the “context”) to understand the current task and make predictions on
 unlabeled test rows—no fine-tuning required.
-
-## Training vs Inference
-
-- **Training mode** (`model$train()`): Learns to perform in-context
-  learning across diverse tabular datasets
-- **Evaluation mode** (`model$eval()`): Uses learned in-context learning
-  ability to make predictions
-
-The model must be pre-trained on a large corpus of tabular datasets
-before it can perform effective in-context learning at inference time.
 
 ## Performance Tips
 
@@ -288,9 +232,9 @@ before it can perform effective in-context learning at inference time.
 ## References
 
 - **TabICL**: [A Tabular Foundation Model for In-Context Learning on
-  Large Data](https://arxiv.org/abs/2502.05564)
-- **TabPFNv2**: [Accurate predictions on small data with a tabular
-  foundation model](https://github.com/automl/TabPFN)
+  Large Data.](https://arxiv.org/abs/2502.05564)
+- **TabICLv2**: [TabICLv2: A better, faster, scalable, and open tabular
+  foundation model.](https://arxiv.org/abs/2602.11139)
 - **Set Transformers**: [Lee et al.,
   2019](https://arxiv.org/abs/1810.00825)
 - **In-Context Learning**: Learning from examples in the prompt without
@@ -303,7 +247,7 @@ If you use TabICL2 in your research, please cite:
 ``` bibtex
 @software{tabicl2,
   title = {TabICL2: Transformer-based In-Context Learning for Tabular Data},
-  author = {Your Name},
+  author = {Christophe Regouby},
   year = {2026},
   url = {https://github.com/cregouby/TabICL2}
 }

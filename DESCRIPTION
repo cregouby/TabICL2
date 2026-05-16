@@ -8,20 +8,21 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports:
-    abind,
     cli (>= 3.6.6),
-    einops,
+    dplyr,
     fs,
     glue,
+    generics,
     hardhat,
-    magrittr,
-    parallel,
-    R6,
+    purrr,
     rappdirs,
-    recipes,
-    rlang,
+    rlang (>= 1.1.0),
+    tibble,
     torch (>= 0.17.0)
 Suggests: 
+    modeldata,
+    recipes,
+    rsample,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0
