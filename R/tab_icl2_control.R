@@ -115,10 +115,10 @@ print.control_tab_icl2 <- function(x, ...) {
     lst <- purrr::map2(
       names(xsub),
       xsub,
-      ~ format_inline("{.arg {.x}}: {.val {.y}}")
+      ~ cli::format_inline("{.arg {.x}}: {.val {.y}}")
     )
     names(lst) <- rep("*", length(lst))
-    cli_bullets(lst)
+    cli::cli_bullets(lst)
   }
   invisible(x)
 }

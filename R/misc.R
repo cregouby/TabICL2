@@ -11,7 +11,7 @@ check_data_constraints <- function(x, y, control) {
       call = NULL,
       c(
         i = "There are {format(x_dims[1], big.mark = ',')} rows in the training set.",
-        i = "TabPFN (version 2) is intended for training set sizes <=
+        i = "TabICLv2 is intended for training set sizes <=
         {format(row_limits, big.mark = ',')} rows.",
         i = "Consider setting the option {.arg ignore_pretraining_limits} to
         {.val TRUE} or subset the training size using the
@@ -24,7 +24,7 @@ check_data_constraints <- function(x, y, control) {
       call = NULL,
       c(
         i = "There are {format(x_dims[2], big.mark = ',')} predictors in the training set.",
-        i = "TabPFN (version 2) is intended for <= {col_limits} predictors.",
+        i = "TabICLv2 is intended for <= {col_limits} predictors.",
         i = "Consider setting the option {.arg ignore_pretraining_limits} to {.val TRUE} or subset the training size."
       )
     )
@@ -35,7 +35,7 @@ check_data_constraints <- function(x, y, control) {
       call = NULL,
       c(
         i = "There are {length(lvls)} classes in the outcome.",
-        x = "TabPFN (version 2) is intended for <= {cls_limits} classes and won't work with more."
+        x = "TabICLv2 is intended for <= {cls_limits} classes and won't work with more."
       )
     )
   }
@@ -52,17 +52,17 @@ sample_indicies <- function(molded, size_limit = row_limits) {
   }
 
   dat <-
-    molded$outcomes |>
-    dplyr::mutate(.row_order = dplyr::row_number()) |>
+    molded$outcomes %>%
+    dplyr::mutate(.row_order = dplyr::row_number()) %>%
     rlang::set_names(c("outcome", ".row_order"))
 
   is_factor <- is.factor(dat$outcome)
 
   if (is_factor) {
     data_subset <-
-      dat |>
-      dplyr::group_by(outcome) |>
-      dplyr::group_nest(keep = TRUE) |>
+      dat %>%
+      dplyr::group_by(outcome) %>%
+      dplyr::group_nest(keep = TRUE) %>%
       dplyr::mutate(
         size = purrr::map_int(data, nrow),
         sample_prop = size / num_rows,
@@ -71,10 +71,10 @@ sample_indicies <- function(molded, size_limit = row_limits) {
       )
   } else {
     data_subset <-
-      dat |>
-      dplyr::mutate(quantile = dplyr::ntile(outcome, n = 4)) |>
-      dplyr::group_by(quantile) |>
-      dplyr::group_nest(keep = TRUE) |>
+      dat %>%
+      dplyr::mutate(quantile = dplyr::ntile(outcome, n = 4)) %>%
+      dplyr::group_by(quantile) %>%
+      dplyr::group_nest(keep = TRUE) %>%
       dplyr::mutate(
         size = purrr::map_int(data, nrow),
         sample_prop = size / num_rows,
@@ -83,38 +83,18 @@ sample_indicies <- function(molded, size_limit = row_limits) {
       )
   }
 
-  purrr::map_dfr(data_subset$data, ~.x) |>
-    dplyr::arrange(.row_order) |>
-    dplyr::select(.row_order) |>
-    dplyr::slice(1:size_limit) |>
+  purrr::map_dfr(data_subset$data, ~.x) %>%
+    dplyr::arrange(.row_order) %>%
+    dplyr::select(.row_order) %>%
+    dplyr::slice(1:size_limit) %>%
     purrr::pluck(".row_order")
 }
-
-#' Check the Python package installation
-#'
-#' Attempts to import the Python package
-#' @return A single logical
-#' @examples
-#' if (interactive()) {
-#'  # This may take a minute
-#'  is_tab_pfn_installed()
-#' }
-#' @export
-is_tab_pfn_installed <- function() {
-  suppressWarnings(
-    res <- import_tabpfn() |>
-      reticulate::py_has_attr("noexists") |> # Forcing load of package
-      try(silent = TRUE)
-  )
-  !inherits(res, "try-error")
-}
-
 
 check_model_version <- function(x, call = rlang::caller_env()) {
   valid_versions <- names(.model_urls)
 
   if (!x %in% valid_versions) {
-    cli_abort(
+    cli::cli_abort(
       c(
         "{.arg model_version} must be one of {.or {.val {valid_versions}}}.",
         x = "{.val {x}} is not a valid model version."
@@ -125,3 +105,4 @@ check_model_version <- function(x, call = rlang::caller_env()) {
 
   invisible(x)
 }
+

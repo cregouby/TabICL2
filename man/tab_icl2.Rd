@@ -80,7 +80,7 @@ and the predictor terms on the right-hand side.}
 
 \item{data}{When a \strong{recipe} or \strong{formula} is used, \code{data} is specified as:
 \itemize{
-\item A \strong{data frame} containing both the predictors and the outcome.
+\item A \strong{rsplit} object from \code{rsample} package containing both the predictors and the outcome.
 }}
 }
 \value{
@@ -89,7 +89,6 @@ A \code{tab_icl2} object with elements:
 \item \code{fit}: the python object containing the model.
 \item \code{levels}: a character string of class levels (or NULL for regression)
 \item \code{training}: a vector with the training set dimensions.
-\item \code{logging}: any R or python messages produced by the computations.
 \item \code{blueprint}: am object produced by \code{\link[hardhat:mold]{hardhat::mold()}} used to process
 new data during prediction.
 }
@@ -134,15 +133,15 @@ are allowed.
 \subsection{Model Selection}{
 \subsection{Selecting a model version}{
 
-Use the \code{version} argument to select a specific released model version. For
+Use the \code{version} argument to select a specific pretrained model version. For
 example:
 
 \preformatted{
-  # Use version 2.0
-  mod <- tab_icl2(predictors, outcome, version = "v2")
+  # Use classifier version 2
+  mod <- tab_icl2(predictors, outcome, version = "tabicl_classifier_v2")
 
-  # Use version 2.5
-  mod <- tab_icl2(predictors, outcome, version = "v2.5")
+  # Use regressor version 2
+  mod <- tab_icl2(predictors, outcome, version = "tabicl_regressor_v2")
 }
 }
 

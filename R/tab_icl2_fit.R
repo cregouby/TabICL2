@@ -20,7 +20,7 @@
 #'
 #' @param data When a __recipe__ or __formula__ is used, `data` is specified as:
 #'
-#'   * A __data frame__ containing both the predictors and the outcome.
+#'   * A __rsplit__ object from `rsample` package containing both the predictors and the outcome.
 #'
 #' @param formula A formula specifying the outcome terms on the left-hand side,
 #' and the predictor terms on the right-hand side.
@@ -69,15 +69,15 @@
 #'
 #' ### Selecting a model version
 #'
-#' Use the `version` argument to select a specific released model version. For
+#' Use the `version` argument to select a specific pretrained model version. For
 #' example:
 #'
 #' \preformatted{
-#'   # Use version 2.0
-#'   mod <- tab_icl2(predictors, outcome, version = "v2")
+#'   # Use classifier version 2
+#'   mod <- tab_icl2(predictors, outcome, version = "tabicl_classifier_v2")
 #'
-#'   # Use version 2.5
-#'   mod <- tab_icl2(predictors, outcome, version = "v2.5")
+#'   # Use regressor version 2
+#'   mod <- tab_icl2(predictors, outcome, version = "tabicl_regressor_v2")
 #' }
 #'
 #' ### Pointing to a local model file
@@ -110,7 +110,6 @@
 #'   * `fit`: the python object containing the model.
 #'   * `levels`: a character string of class levels (or NULL for regression)
 #'   * `training`: a vector with the training set dimensions.
-#'   * `logging`: any R or python messages produced by the computations.
 #'   * `blueprint`: am object produced by [hardhat::mold()] used to process
 #'      new data during prediction.
 #'
@@ -237,21 +236,20 @@ tab_icl2.formula <- function(
   formula,
   data,
   num_quantiles = 30L,
-  # softmax_temperature = 0.9,
-  # balance_probabilities = FALSE,
-  # average_before_softmax = FALSE,
-  # training_set_limit = 10000,
   version = NULL,
   control = control_tab_icl2(),
   ...
 ) {
   options <- control
   options$num_quantiles <- num_quantiles
-  # options$softmax_temperature <- softmax_temperature
-  # options$balance_probabilities <- balance_probabilities
-  # options$average_before_softmax <- average_before_softmax
   options <- check_fit_args(options)
-  # check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
+  if (!inherits(data, "rsplit")) {
+    cli::cli_abort(
+      "With {.cls formula}}, the data object should be a rsample {.cls rsplit}, not
+			{.cls {class(data)}}.",
+      call = call
+    )
+  }
 
   # Do not convert factors to indicators:
   bp <- hardhat::default_formula_blueprint(
@@ -260,7 +258,9 @@ tab_icl2.formula <- function(
     indicators = "none",
     composition = "tibble"
   )
-  processed <- hardhat::mold(formula, data, blueprint = bp)
+  processed <- hardhat::mold(formula, rsample::training(data), blueprint = bp)
+  processed_ts <- hardhat::forge(rsample::testing(data), blueprint = processed$blueprint)
+  processed$predictors <- bind_rows(processed$predictors, processed_ts$predictor)
   tr_ind <- sample_indicies(processed, size_limit = 1e4)
   if (length(tr_ind) > 0) {
     processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
@@ -288,13 +288,18 @@ tab_icl2.recipe <- function(
 ) {
   options <- control
   options$num_quantiles <- num_quantiles
-  # options$softmax_temperature <- softmax_temperature
-  # options$balance_probabilities <- balance_probabilities
-  # options$average_before_softmax <- average_before_softmax
   options <- check_fit_args(options)
-  # check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
+  if (!inherits(data, "rsplit")) {
+    cli::cli_abort(
+      "With {.cls {class(x)}}, the data object should be a rsample {.cls rsplit}, not
+			{.cls {class(data)}}.",
+      call = call
+    )
+  }
 
-  processed <- hardhat::mold(x, data)
+  processed <- hardhat::mold(x, rsample::training(data))
+  processed_ts <- hardhat::forge(rsample::testing(data), processed$blueprint)
+  processed$predictors <- bind_rows(processed$predictors, processed_ts$predictor)
   tr_ind <- sample_indicies(processed, size_limit = 1e4)
   if (length(tr_ind) > 0) {
     processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
@@ -315,17 +320,16 @@ tab_icl2_bridge <- function(processed, options, version = NULL, ...) {
   }
 
   predictors <- processed$predictors
-  outcome <- processed$outcomes[[1]]
+  outcome <- processed$outcomes
 
   check_data_constraints(predictors, outcome, options)
 
   res <- tab_icl2_impl(predictors, outcome, options, version = version)
 
-  new_tab_icl(
+  new_tab_icl2(
     fit = res$fit,
     levels = res$lvls,
     training = res$train,
-    logging = res$logging,
     blueprint = processed$blueprint
   )
 }
@@ -335,37 +339,92 @@ tab_icl2_bridge <- function(processed, options, version = NULL, ...) {
 
 tab_icl2_impl <- function(x, y, opts, version = NULL) {
 
-  if (is.factor(y)) {
-    max_classes <- out_dim <- nlevels(y)
-    y_tt <- torch_tensor(as.numeric(y))
+  # TODO need to turn into a proper torch_dataset
+  batch <- resolve_data(x, y)
 
-  } else if (is.numeric(y)) {
+  if (is.factor(y[[1]])) {
+    # classification
+    max_classes <- out_dim <- nlevels(y)
+
+  } else {
+    # regression
     max_classes <- 0L
     out_dim <- opts$num_quantiles
-    y_tt <- torch_tensor(y)
   }
   mod_obj <- NanoTabICLv2(max_classes = max_classes, out_dim = out_dim)
-  model_fit <- mod_obj(torch_tensor(as.matrix(x)), y_tt)
+  model_fit <- mod_obj(batch$x$unsqueeze(1), batch$y$unsqueeze(1))
 
   # TODO check for failures
   res <- list(
     fit = model_fit,
-    lvls = levels(y),
-    train = dim(x),
-    logging = c(r = msgs)
+    levels = batch$output_lvls,
+    train = c(batch$y$shape[1], ncol(x))
   )
   class(res) <- c("tab_icl2")
   res
 }
 
+#' Transforms input data into a list of_tensors and parameters for model input
+#'
+#' The 3 torch tensors being
+#' $x , $x_na_mask, $y
+#'  and parameters being
+#' cat_idx the vector of x categorical predictor index
+#' cat_dims the vector of number of levels of each x categorical predictor
+#' input_dim  the number of col in `x`
+#' output_dim the `ncol(y)` in case of (multi-outcome) regression or
+#'            the `nlevels(y)` in case of classification or
+#'            the vector of `nlevels(y)` in case of multi-outcome classification
+#'
+#' @param x a data frame
+#' @param y a response vector
+#' @noRd
+resolve_data <- function(x, y) {
+  cat_idx <- which(sapply(x, is.factor))
+  cat_dims <- sapply(cat_idx, function(i) nlevels(x[[i]]))
+  # convert factors into integers
+  if (length(cat_idx) > 0) {
+    x[,cat_idx] <- sapply(cat_idx, function(i) as.integer(x[[i]]))
+  } else {
+    # prevent empty cat idx
+    cat_idx <- 0L
+    cat_dims <- 0L
+  }
+  x_tensor <- torch::torch_tensor(as.matrix(x), dtype = torch::torch_float())
+  x_na_mask <- x %>% is.na %>% as.matrix %>% torch::torch_tensor(dtype = torch::torch_bool())
+
+  # convert factors to integers, based on the class of target first column
+  # TODO do not assume but assert type-consistency of all y cols
+  if (is.factor(y[[1]])) {
+    y_tensor <- torch::torch_tensor(sapply(y, function(i) as.integer(i)), dtype = torch::torch_float())
+    if (is.atomic(y)) {
+      output_lvls <- levels(y)
+      output_dim <- nlevels(y)
+    } else {
+      output_lvls <- sapply(y, function(i) levels(i))
+      output_dim <- sapply(y, function(i) nlevels(i))
+    }
+  } else {
+    y_tensor <- torch::torch_tensor(as.matrix(y), dtype = torch::torch_float())$squeeze()
+    output_lvls <- NULL
+    output_dim <- ncol(y)
+  }
+  input_dim <- ncol(x)
+
+  list(x = x_tensor, x_na_mask = x_na_mask, y = y_tensor,
+       input_dim = input_dim,
+       cat_idx = cat_idx, cat_dims = cat_dims,
+       output_lvls = output_lvls, output_dim = output_dim)
+}
+
 #' @export
 print.tab_icl2 <- function(x, ...) {
   type <- ifelse(is.null(x$levels), "Regression", "Classification")
-  cli_inform("TabICL2 {type} Model")
+  cli_inform("TabICLv2 {type} Model")
   cat("\n")
   cli_inform("Training set\n\n")
-  cli_inform(c(i = "{x$training[1]} data point{?s}"))
-  cli_inform(c(i = "{x$training[2]} predictor{?s}"))
+  cli_inform(c(i = "{x$train[1]} data point{?s}"))
+  cli_inform(c(i = "{x$train[2]} predictor{?s}"))
 
   if (!is.null(x$levels)) {
     cli_inform(c(i = "class levels: {.val {x$levels}}"))

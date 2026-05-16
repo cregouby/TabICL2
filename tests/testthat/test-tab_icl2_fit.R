@@ -1,8 +1,8 @@
 test_that("tab_icl2 fits with all versions", {
   skip_if_not(torch::torch_is_installed())
   for (version in names(.model_urls)) {
-    mod <- tab_icl2(am ~ mpg + wt, data = mtcars, version = version, num_quantiles = 5)
-    expect_s3_class(mod, "tab_icl2")
+    mod <- tab_icl2(am ~ mpg + wt, data = rsample::initial_split(mtcars), version = version, num_quantiles = 5)
+    expect_s3_class(mod, "tab_icl_v2")
   }
 })
 
@@ -23,25 +23,73 @@ test_that("sample_indicies handles numeric outcomes", {
   expect_true(all(result >= 1 & result <= 50001))
 })
 
-test_that("data constraints", {
+test_that("classifier takes `training_set_limit` into account", {
   skip_if_not(torch::torch_is_installed())
-  skip_if_not_installed("modeldata")
+  two_class_split <- rsample::initial_split(modeldata::two_class_dat)
 
-  set.seed(418)
   orig_data <- tab_icl2(
     Class ~ .,
-    data = modeldata::two_class_dat,
+    data = two_class_split
   )
 
-  expect_equal(orig_data$training[1], nrow(modeldata::two_class_dat))
+  expect_equal(orig_data$training[1], nrow(training(two_class_split)))
 
-  set.seed(418)
   smaller_data <- tab_icl2(
     Class ~ .,
-    data = modeldata::two_class_dat,
-    training_set_limit = 50,
-    control = control_tab_icl2()
+    data = two_class_split,
+    training_set_limit = 50
   )
 
   expect_equal(smaller_data$training[1], 50)
+})
+
+test_that("Training regression for data.frame and formula", {
+
+  expect_no_error(
+    fit <- tab_icl2(train_val, y)
+  )
+
+  expect_no_error(
+    predict(fit, train_val)
+  )
+
+  expect_no_error(
+    fit <- tab_icl2(Sale_Price ~ ., data = ames_split)
+  )
+
+  expect_no_error(
+    predict(fit, x)
+  )
+})
+
+test_that("Training classification for data.frame", {
+
+  expect_no_error(
+    fit <- tab_icl2(attrix, attriy)
+  )
+
+  expect_no_error(
+    predict(fit, attrix, type = "prob")
+  )
+
+  expect_no_error(
+    predict(fit, attrix)
+  )
+
+})
+
+
+test_that("can train from a recipe", {
+
+  rec <- recipe(Attrition ~ ., data = attrition) %>%
+    step_normalize(all_numeric(), -all_outcomes())
+
+  expect_no_error(
+    fit <- tab_icl2(rec, attri_split)
+  )
+
+  expect_no_error(
+    predict(fit, attrition)
+  )
+
 })
