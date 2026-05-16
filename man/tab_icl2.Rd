@@ -86,7 +86,7 @@ and the predictor terms on the right-hand side.}
 \value{
 A \code{tab_icl2} object with elements:
 \itemize{
-\item \code{fit}: the python object containing the model.
+\item \code{fit}: the object containing the model.
 \item \code{levels}: a character string of class levels (or NULL for regression)
 \item \code{training}: a vector with the training set dimensions.
 \item \code{blueprint}: am object produced by \code{\link[hardhat:mold]{hardhat::mold()}} used to process
@@ -115,16 +115,6 @@ specific computations and might be slower than the CPU for some data sets.
 }
 
 \subsection{Data}{
-
-Be default, there are limits to the training data dimensions:
-\itemize{
-\item Version 2.0: number of training set samples (10,000) and, the number of
-predictors (500). There is an unchangeable limit to the number of classes
-(10).
-\item Version 2.5: number of training set samples (50,000) and, the number of
-predictors (2,000). There is an unchangeable limit to the number of classes
-(10).
-}
 
 Predictors do not require preprocessing; missing values and factor vectors
 are allowed.
@@ -175,14 +165,17 @@ A value of \code{softmax_temperature = 1} results in a plain softmax value.
 \examples{
 predictors <- mtcars[, -1]
 outcome <- mtcars[, 1]
+mtcars_split <- rsample::initial_split(mtcars)
 
 \dontrun{
 if (torch_is_installed() & interactive()) {
  # XY interface
  mod <- tab_icl2(predictors, outcome)
+ mod
 
  # Formula interface
- mod2 <- tab_icl2(mpg ~ ., mtcars)
+ mod2 <- tab_icl2(mpg ~ ., mtcars_split)
+ mod2
 
  # Recipes interface
  if (rlang::is_installed("recipes")) {
@@ -191,7 +184,7 @@ if (torch_is_installed() & interactive()) {
    recipe(mpg ~ ., mtcars) \%>\%
    step_log(disp)
 
-  mod3 <- tab_icl2(rec, mtcars)
+  mod3 <- tab_icl2(rec, mtcars_split)
   mod3
  }
 }

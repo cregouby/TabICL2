@@ -52,16 +52,6 @@
 #'
 #' ## Data
 #'
-#' Be default, there are limits to the training data dimensions:
-#'
-#'   * Version 2.0: number of training set samples (10,000) and, the number of
-#'   predictors (500). There is an unchangeable limit to the number of classes
-#'   (10).
-#'
-#'   * Version 2.5: number of training set samples (50,000) and, the number of
-#'   predictors (2,000). There is an unchangeable limit to the number of classes
-#'   (10).
-#'
 #' Predictors do not require preprocessing; missing values and factor vectors
 #' are allowed.
 #'
@@ -107,7 +97,7 @@
 #'
 #' A `tab_icl2` object with elements:
 #'
-#'   * `fit`: the python object containing the model.
+#'   * `fit`: the object containing the model.
 #'   * `levels`: a character string of class levels (or NULL for regression)
 #'   * `training`: a vector with the training set dimensions.
 #'   * `blueprint`: am object produced by [hardhat::mold()] used to process
@@ -127,14 +117,17 @@
 #' @examples
 #' predictors <- mtcars[, -1]
 #' outcome <- mtcars[, 1]
+#' mtcars_split <- rsample::initial_split(mtcars)
 #'
 #' \dontrun{
 #' if (torch_is_installed() & interactive()) {
 #'  # XY interface
 #'  mod <- tab_icl2(predictors, outcome)
+#'  mod
 #'
 #'  # Formula interface
-#'  mod2 <- tab_icl2(mpg ~ ., mtcars)
+#'  mod2 <- tab_icl2(mpg ~ ., mtcars_split)
+#'  mod2
 #'
 #'  # Recipes interface
 #'  if (rlang::is_installed("recipes")) {
@@ -143,7 +136,7 @@
 #'    recipe(mpg ~ ., mtcars) %>%
 #'    step_log(disp)
 #'
-#'   mod3 <- tab_icl2(rec, mtcars)
+#'   mod3 <- tab_icl2(rec, mtcars_split)
 #'   mod3
 #'  }
 #' }
