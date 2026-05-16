@@ -54,7 +54,7 @@ control_tab_icl2 <- function(
   if (length(memory_saving_mode) != 1) {
     cli_abort(mem_msg)
   }
-  if (!is.character(memory_saving_mode) & !is.logical(memory_saving_mode)) {
+  if (!is.character(memory_saving_mode) && !is.logical(memory_saving_mode)) {
     cli_abort(mem_msg)
   }
 

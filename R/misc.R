@@ -6,7 +6,7 @@ check_data_constraints <- function(x, y, control) {
   lvls <- levels(y)
 
   x_dims <- dim(x)
-  if (x_dims[1] > row_limits & !control$ignore_pretraining_limits) {
+  if (x_dims[1] > row_limits && !control$ignore_pretraining_limits) {
     cli_abort(
       call = NULL,
       c(
@@ -19,7 +19,7 @@ check_data_constraints <- function(x, y, control) {
       )
     )
   }
-  if (x_dims[2] > col_limits & !control$ignore_pretraining_limits) {
+  if (x_dims[2] > col_limits && !control$ignore_pretraining_limits) {
     cli_abort(
       call = NULL,
       c(
@@ -51,16 +51,14 @@ sample_indicies <- function(molded, size_limit = row_limits) {
     return(integer(0))
   }
 
-  dat <-
-    molded$outcomes %>%
+  dat <- molded$outcomes %>%
     dplyr::mutate(.row_order = dplyr::row_number()) %>%
     rlang::set_names(c("outcome", ".row_order"))
 
   is_factor <- is.factor(dat$outcome)
 
   if (is_factor) {
-    data_subset <-
-      dat %>%
+    data_subset <- dat %>%
       dplyr::group_by(outcome) %>%
       dplyr::group_nest(keep = TRUE) %>%
       dplyr::mutate(
@@ -70,8 +68,7 @@ sample_indicies <- function(molded, size_limit = row_limits) {
         data = purrr::map2(data, sample_num, ~ dplyr::slice_sample(.x, n = .y))
       )
   } else {
-    data_subset <-
-      dat %>%
+    data_subset <- dat %>%
       dplyr::mutate(quantile = dplyr::ntile(outcome, n = 4)) %>%
       dplyr::group_by(quantile) %>%
       dplyr::group_nest(keep = TRUE) %>%
