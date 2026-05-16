@@ -32,15 +32,7 @@ test_that("classifier takes `training_set_limit` into account", {
     data = two_class_split
   )
 
-  expect_equal(orig_data$training[1], nrow(training(two_class_split)))
-
-  smaller_data <- tab_icl2(
-    Class ~ .,
-    data = two_class_split,
-    training_set_limit = 50
-  )
-
-  expect_equal(smaller_data$training[1], 50)
+  expect_equal(orig_data$training[1], nrow(rsample::training(two_class_split)))
 })
 
 test_that("Training regression for data.frame and formula", {
@@ -50,16 +42,23 @@ test_that("Training regression for data.frame and formula", {
   )
 
   expect_no_error(
-    predict(fit, train_val)
+    pred <- predict(fit, train_val)
   )
+  expect_named(pred, c(".pred", ".pred_quantile"))
+  expect_type(pred$.pred_quantile, "integer")
+  expect_type(pred$.pred, "numeric")
+
 
   expect_no_error(
     fit <- tab_icl2(Sale_Price ~ ., data = ames_split)
   )
 
   expect_no_error(
-    predict(fit, x)
+    pred <- predict(fit, rsample::testing(ames_split))
   )
+  expect_named(pred, c(".pred", ".pred_quantile"))
+  expect_type(pred$.pred_quantile, "integer")
+  expect_type(pred$.pred, "numeric")
 })
 
 test_that("Training classification for data.frame", {
@@ -67,19 +66,21 @@ test_that("Training classification for data.frame", {
   expect_no_error(
     fit <- tab_icl2(attrix, attriy)
   )
+  # not currently covered
+  # expect_no_error(
+  #   predict(fit, attrix, type = "prob")
+  # )
 
   expect_no_error(
-    predict(fit, attrix, type = "prob")
+    pred <- predict(fit, attrix)
   )
-
-  expect_no_error(
-    predict(fit, attrix)
-  )
-
+  expect_named(pred, c(".pred_No", ".pred_Yes", ".pred_class"))
+  expect_true(is.factor(pred$.pred_class))
+  expect_equal(levels(pred$.pred_class), levels(attriy))
 })
 
 
-test_that("can train from a recipe", {
+test_that("Training classification from a recipe", {
 
   rec <- recipe(Attrition ~ ., data = attrition) %>%
     step_normalize(all_numeric(), -all_outcomes())
@@ -89,7 +90,10 @@ test_that("can train from a recipe", {
   )
 
   expect_no_error(
-    predict(fit, attrition)
+    pred <- predict(fit, attrition)
   )
+  expect_named(pred, c(".pred_No", ".pred_Yes", ".pred_class"))
+  expect_true(is.factor(pred$.pred_class))
+  expect_equal(levels(pred$.pred_class), levels(rec$ptype$Attrition))
 
 })

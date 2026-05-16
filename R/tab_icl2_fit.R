@@ -113,7 +113,7 @@
 #' "TabICL: A Tabular Foundation Model for In-Context Learning on Large Data." _arXiv preprint_
 #' arXiv:2502.05564 (2025).
 #'
-#' @seealso [control_tab_icl2()], [predict.tab_icl2()]
+#' @seealso [control_tab_icl2()], [predict.tab_icl_v2()]
 #' @examples
 #' predictors <- mtcars[, -1]
 #' outcome <- mtcars[, 1]
@@ -161,21 +161,13 @@ tab_icl2.data.frame <- function(
   x,
   y,
   num_quantiles = 30L,
-  # softmax_temperature = 0.9,
-  # balance_probabilities = FALSE,
-  # average_before_softmax = FALSE,
-  # training_set_limit = 10000,
   version = NULL,
   control = control_tab_icl2(),
   ...
 ) {
   options <- control
   options$num_quantiles <- num_quantiles
-  # options$softmax_temperature <- softmax_temperature
-  # options$balance_probabilities <- balance_probabilities
-  # options$average_before_softmax <- average_before_softmax
   options <- check_fit_args(options)
-  # check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
 
   processed <- hardhat::mold(x, y)
   tr_ind <- sample_indicies(processed, size_limit = 1e4)
@@ -195,21 +187,13 @@ tab_icl2.matrix <- function(
   x,
   y,
   num_quantiles = 30L,
-  # softmax_temperature = 0.9,
-  # balance_probabilities = FALSE,
-  # average_before_softmax = FALSE,
-  # training_set_limit = 10000,
   version = NULL,
   control = control_tab_icl2(),
   ...
 ) {
   options <- control
   options$num_quantiles <- num_quantiles
-  # options$softmax_temperature <- softmax_temperature
-  # options$balance_probabilities <- balance_probabilities
-  # options$average_before_softmax <- average_before_softmax
   options <- check_fit_args(options)
-  # check_number_whole(training_set_limit, min = 2, allow_infinite = TRUE)
 
   processed <- hardhat::mold(x, y)
   tr_ind <- sample_indicies(processed, size_limit = 1e4)
@@ -271,10 +255,6 @@ tab_icl2.recipe <- function(
   x,
   data,
   num_quantiles = 30L,
-  # softmax_temperature = 0.9,
-  # balance_probabilities = FALSE,
-  # average_before_softmax = FALSE,
-  # training_set_limit = 10000,
   version = NULL,
   control = control_tab_icl2(),
   ...
@@ -299,7 +279,7 @@ tab_icl2.recipe <- function(
     processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
   }
 
-  tab_icl2_bridge(processed, options, version = version, ...)
+  tab_icl2_bridge(processed, options, version = version)
 }
 
 # ------------------------------------------------------------------------------
@@ -321,9 +301,11 @@ tab_icl2_bridge <- function(processed, options, version = NULL, ...) {
 
   new_tab_icl2(
     fit = res$fit,
-    levels = res$lvls,
+    levels = res$levels,
     training = res$train,
-    blueprint = processed$blueprint
+    blueprint = processed$blueprint,
+    t_predictors = predictors,
+    t_outcome = outcome
   )
 }
 
@@ -335,21 +317,25 @@ tab_icl2_impl <- function(x, y, opts, version = NULL) {
   # TODO need to turn into a proper torch_dataset
   batch <- resolve_data(x, y)
 
-  if (is.factor(y[[1]])) {
+  if (!is.null(batch$output_lvls)) {
     # classification
-    max_classes <- out_dim <- nlevels(y)
+
+    # TODO pass initialization parameters from options
+    mod_obj <- NanoTabICLv2(max_classes = sum(batch$output_dim), out_dim = sum(batch$output_dim))
+    class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.classifier")
 
   } else {
     # regression
-    max_classes <- 0L
-    out_dim <- opts$num_quantiles
+    mod_obj <- NanoTabICLv2(max_classes = 0L, out_dim = opts$num_quantiles)
+    class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.regressor")
   }
-  mod_obj <- NanoTabICLv2(max_classes = max_classes, out_dim = out_dim)
-  model_fit <- mod_obj(batch$x$unsqueeze(1), batch$y$unsqueeze(1))
+
+
+  # model_fit <- mod_obj(batch$x$unsqueeze(1), batch$y$unsqueeze(1))
 
   # TODO check for failures
   res <- list(
-    fit = model_fit,
+    fit = mod_obj,
     levels = batch$output_lvls,
     train = c(batch$y$shape[1], ncol(x))
   )
@@ -389,7 +375,7 @@ resolve_data <- function(x, y) {
   # convert factors to integers, based on the class of target first column
   # TODO do not assume but assert type-consistency of all y cols
   if (is.factor(y[[1]])) {
-    y_tensor <- torch::torch_tensor(sapply(y, function(i) as.integer(i)), dtype = torch::torch_float())
+    y_tensor <- torch::torch_tensor(sapply(y, function(i) as.integer(i)))
     if (is.atomic(y)) {
       output_lvls <- levels(y)
       output_dim <- nlevels(y)
@@ -398,13 +384,13 @@ resolve_data <- function(x, y) {
       output_dim <- sapply(y, function(i) nlevels(i))
     }
   } else {
-    y_tensor <- torch::torch_tensor(as.matrix(y), dtype = torch::torch_float())$squeeze()
+    y_tensor <- torch::torch_tensor(as.matrix(y))
     output_lvls <- NULL
     output_dim <- ncol(y)
   }
   input_dim <- ncol(x)
 
-  list(x = x_tensor, x_na_mask = x_na_mask, y = y_tensor,
+  list(x = x_tensor, x_na_mask = x_na_mask, y = y_tensor$to(dtype = torch::torch_float())$squeeze(),
        input_dim = input_dim,
        cat_idx = cat_idx, cat_dims = cat_dims,
        output_lvls = output_lvls, output_dim = output_dim)

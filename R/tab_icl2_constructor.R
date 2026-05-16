@@ -4,7 +4,8 @@ new_tab_icl2 <- function(
   training,
   logging = NULL,
   blueprint,
-  call = NULL
+  call = NULL,
+  ...
 ) {
   cls <- "tab_icl2"
 
@@ -24,6 +25,7 @@ new_tab_icl2 <- function(
     training = training,
     logging = logging,
     blueprint = blueprint,
-    class = "tab_icl_v2"
+    class = "tab_icl_v2",
+    ...
   )
 }

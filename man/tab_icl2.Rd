@@ -201,5 +201,5 @@ Jingang Qu, David Holzmüller, Gaël Varoquaux, Marine Le Morvan.
 arXiv:2502.05564 (2025).
 }
 \seealso{
-\code{\link[=control_tab_icl2]{control_tab_icl2()}}, \code{\link[=predict.tab_icl2]{predict.tab_icl2()}}
+\code{\link[=control_tab_icl2]{control_tab_icl2()}}, \code{\link[=predict.tab_icl_v2]{predict.tab_icl_v2()}}
 }
