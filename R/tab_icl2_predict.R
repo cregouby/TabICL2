@@ -48,20 +48,16 @@ predict.tab_icl_v2 <- function(object, new_data, ...) {
 # Implementation
 
 #' @export
-predict.tab_icl_v2.regressor <- function(object, new_data, levels, train_dim,...) {
-
+predict.tab_icl_v2.regressor <- function(object, new_data, levels, train_dim, ...) {
 
   raw_quantiles <- object(new_data$x$unsqueeze(1), new_data$y$unsqueeze(1))
-  # remove the trainingset and move back to R
-  raw_quantiles <- as_array(raw_quantiles[, (train_dim[1] + 1):N, ]$squeeze())
-  q2dist_nn <- quantile_to_distribution(
-    # Infer option$num_quantiles by the shape of result (assume single regression)
-    # TODO for security, transport option$num_quantile in here.
-    # TODO using num_quantiles assumes normalized outcome. To be documented and transported in options as well.
-    num_quantiles = train_dim[2]
-    )
-  res_distribution <- q2dist_nn(raw_quantiles)$quantiles
-  tibble::tibble(.pred_quantile = as.vector(res_distribution))
+  # remove the training set rows
+  raw_quantiles <- raw_quantiles[, (train_dim[1] + 1):N, ]$squeeze()
+  # TODO using num_quantiles assumes normalized outcome. To be documented and transported in options as well.
+  num_quantiles <- raw_quantiles$shape[raw_quantiles$ndim]
+  q2dist_nn <- quantile_to_distribution(num_quantiles = num_quantiles)
+  dist <- q2dist_nn(raw_quantiles)
+  tibble::tibble(.pred = as.numeric(dist$mean()))
 
 }
 

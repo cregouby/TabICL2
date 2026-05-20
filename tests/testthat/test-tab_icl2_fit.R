@@ -35,18 +35,17 @@ test_that("classifier takes `training_set_limit` into account", {
   expect_equal(orig_data$training[1], nrow(rsample::training(two_class_split)))
 })
 
-test_that("Training regression for data.frame and formula", {
+test_that("Training regression for data.frame and formula, with different num_quantiles", {
 
   expect_no_error(
-    fit <- tab_icl2(train_val, y)
+    fit <- tab_icl2(train_val, y, num_quantiles = 99)
   )
 
   expect_no_error(
     pred <- predict(fit, train_val)
   )
-  expect_named(pred, c(".pred", ".pred_quantile"))
-  expect_type(pred$.pred_quantile, "integer")
-  expect_type(pred$.pred, "numeric")
+  expect_named(pred, c(".pred"))
+  expect_type(pred$.pred, "double")
 
 
   expect_no_error(
@@ -56,20 +55,16 @@ test_that("Training regression for data.frame and formula", {
   expect_no_error(
     pred <- predict(fit, rsample::testing(ames_split))
   )
-  expect_named(pred, c(".pred", ".pred_quantile"))
-  expect_type(pred$.pred_quantile, "integer")
-  expect_type(pred$.pred, "numeric")
+  expect_named(pred, c(".pred"))
+  expect_type(pred$.pred, "double")
 })
 
-test_that("Training classification for data.frame", {
+test_that("Training classification works for data.frame", {
 
   expect_no_error(
     fit <- tab_icl2(attrix, attriy)
   )
-  # not currently covered
-  # expect_no_error(
-  #   predict(fit, attrix, type = "prob")
-  # )
+
 
   expect_no_error(
     pred <- predict(fit, attrix)
