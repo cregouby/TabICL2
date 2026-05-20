@@ -25,12 +25,14 @@
 #' @param formula A formula specifying the outcome terms on the left-hand side,
 #' and the predictor terms on the right-hand side.
 #'
-#' @param num_quantiles An integer for the number of quantiles in case of regression.
-#'  Default is `30L`.
+#' @param config A list of model architecture options produced by
+#'   [tab_icl2_config()].
 #'
-#' @param version A character string for the model version. Currently unsupported.
+#' @param control A list of inference execution options produced by
+#'   [tab_icl2_control()].
 #'
-#' @param control A list of options produced by [control_tab_icl2()].
+#' @param version A character string for the model version. Currently
+#'   unsupported.
 #'
 #' @param ... Not currently used, but required for extensibility.
 #'
@@ -113,7 +115,7 @@
 #' "TabICL: A Tabular Foundation Model for In-Context Learning on Large Data." _arXiv preprint_
 #' arXiv:2502.05564 (2025).
 #'
-#' @seealso [control_tab_icl2()], [predict.tab_icl_v2()]
+#' @seealso [tab_icl2_config()], [tab_icl2_control()], [predict.tab_icl_v2()]
 #' @examples
 #' predictors <- mtcars[, -1]
 #' outcome <- mtcars[, 1]
@@ -160,13 +162,12 @@ tab_icl2.default <- function(x, ...) {
 tab_icl2.data.frame <- function(
   x,
   y,
-  num_quantiles = 30L,
+  config  = tab_icl2_config(),
+  control = tab_icl2_control(),
   version = NULL,
-  control = control_tab_icl2(),
   ...
 ) {
-  options <- control
-  options$num_quantiles <- num_quantiles
+  options <- c(as.list(config), as.list(control))
   options <- check_fit_args(options)
 
   processed <- hardhat::mold(x, y)
@@ -186,13 +187,12 @@ tab_icl2.data.frame <- function(
 tab_icl2.matrix <- function(
   x,
   y,
-  num_quantiles = 30L,
+  config  = tab_icl2_config(),
+  control = tab_icl2_control(),
   version = NULL,
-  control = control_tab_icl2(),
   ...
 ) {
-  options <- control
-  options$num_quantiles <- num_quantiles
+  options <- c(as.list(config), as.list(control))
   options <- check_fit_args(options)
 
   processed <- hardhat::mold(x, y)
@@ -212,13 +212,12 @@ tab_icl2.matrix <- function(
 tab_icl2.formula <- function(
   formula,
   data,
-  num_quantiles = 30L,
+  config  = tab_icl2_config(),
+  control = tab_icl2_control(),
   version = NULL,
-  control = control_tab_icl2(),
   ...
 ) {
-  options <- control
-  options$num_quantiles <- num_quantiles
+  options <- c(as.list(config), as.list(control))
   options <- check_fit_args(options)
   if (!inherits(data, "rsplit")) {
     cli::cli_abort(
@@ -254,13 +253,12 @@ tab_icl2.formula <- function(
 tab_icl2.recipe <- function(
   x,
   data,
-  num_quantiles = 30L,
+  config  = tab_icl2_config(),
+  control = tab_icl2_control(),
   version = NULL,
-  control = control_tab_icl2(),
   ...
 ) {
-  options <- control
-  options$num_quantiles <- num_quantiles
+  options <- c(as.list(config), as.list(control))
   options <- check_fit_args(options)
   if (!inherits(data, "rsplit")) {
     cli::cli_abort(
@@ -317,16 +315,33 @@ tab_icl2_impl <- function(x, y, opts, version = NULL) {
   # TODO need to turn into a proper torch_dataset
   batch <- resolve_data(x, y)
 
+  arch <- list(
+    embed_dim          = opts$embed_dim,
+    col_n_block        = opts$col_n_block,
+    row_n_block        = opts$row_n_block,
+    icl_n_block        = opts$icl_n_block,
+    col_n_head         = opts$col_n_head,
+    row_n_head         = opts$row_n_head,
+    icl_n_head         = opts$icl_n_head,
+    feature_group_size = opts$feature_group_size,
+    col_n_cls          = opts$col_n_cls,
+    row_n_cls          = opts$row_n_cls
+  )
+
   if (!is.null(batch$output_lvls)) {
     # classification
-
-    # TODO pass initialization parameters from options
-    mod_obj <- NanoTabICLv2(max_classes = sum(batch$output_dim), out_dim = sum(batch$output_dim))
+    mod_obj <- do.call(
+      NanoTabICLv2,
+      c(arch, list(max_classes = sum(batch$output_dim), out_dim = sum(batch$output_dim)))
+    )
     class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.classifier")
 
   } else {
     # regression
-    mod_obj <- NanoTabICLv2(max_classes = 0L, out_dim = opts$num_quantiles)
+    mod_obj <- do.call(
+      NanoTabICLv2,
+      c(arch, list(max_classes = 0L, out_dim = opts$num_quantiles))
+    )
     class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.regressor")
   }
 

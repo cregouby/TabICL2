@@ -16,36 +16,36 @@ tab_icl2(x, ...)
 \method{tab_icl2}{data.frame}(
   x,
   y,
-  num_quantiles = 30L,
+  config = tab_icl2_config(),
+  control = tab_icl2_control(),
   version = NULL,
-  control = control_tab_icl2(),
   ...
 )
 
 \method{tab_icl2}{matrix}(
   x,
   y,
-  num_quantiles = 30L,
+  config = tab_icl2_config(),
+  control = tab_icl2_control(),
   version = NULL,
-  control = control_tab_icl2(),
   ...
 )
 
 \method{tab_icl2}{formula}(
   formula,
   data,
-  num_quantiles = 30L,
+  config = tab_icl2_config(),
+  control = tab_icl2_control(),
   version = NULL,
-  control = control_tab_icl2(),
   ...
 )
 
 \method{tab_icl2}{recipe}(
   x,
   data,
-  num_quantiles = 30L,
+  config = tab_icl2_config(),
+  control = tab_icl2_control(),
   version = NULL,
-  control = control_tab_icl2(),
   ...
 )
 }
@@ -68,12 +68,14 @@ specified as:
 \item A numeric \strong{vector} for regression or a \strong{factor} for classification.
 }}
 
-\item{num_quantiles}{An integer for the number of quantiles in case of regression.
-Default is \code{30L}.}
+\item{config}{A list of model architecture options produced by
+\code{\link[=tab_icl2_config]{tab_icl2_config()}}.}
 
-\item{version}{A character string for the model version. Currently unsupported.}
+\item{control}{A list of inference execution options produced by
+\code{\link[=tab_icl2_control]{tab_icl2_control()}}.}
 
-\item{control}{A list of options produced by \code{\link[=control_tab_icl2]{control_tab_icl2()}}.}
+\item{version}{A character string for the model version. Currently
+unsupported.}
 
 \item{formula}{A formula specifying the outcome terms on the left-hand side,
 and the predictor terms on the right-hand side.}
@@ -201,5 +203,5 @@ Jingang Qu, David Holzmüller, Gaël Varoquaux, Marine Le Morvan.
 arXiv:2502.05564 (2025).
 }
 \seealso{
-\code{\link[=control_tab_icl2]{control_tab_icl2()}}, \code{\link[=predict.tab_icl_v2]{predict.tab_icl_v2()}}
+\code{\link[=tab_icl2_config]{tab_icl2_config()}}, \code{\link[=tab_icl2_control]{tab_icl2_control()}}, \code{\link[=predict.tab_icl_v2]{predict.tab_icl_v2()}}
 }
