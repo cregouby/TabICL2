@@ -1,9 +1,17 @@
 test_that("tab_icl2 fits with all versions", {
   skip_if_not(torch::torch_is_installed())
-  for (version in names(.model_urls)) {
-    mod <- tab_icl2(am ~ mpg + wt, data = rsample::initial_split(mtcars), version = version, num_quantiles = 5)
-    expect_s3_class(mod, "tab_icl_v2")
-  }
+
+  mod <- tab_icl2(species ~ island + bill_len + bill_dep + sex, data = rsample::initial_split(penguins),
+                  model_version = paste0("file://",rappdirs::user_cache_dir("torch/TabICL2/tabicl-classifier-v2-20260212.pt"))
+  )
+  expect_s3_class(mod, "tab_icl_v2")
+
+
+  mod <- tab_icl2(am ~ mpg + wt, data = rsample::initial_split(mtcars),
+                  model_version = paste0("file://",rappdirs::user_cache_dir("torch/TabICL2/tabicl-regressor-v2-20260212.pt")),
+                  config = tab_icl2_config(num_quantiles = 5))
+  expect_s3_class(mod, "tab_icl_v2")
+
 })
 
 test_that("check_data_constraints errors when too many classes", {
@@ -38,7 +46,7 @@ test_that("classifier takes `training_set_limit` into account", {
 test_that("Training regression for data.frame and formula, with different num_quantiles", {
 
   expect_no_error(
-    fit <- tab_icl2(train_val, y, num_quantiles = 99)
+    fit <- tab_icl2(train_val, y, config = tab_icl2_config(num_quantiles = 99))
   )
 
   expect_no_error(

@@ -18,7 +18,7 @@ tab_icl2(x, ...)
   y,
   config = tab_icl2_config(),
   control = tab_icl2_control(),
-  version = NULL,
+  model_version = NULL,
   ...
 )
 
@@ -27,7 +27,7 @@ tab_icl2(x, ...)
   y,
   config = tab_icl2_config(),
   control = tab_icl2_control(),
-  version = NULL,
+  model_version = NULL,
   ...
 )
 
@@ -36,7 +36,7 @@ tab_icl2(x, ...)
   data,
   config = tab_icl2_config(),
   control = tab_icl2_control(),
-  version = NULL,
+  model_version = NULL,
   ...
 )
 
@@ -45,7 +45,7 @@ tab_icl2(x, ...)
   data,
   config = tab_icl2_config(),
   control = tab_icl2_control(),
-  version = NULL,
+  model_version = NULL,
   ...
 )
 }
@@ -69,13 +69,24 @@ specified as:
 }}
 
 \item{config}{A list of model architecture options produced by
-\code{\link[=tab_icl2_config]{tab_icl2_config()}}.}
+\code{\link[=tab_icl2_config]{tab_icl2_config()}}. Ignored when a pretrained checkpoint is loaded via
+\code{model_version}.}
 
 \item{control}{A list of inference execution options produced by
 \code{\link[=tab_icl2_control]{tab_icl2_control()}}.}
 
-\item{version}{A character string for the model version. Currently
-unsupported.}
+\item{model_version}{A character string identifying the checkpoint to load.
+Three forms are accepted:
+\describe{
+\item{Registry key}{A name from the built-in registry (e.g.
+\code{"tabicl_classifier_v2"}). The file is downloaded once and cached.}
+\item{HTTPS URL}{Any \verb{https://} or \verb{http://} address pointing to a
+checkpoint file. The file is downloaded once and cached.}
+\item{Local file URI}{A \verb{file:///path/to/model.pt} URI. The file must
+already exist on disk.}
+}
+When \code{NULL} (the default) a randomly initialised model is built from
+\code{config}.}
 
 \item{formula}{A formula specifying the outcome terms on the left-hand side,
 and the predictor terms on the right-hand side.}
@@ -125,30 +136,22 @@ are allowed.
 \subsection{Model Selection}{
 \subsection{Selecting a model version}{
 
-Use the \code{version} argument to select a specific pretrained model version. For
-example:
+Use the \code{model_version} argument to load a specific pretrained checkpoint.
+Three forms are accepted:
 
 \preformatted{
-  # Use classifier version 2
-  mod <- tab_icl2(predictors, outcome, version = "tabicl_classifier_v2")
+  # Built-in registry key (downloaded and cached automatically)
+  mod <- tab_icl2(predictors, outcome,
+                  model_version = "tabicl_classifier_v2")
 
-  # Use regressor version 2
-  mod <- tab_icl2(predictors, outcome, version = "tabicl_regressor_v2")
+  # Any HTTPS URL (downloaded and cached automatically)
+  mod <- tab_icl2(predictors, outcome,
+                  model_version = "https://example.com/my_model.pt")
+
+  # Local file via file:// URI
+  mod <- tab_icl2(predictors, outcome,
+                  model_version = "file:///path/to/model.pt")
 }
-}
-
-\subsection{Pointing to a local model file}{
-
-If you have a model file on disk (e.g., downloaded for offline use), pass
-its path via \code{control_tab_icl2(model_path = ...)}:
-
-\preformatted{
-  ctrl <- control_tab_icl2(model_path = "/path/to/model_file.ckpt")
-  mod  <- tab_icl2(predictors, outcome, control = ctrl)
-}
-
-Note that \code{version} and \code{model_path} are mutually exclusive: if \code{version}
-is set, it overwrites any \code{model_path} supplied through \code{control}.
 }
 
 }

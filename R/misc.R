@@ -87,19 +87,4 @@ sample_indicies <- function(molded, size_limit = row_limits) {
     purrr::pluck(".row_order")
 }
 
-check_model_version <- function(x, call = rlang::caller_env()) {
-  valid_versions <- names(.model_urls)
-
-  if (!x %in% valid_versions) {
-    cli::cli_abort(
-      c(
-        "{.arg model_version} must be one of {.or {.val {valid_versions}}}.",
-        x = "{.val {x}} is not a valid model version."
-      ),
-      call = call
-    )
-  }
-
-  invisible(x)
-}
 

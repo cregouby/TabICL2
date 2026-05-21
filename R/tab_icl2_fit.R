@@ -26,13 +26,24 @@
 #' and the predictor terms on the right-hand side.
 #'
 #' @param config A list of model architecture options produced by
-#'   [tab_icl2_config()].
+#'   [tab_icl2_config()]. Ignored when a pretrained checkpoint is loaded via
+#'   `model_version`.
 #'
 #' @param control A list of inference execution options produced by
 #'   [tab_icl2_control()].
 #'
-#' @param version A character string for the model version. Currently
-#'   unsupported.
+#' @param model_version A character string identifying the checkpoint to load.
+#'   Three forms are accepted:
+#'   \describe{
+#'     \item{Registry key}{A name from the built-in registry (e.g.
+#'       `"tabicl_classifier_v2"`). The file is downloaded once and cached.}
+#'     \item{HTTPS URL}{Any `https://` or `http://` address pointing to a
+#'       checkpoint file. The file is downloaded once and cached.}
+#'     \item{Local file URI}{A `file:///path/to/model.pt` URI. The file must
+#'       already exist on disk.}
+#'   }
+#'   When `NULL` (the default) a randomly initialised model is built from
+#'   `config`.
 #'
 #' @param ... Not currently used, but required for extensibility.
 #'
@@ -61,29 +72,22 @@
 #'
 #' ### Selecting a model version
 #'
-#' Use the `version` argument to select a specific pretrained model version. For
-#' example:
+#' Use the `model_version` argument to load a specific pretrained checkpoint.
+#' Three forms are accepted:
 #'
 #' \preformatted{
-#'   # Use classifier version 2
-#'   mod <- tab_icl2(predictors, outcome, version = "tabicl_classifier_v2")
+#'   # Built-in registry key (downloaded and cached automatically)
+#'   mod <- tab_icl2(predictors, outcome,
+#'                   model_version = "tabicl_classifier_v2")
 #'
-#'   # Use regressor version 2
-#'   mod <- tab_icl2(predictors, outcome, version = "tabicl_regressor_v2")
+#'   # Any HTTPS URL (downloaded and cached automatically)
+#'   mod <- tab_icl2(predictors, outcome,
+#'                   model_version = "https://example.com/my_model.pt")
+#'
+#'   # Local file via file:// URI
+#'   mod <- tab_icl2(predictors, outcome,
+#'                   model_version = "file:///path/to/model.pt")
 #' }
-#'
-#' ### Pointing to a local model file
-#'
-#' If you have a model file on disk (e.g., downloaded for offline use), pass
-#' its path via `tab_icl2_control(model_path = ...)`:
-#'
-#' \preformatted{
-#'   control <- tab_icl2_control(model_path = "/path/to/model_file.ckpt")
-#'   mod     <- tab_icl2(predictors, outcome, control = control)
-#' }
-#'
-#' Note that `version` and `model_path` are mutually exclusive: if `version`
-#' is set, it overwrites any `model_path` supplied through `control`.
 #'
 #' ## Calculations
 #'
@@ -164,7 +168,7 @@ tab_icl2.data.frame <- function(
   y,
   config  = tab_icl2_config(),
   control = tab_icl2_control(),
-  version = NULL,
+  model_version = NULL,
   ...
 ) {
   options <- c(as.list(config), as.list(control))
@@ -177,7 +181,7 @@ tab_icl2.data.frame <- function(
     processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
   }
 
-  tab_icl2_bridge(processed, options, version = version, ...)
+  tab_icl2_bridge(processed, options, model_version = model_version, ...)
 }
 
 # XY method - matrix
@@ -189,7 +193,7 @@ tab_icl2.matrix <- function(
   y,
   config  = tab_icl2_config(),
   control = tab_icl2_control(),
-  version = NULL,
+  model_version = NULL,
   ...
 ) {
   options <- c(as.list(config), as.list(control))
@@ -202,7 +206,7 @@ tab_icl2.matrix <- function(
     processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
   }
 
-  tab_icl2_bridge(processed, options, version = version, ...)
+  tab_icl2_bridge(processed, options, model_version = model_version, ...)
 }
 
 # Formula method
@@ -214,7 +218,7 @@ tab_icl2.formula <- function(
   data,
   config  = tab_icl2_config(),
   control = tab_icl2_control(),
-  version = NULL,
+  model_version = NULL,
   ...
 ) {
   options <- c(as.list(config), as.list(control))
@@ -243,7 +247,7 @@ tab_icl2.formula <- function(
     processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
   }
 
-  tab_icl2_bridge(processed, options, version = version, ...)
+  tab_icl2_bridge(processed, options, model_version = model_version, ...)
 }
 
 # Recipe method
@@ -255,7 +259,7 @@ tab_icl2.recipe <- function(
   data,
   config  = tab_icl2_config(),
   control = tab_icl2_control(),
-  version = NULL,
+  model_version = NULL,
   ...
 ) {
   options <- c(as.list(config), as.list(control))
@@ -277,25 +281,21 @@ tab_icl2.recipe <- function(
     processed$outcomes <- processed$outcomes[tr_ind, , drop = FALSE]
   }
 
-  tab_icl2_bridge(processed, options, version = version)
+  tab_icl2_bridge(processed, options, model_version = model_version, ...)
 }
 
 # ------------------------------------------------------------------------------
 # Bridge
 
-tab_icl2_bridge <- function(processed, options, version = NULL, ...) {
+tab_icl2_bridge <- function(processed, options, model_version = NULL, ...) {
   rlang::check_dots_empty()
 
-  if (!is.null(version)) {
-    check_model_version(version)
-  }
-
   predictors <- processed$predictors
-  outcome <- processed$outcomes
+  outcome    <- processed$outcomes
 
   check_data_constraints(predictors, outcome, options)
 
-  res <- tab_icl2_impl(predictors, outcome, options, version = version)
+  res <- tab_icl2_impl(predictors, outcome, options, model_version = model_version)
 
   new_tab_icl2(
     fit = res$fit,
@@ -310,34 +310,30 @@ tab_icl2_bridge <- function(processed, options, version = NULL, ...) {
 # ------------------------------------------------------------------------------
 # Implementation
 
-tab_icl2_impl <- function(x, y, opts, version = NULL) {
+tab_icl2_impl <- function(x, y, opts, model_version = NULL) {
 
   # TODO need to turn into a proper torch_dataset
   batch <- resolve_data(x, y)
   is_classification <- !is.null(batch$output_lvls)
 
-  if (!is.null(version)) {
-    is_cls_ckpt <- grepl("classifier", version, fixed = TRUE)
-    is_reg_ckpt <- grepl("regressor",  version, fixed = TRUE)
+  if (!is.null(model_version)) {
+    is_cls_ckpt <- grepl("classifier", model_version, fixed = TRUE)
+    is_reg_ckpt <- grepl("regressor",  model_version, fixed = TRUE)
     if (is_cls_ckpt && !is_classification) {
       cli_abort(
-        c("{.val {version}} is a classifier checkpoint.",
+        c("{.val {model_version}} is a classifier checkpoint.",
           i = "Supply a factor outcome or switch to a regressor version.")
       )
     }
     if (is_reg_ckpt && is_classification) {
       cli_abort(
-        c("{.val {version}} is a regressor checkpoint.",
+        c("{.val {model_version}} is a regressor checkpoint.",
           i = "Supply a numeric outcome or switch to a classifier version.")
       )
     }
 
-    ckpt_path <- .resolve_checkpoint_path(
-      model_path          = opts[["model_path"]],
-      checkpoint_version  = version,
-      allow_auto_download = TRUE
-    )
-    mod_obj <- torch::torch_load(ckpt_path)
+
+    mod_obj   <-  load_checkpoint_path(model_version)
 
   } else {
     arch <- list(
