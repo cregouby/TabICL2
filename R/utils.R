@@ -1,16 +1,16 @@
 .model_urls <- list(
-  tabicl_classifier_v1_0 = c(
-    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1-20250208.ckpt",
-    "TODO_MD5_V1", "85 MB"),
-  tabicl_classifier_v1_1 = c(
-    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1.1-20250506.ckpt",
-    "TODO_MD5_V1_1", "87 MB"),
+  # tabicl_classifier_v1_0 = c(
+  #   "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1-20250208.ckpt",
+  #   "TODO_MD5_V1", "85 MB"),
+  # tabicl_classifier_v1_1 = c(
+  #   "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1.1-20250506.ckpt",
+  #   "TODO_MD5_V1_1", "87 MB"),
   tabicl_classifier_v2 = c(
-    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v2-20260212.ckpt",
-    "2a6ac00c27192231f4b01393b1e1e3dd", "105 MB"),
+    "https://torch-cdn.mlverse.org/models/vision/v2/models/tabicl2_classifier.safetensors",
+    "5dd8f9d75f1512b08633c8b242e645c4", "105 MB"),
   tabicl_regressor_v2 = c(
-    "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-regressor-v2-20260212.ckpt",
-    "e9b7c522e50a3fc6ad5cf3486dcebc46", "109 MB")
+    "https://torch-cdn.mlverse.org/models/vision/v2/models/tabicl2_regressor.safetensors",
+    "ffccabca67b4fd8ca61860e1195afc8b", "109 MB")
 )
 
 # deeply inspired from torchvision:::download_and_cache
