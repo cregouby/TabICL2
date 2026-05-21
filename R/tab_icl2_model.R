@@ -1,5 +1,5 @@
 #' @importFrom torch nn_module nn_embedding nn_module_list nn_parameter nn_layer_norm nn_gelu nn_sequential nn_init_uniform_ nn_init_zeros_
-#' @importFrom torch torch_arange torch_stack torch_randn torch_randint torch_cat torch_transpose torch_reshape torch_empty
+#' @importFrom torch torch_arange torch_stack torch_randn torch_randint torch_cat torch_transpose torch_reshape torch_empty torch_load
 #' @importFrom torch torch_linspace torch_sin torch_cos torch_log torch_tanh torch_long torch_scaled_dot_product_attention
 #' @importFrom torch nnf_linear nn_linear torch_tensor
 #' @importFrom cli cli_inform cli_warn cli_abort

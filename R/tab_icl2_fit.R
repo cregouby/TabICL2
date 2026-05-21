@@ -75,11 +75,11 @@
 #' ### Pointing to a local model file
 #'
 #' If you have a model file on disk (e.g., downloaded for offline use), pass
-#' its path via `control_tab_icl2(model_path = ...)`:
+#' its path via `tab_icl2_control(model_path = ...)`:
 #'
 #' \preformatted{
-#'   ctrl <- control_tab_icl2(model_path = "/path/to/model_file.ckpt")
-#'   mod  <- tab_icl2(predictors, outcome, control = ctrl)
+#'   control <- tab_icl2_control(model_path = "/path/to/model_file.ckpt")
+#'   mod     <- tab_icl2(predictors, outcome, control = control)
 #' }
 #'
 #' Note that `version` and `model_path` are mutually exclusive: if `version`
@@ -314,45 +314,68 @@ tab_icl2_impl <- function(x, y, opts, version = NULL) {
 
   # TODO need to turn into a proper torch_dataset
   batch <- resolve_data(x, y)
+  is_classification <- !is.null(batch$output_lvls)
 
-  arch <- list(
-    embed_dim          = opts$embed_dim,
-    col_n_block        = opts$col_n_block,
-    row_n_block        = opts$row_n_block,
-    icl_n_block        = opts$icl_n_block,
-    col_n_head         = opts$col_n_head,
-    row_n_head         = opts$row_n_head,
-    icl_n_head         = opts$icl_n_head,
-    feature_group_size = opts$feature_group_size,
-    col_n_cls          = opts$col_n_cls,
-    row_n_cls          = opts$row_n_cls
-  )
+  if (!is.null(version)) {
+    is_cls_ckpt <- grepl("classifier", version, fixed = TRUE)
+    is_reg_ckpt <- grepl("regressor",  version, fixed = TRUE)
+    if (is_cls_ckpt && !is_classification) {
+      cli_abort(
+        c("{.val {version}} is a classifier checkpoint.",
+          i = "Supply a factor outcome or switch to a regressor version.")
+      )
+    }
+    if (is_reg_ckpt && is_classification) {
+      cli_abort(
+        c("{.val {version}} is a regressor checkpoint.",
+          i = "Supply a numeric outcome or switch to a classifier version.")
+      )
+    }
 
-  if (!is.null(batch$output_lvls)) {
-    # classification
-    mod_obj <- do.call(
-      NanoTabICLv2,
-      c(arch, list(max_classes = sum(batch$output_dim), out_dim = sum(batch$output_dim)))
+    ckpt_path <- .resolve_checkpoint_path(
+      model_path          = opts[["model_path"]],
+      checkpoint_version  = version,
+      allow_auto_download = TRUE
     )
-    class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.classifier")
+    mod_obj <- torch::torch_load(ckpt_path)
 
   } else {
-    # regression
-    mod_obj <- do.call(
-      NanoTabICLv2,
-      c(arch, list(max_classes = 0L, out_dim = opts$num_quantiles))
+    arch <- list(
+      embed_dim          = opts$embed_dim,
+      col_n_block        = opts$col_n_block,
+      row_n_block        = opts$row_n_block,
+      icl_n_block        = opts$icl_n_block,
+      col_n_head         = opts$col_n_head,
+      row_n_head         = opts$row_n_head,
+      icl_n_head         = opts$icl_n_head,
+      feature_group_size = opts$feature_group_size,
+      col_n_cls          = opts$col_n_cls,
+      row_n_cls          = opts$row_n_cls
     )
+
+    if (is_classification) {
+      mod_obj <- do.call(
+        NanoTabICLv2,
+        c(arch, list(max_classes = sum(batch$output_dim), out_dim = sum(batch$output_dim)))
+      )
+    } else {
+      mod_obj <- do.call(
+        NanoTabICLv2,
+        c(arch, list(max_classes = 0L, out_dim = opts$num_quantiles))
+      )
+    }
+  }
+
+  if (is_classification) {
+    class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.classifier")
+  } else {
     class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.regressor")
   }
 
-
-  # model_fit <- mod_obj(batch$x$unsqueeze(1), batch$y$unsqueeze(1))
-
-  # TODO check for failures
   res <- list(
-    fit = mod_obj,
+    fit    = mod_obj,
     levels = batch$output_lvls,
-    train = c(batch$y$shape[1], ncol(x))
+    train  = c(batch$y$shape[1], ncol(x))
   )
   class(res) <- c("tab_icl2")
   res

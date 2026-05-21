@@ -1,4 +1,3 @@
-# currently unused
 .model_urls <- list(
   tabicl_classifier_v1 = c(
     "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1-20250208.ckpt",
