@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-**TabICL2** is an **Work in Progress** R implementation of [TabICLv2: A better, faster, scalable, and open tabular foundation model](https://arxiv.org/abs/2602.11139) [(Jingang Qu, David Holzmüller, Gaël Varoquaux, Marine Le Morvan)](https://doi.org/10.48550/arXiv.2602.11139).\
+**TabICL2** is a R implementation of [TabICLv2: A better, faster, scalable, and open tabular foundation model](https://arxiv.org/abs/2602.11139) [(Jingang Qu, David Holzmüller, Gaël Varoquaux, Marine Le Morvan)](https://doi.org/10.48550/arXiv.2602.11139).\
 
 **TabICL2** is a transformer-based foundation model for tabular data using **in-context learning**. Unlike traditional supervised learning that requires model fine-tuning, TabICL learns patterns from labeled examples in-context—similar to how GPT processes text, but for tabular data—to make predictions without additional training.
 
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 - **Scalable Classification**: Switch to hierarchical classification to automatically handles datasets with thousands of classes (TO-BE)
 - **Efficient Inference**: KV-caching and representation caching for fast batch predictions (TO-BE)
 - **Memory Management**: Automatic offloading to CPU or disk for large-scale inference (TO-BE)
-- **Distribution-Aware Embeddings**: Column embeddings capture statistical properties of features using set transformers (TO-BE)
+- **Distribution-Aware Embeddings**: Column embeddings capture statistical properties of features using set transformers
 - **Flexible Attention**: Scalable softmax (SSMax) variants prevent attention saturation on long sequences
 
 ## Installation

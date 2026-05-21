@@ -46,14 +46,22 @@ test_that("classifier takes `training_set_limit` into account", {
 test_that("Training regression for data.frame and formula, with different num_quantiles", {
 
   expect_no_error(
-    fit <- tab_icl2(train_val, y, config = tab_icl2_config(num_quantiles = 99))
+    fit <- tab_icl2(ames_train_val, y, config = tab_icl2_config(num_quantiles = 19))
   )
 
   expect_no_error(
-    pred <- predict(fit, train_val)
+    pred <- predict(fit, ames_val)
   )
   expect_named(pred, c(".pred"))
   expect_type(pred$.pred, "double")
+  expect_length(pred$.pred, nrow(ames_val))
+
+  expect_no_error(
+    augm <- augment(fit, ames_train %>% rename(.outcome = Sale_Price))
+  )
+  expect_named(augm, c(".pred", ".outcome"))
+  expect_type(augm$.pred, "double")
+  expect_length(augm$.pred, nrow(ames_train))
 
 
   expect_no_error(
@@ -65,6 +73,14 @@ test_that("Training regression for data.frame and formula, with different num_qu
   )
   expect_named(pred, c(".pred"))
   expect_type(pred$.pred, "double")
+  expect_length(pred$.pred, nrow(rsample::testing(ames_split)))
+
+  expect_no_error(
+    augm <- augment(fit, rsample::training(ames_split) %>% rename(.outcome = Sale_Price))
+  )
+  expect_named(augm, c(".pred", ".outcome"))
+  expect_type(augm$.pred, "double")
+  expect_length(augm$.pred, nrow(rsample::training(ames_split)))
 })
 
 test_that("Training classification works for data.frame", {
