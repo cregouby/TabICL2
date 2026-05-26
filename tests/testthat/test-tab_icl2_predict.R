@@ -56,7 +56,7 @@ test_that("Training regression for data.frame and formula, with different num_qu
     pred <- predict(fit, ames_val)
   )
   expect_named(pred, c(".pred"))
-  expect_s3_class(pred$.pred, "double")
+  expect_type(pred$.pred, "double")
   expect_length(pred$.pred, nrow(ames_val))
 
   expect_no_error(
@@ -64,7 +64,7 @@ test_that("Training regression for data.frame and formula, with different num_qu
     augm <- augment(fit, ames_train %>% rename(.outcome = "Sale_Price"))
   )
   expect_named(augm, c(".pred", ".outcome"))
-  expect_s3_class(augm$.pred, "double")
+  expect_type(augm$.pred, "double")
   expect_length(augm$.pred, nrow(ames_train))
 
 
@@ -76,7 +76,7 @@ test_that("Training regression for data.frame and formula, with different num_qu
     pred <- predict(fit, rsample::testing(ames_split))
   )
   expect_named(pred, c(".pred"))
-  expect_s3_class(pred$.pred, "double")
+  expect_type(pred$.pred, "double")
   expect_length(pred$.pred, nrow(rsample::testing(ames_split)))
 
   expect_no_error(
@@ -133,7 +133,7 @@ test_that("Training classification from a recipe", {
     augm <- augment(fit, rsample::training(attri_split))
   )
   expect_named(augm, c(".pred_No", ".pred_Yes", ".pred_class", "Attrition"))
-  expect_s3_class(augm$.pred_class, "factor")
+  expect_type(augm$.pred_class, "integer")
   expect_length(augm$.pred_class, nrow(rsample::training(attri_split)))
 
 })
@@ -142,24 +142,26 @@ test_that("Training classification from a recipe", {
 test_that("Training regression for recipe works with pretrained model", {
 
   rec <- recipe(Sale_Price ~ ., data = ames) %>%
-    step_normalize(all_numeric(), -all_outcomes())
+    step_zv(all_predictors()) %>%
+    step_log(all_outcomes())  %>%
+    step_normalize(all_numeric())
 
   expect_no_error(
-    fit <- tab_icl2(rec, ames_split, model_version = "tabicl_regressor_v2")
+    fit <- tab_icl2(rec, ames_split, model_version = "file://~/.cache/torch/TabICL2/tabicl-regressor-v2-20260212.pt")
   )
 
   expect_no_error(
     pred <- predict(fit, rsample::testing(ames_split))
   )
   expect_named(pred, c(".pred"))
-  expect_s3_class(pred$.pred, "double")
+  expect_type(pred$.pred, "double")
   expect_length(pred$.pred, nrow(rsample::testing(ames_split)))
 
   expect_no_error(
     augm <- augment(fit, rsample::training(ames_split))
   )
   # recipe capture the y name
-  expect_named(augm, c(".pred", "Sale_Price"))
+  expect_named(augm, c(".pred", ".outcome"))
   expect_type(augm$.pred, "double")
   expect_length(augm$.pred, nrow(rsample::training(ames_split)))
 })

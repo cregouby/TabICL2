@@ -81,46 +81,39 @@ load_checkpoint_path <- function(model_version, progress = TRUE) {
 
   # file:// URI
   if (startsWith(model_version, "file://")) {
-    local_path <- sub("^file://", "", model_version)
-    if (!file.exists(local_path)) {
+    path <- sub("^file://", "", model_version)
+    if (!file.exists(path)) {
       cli_abort("Checkpoint not found at {.file {local_path}}.")
     }
-    return(normalizePath(local_path))
-  }
-
+  } else if (startsWith(model_version, "https://") || startsWith(model_version, "http://")) {
   # https:// or http:// URL
-  if (startsWith(model_version, "https://") || startsWith(model_version, "http://")) {
     path <- .download_and_cache(url = model_version, progress = progress)
-    if (fs::path_ext(path) == "safetensors") {
-      return(torch_load(path))
+  } else {
+    # registry key
+    registry_names <- names(.model_urls)
+    matched <- registry_names[grepl(model_version, registry_names, fixed = TRUE)]
+    if (length(matched) == 0L) {
+      cli_abort(c(
+        "{.val {model_version}} is not a known checkpoint key, a valid URL, or a {.code file://} path.",
+        i = "Known registry keys: {.val {registry_names}}."
+      ))
+    }
+    if (length(matched) > 1L) {
+      cli_warn(
+        "Multiple registry keys match {.val {model_version}}. Using {.val {matched[1L]}}."
+      )
     } else {
-      return(load_state_dict(path))
+      info <- .model_urls[[matched[1L]]]
+      path <- .download_and_cache(
+        url       = info[1L],
+        md5       = info[2L],
+        size_hint = info[3L],
+        progress  = progress
+      )
     }
   }
 
-  # registry key
-  registry_names <- names(.model_urls)
-  matched <- registry_names[grepl(model_version, registry_names, fixed = TRUE)]
 
-  if (length(matched) == 0L) {
-    cli_abort(c(
-      "{.val {model_version}} is not a known checkpoint key, a valid URL, or a {.code file://} path.",
-      i = "Known registry keys: {.val {registry_names}}."
-    ))
-  }
-  if (length(matched) > 1L) {
-    cli_warn(
-      "Multiple registry keys match {.val {model_version}}. Using {.val {matched[1L]}}."
-    )
-  }
-
-  info <- .model_urls[[matched[1L]]]
-  path <- .download_and_cache(
-    url       = info[1L],
-    md5       = info[2L],
-    size_hint = info[3L],
-    progress  = progress
-  )
   if (fs::path_ext(path) == "safetensors") {
     return(torch_load(path))
   } else {
