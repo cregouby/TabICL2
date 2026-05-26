@@ -48,6 +48,9 @@ test_that("Training regression for data.frame and formula, with different num_qu
   expect_no_error(
     fit <- tab_icl2(ames_train_val, y, config = tab_icl2_config(num_quantiles = 19))
   )
+  expect_s3_class(fit$blueprint$ptypes$outcomes, "tbl_df")
+  expect_named(fit$blueprint$ptypes$outcomes, ".outcome")
+  expect_all_true(purrr::map_lgl(fit$blueprint$ptypes, ~nrow(.x) == 0L))
 
   expect_no_error(
     pred <- predict(fit, ames_val)
@@ -57,7 +60,8 @@ test_that("Training regression for data.frame and formula, with different num_qu
   expect_length(pred$.pred, nrow(ames_val))
 
   expect_no_error(
-    augm <- augment(fit, ames_train %>% rename(.outcome = Sale_Price))
+    # data.frame require a `.outcome` column due to mold(x.y) not capturing y name
+    augm <- augment(fit, ames_train %>% rename(.outcome = "Sale_Price"))
   )
   expect_named(augm, c(".pred", ".outcome"))
   expect_type(augm$.pred, "double")
@@ -76,9 +80,10 @@ test_that("Training regression for data.frame and formula, with different num_qu
   expect_length(pred$.pred, nrow(rsample::testing(ames_split)))
 
   expect_no_error(
-    augm <- augment(fit, rsample::training(ames_split) %>% rename(.outcome = Sale_Price))
+    augm <- augment(fit, rsample::training(ames_split))
   )
-  expect_named(augm, c(".pred", ".outcome"))
+  # recipe capture the y name
+  expect_named(augm, c(".pred", "Sale_Price"))
   expect_type(augm$.pred, "double")
   expect_length(augm$.pred, nrow(rsample::training(ames_split)))
 })

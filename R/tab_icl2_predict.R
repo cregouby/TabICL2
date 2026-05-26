@@ -81,7 +81,10 @@ predict.tab_icl_v2.classifier <- function(object, new_data, levels, train_dim, .
 #' @export
 #' @rdname predict.tab_icl2
 augment.tab_icl_v2 <- function(object, new_data) {
-  forged <- hardhat::forge(new_data, blueprint = object$blueprint, outcomes = TRUE)
-  res <- predict(object, forged$predictors)
-  res <- dplyr::bind_rows(res, forged$outcome)
+  res <- predict(object, new_data)
+  y = case_when(
+    inherits(new_data, "data.frame") ~ new_data
+  )
+  forged_truth <- hardhat::forge(new_data, blueprint = object$blueprint, outcomes = TRUE)$outcomes
+  res <- dplyr::bind_cols(res, forged_truth)
 }
