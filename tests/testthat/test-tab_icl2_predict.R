@@ -138,3 +138,29 @@ test_that("Training classification from a recipe", {
 
 })
 
+
+test_that("Training regression for recipe works with pretrained model", {
+
+  rec <- recipe(Sale_Price ~ ., data = ames) %>%
+    step_normalize(all_numeric(), -all_outcomes())
+
+  expect_no_error(
+    fit <- tab_icl2(rec, ames_split, model_version = "tabicl_regressor_v2")
+  )
+
+  expect_no_error(
+    pred <- predict(fit, rsample::testing(ames_split))
+  )
+  expect_named(pred, c(".pred"))
+  expect_s3_class(pred$.pred, "double")
+  expect_length(pred$.pred, nrow(rsample::testing(ames_split)))
+
+  expect_no_error(
+    augm <- augment(fit, rsample::training(ames_split))
+  )
+  # recipe capture the y name
+  expect_named(augm, c(".pred", "Sale_Price"))
+  expect_type(augm$.pred, "double")
+  expect_length(augm$.pred, nrow(rsample::training(ames_split)))
+})
+
