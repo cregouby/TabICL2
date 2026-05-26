@@ -56,7 +56,7 @@ test_that("Training regression for data.frame and formula, with different num_qu
     pred <- predict(fit, ames_val)
   )
   expect_named(pred, c(".pred"))
-  expect_type(pred$.pred, "double")
+  expect_s3_class(pred$.pred, "double")
   expect_length(pred$.pred, nrow(ames_val))
 
   expect_no_error(
@@ -64,7 +64,7 @@ test_that("Training regression for data.frame and formula, with different num_qu
     augm <- augment(fit, ames_train %>% rename(.outcome = "Sale_Price"))
   )
   expect_named(augm, c(".pred", ".outcome"))
-  expect_type(augm$.pred, "double")
+  expect_s3_class(augm$.pred, "double")
   expect_length(augm$.pred, nrow(ames_train))
 
 
@@ -76,7 +76,7 @@ test_that("Training regression for data.frame and formula, with different num_qu
     pred <- predict(fit, rsample::testing(ames_split))
   )
   expect_named(pred, c(".pred"))
-  expect_type(pred$.pred, "double")
+  expect_s3_class(pred$.pred, "double")
   expect_length(pred$.pred, nrow(rsample::testing(ames_split)))
 
   expect_no_error(
@@ -101,6 +101,15 @@ test_that("Training classification works for data.frame", {
   expect_named(pred, c(".pred_No", ".pred_Yes", ".pred_class"))
   expect_true(is.factor(pred$.pred_class))
   expect_equal(levels(pred$.pred_class), levels(attriy))
+
+  expect_no_error(
+    # data.frame require a `.outcome` column due to mold(x.y) not capturing y name
+    augm <- augment(fit, attrition[ids[1:256],] %>% rename(.outcome = "Attrition"))
+  )
+  expect_named(augm, c(".pred_No", ".pred_Yes", ".pred_class", ".outcome"))
+  expect_s3_class(augm$.pred_class, "factor")
+  expect_length(augm$.pred_class, length(attriy))
+
 })
 
 
@@ -114,10 +123,18 @@ test_that("Training classification from a recipe", {
   )
 
   expect_no_error(
-    pred <- predict(fit, attrition)
+    pred <- predict(fit, rsample::testing(attri_split))
   )
   expect_named(pred, c(".pred_No", ".pred_Yes", ".pred_class"))
   expect_true(is.factor(pred$.pred_class))
   expect_equal(levels(pred$.pred_class), levels(rec$ptype$Attrition))
 
+  expect_no_error(
+    augm <- augment(fit, rsample::training(attri_split))
+  )
+  expect_named(augm, c(".pred_No", ".pred_Yes", ".pred_class", "Attrition"))
+  expect_s3_class(augm$.pred_class, "factor")
+  expect_length(augm$.pred_class, nrow(rsample::training(attri_split)))
+
 })
+
