@@ -7,10 +7,10 @@
   #   "TODO_MD5_V1_1", "87 MB"),
   tabicl_classifier_v2 = c(
     "https://torch-cdn.mlverse.org/models/vision/v2/models/tabicl_classifier_v2.pth",
-    "5dd8f9d75f1512b08633c8b242e645c4", "105 MB"),
+    "1aec661f8b0eb911db1dc06ed088031d", "105 MB"),
   tabicl_regressor_v2 = c(
     "https://torch-cdn.mlverse.org/models/vision/v2/models/tabicl_regressor_v2.pth",
-    "ffccabca67b4fd8ca61860e1195afc8b", "109 MB")
+    "38f68362f9dce8a12269d4d59c8aa498", "109 MB")
 )
 
 # deeply inspired from torchvision:::download_and_cache
@@ -19,7 +19,7 @@
 #' @importFrom fs path_file path_sanitize
 #' @importFrom tools md5sum
 .download_and_cache <- function(url, redownload = FALSE, prefix = "TabICL2", md5 = NULL, size_hint = NULL,
-                                cache_dir = NULL, progress = TRUE) {
+                                progress = TRUE) {
   cache_path <- rappdirs::user_cache_dir("torch")
 
   fs::dir_create(cache_path)

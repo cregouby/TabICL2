@@ -239,8 +239,8 @@ tab_icl2.formula <- function(
     composition = "tibble"
   )
   processed <- hardhat::mold(formula, rsample::training(data), blueprint = bp)
-  processed_ts <- hardhat::forge(rsample::testing(data), blueprint = processed$blueprint)
-  processed$predictors <- bind_rows(processed$predictors, processed_ts$predictor)
+  processed_ts <- hardhat::forge(rsample::testing(data), blueprint = processed$blueprint, outcomes = TRUE)
+  processed$predictors <- bind_rows(processed$predictors, processed_ts$predictors)
   tr_ind <- sample_indicies(processed, size_limit = 1e4)
   if (length(tr_ind) > 0) {
     processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
@@ -273,8 +273,8 @@ tab_icl2.recipe <- function(
   }
 
   processed <- hardhat::mold(x, rsample::training(data))
-  processed_ts <- hardhat::forge(rsample::testing(data), processed$blueprint)
-  processed$predictors <- bind_rows(processed$predictors, processed_ts$predictor)
+  processed_ts <- hardhat::forge(rsample::testing(data), processed$blueprint, outcomes = TRUE)
+  processed$predictors <- bind_rows(processed$predictors, processed_ts$predictors)
   tr_ind <- sample_indicies(processed, size_limit = 1e4)
   if (length(tr_ind) > 0) {
     processed$predictors <- processed$predictors[tr_ind, , drop = FALSE]
