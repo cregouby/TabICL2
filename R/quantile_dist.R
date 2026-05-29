@@ -25,34 +25,19 @@
 #' - `TAIL_QUANTILES_FOR_ESTIMATION`: Number of tail quantiles (default: 20)
 #'
 #' @export
-QuantileDistributionConfig <- R6::R6Class(
-  "QuantileDistributionConfig",
-  public = list(
-    #' @field TOL General numerical tolerance (default: 1e-6).
-    TOL = 1e-6,
-    #' @field MIN_SLOPE Minimum allowed slope dQ/dα (default: 1e-6).
-    MIN_SLOPE = 1e-6,
-    #' @field MAX_SLOPE Maximum allowed slope dQ/dα (default: 1e6).
-    MAX_SLOPE = 1e6,
-    #' @field MIN_BETA Minimum tail scale parameter β (default: 0.01).
-    MIN_BETA = 0.01,
-    #' @field MAX_BETA Maximum tail scale parameter β (default: 100.0).
-    MAX_BETA = 100.0,
-    #' @field MIN_ETA Minimum GPD shape parameter η (default: -0.49).
-    MIN_ETA = -0.49,
-    #' @field MAX_ETA Maximum GPD shape parameter η (default: 0.49).
-    MAX_ETA = 0.49,
-    #' @field ETA_TOLERANCE Threshold for treating η ≈ 0 (default: 0.01).
-    ETA_TOLERANCE = 0.01,
-    #' @field MAX_LOG_RATIO Maximum log(ratio) (default: 15.0).
-    MAX_LOG_RATIO = 15.0,
-    #' @field MAX_EXPONENT Maximum exponent before exp() (default: 15.0).
-    MAX_EXPONENT = 15.0,
-    #' @field MAX_CRPS Maximum CRPS value (default: 1e4).
-    MAX_CRPS = 1e4,
-    #' @field TAIL_QUANTILES_FOR_ESTIMATION Number of tail quantiles (default: 20).
-    TAIL_QUANTILES_FOR_ESTIMATION = 20L
-  )
+QuantileDistributionConfig <- list(
+  TOL = 1e-6,
+  MIN_SLOPE = 1e-6,
+  MAX_SLOPE = 1e6,
+  MIN_BETA = 0.01,
+  MAX_BETA = 100.0,
+  MIN_ETA = -0.49,
+  MAX_ETA = 0.49,
+  ETA_TOLERANCE = 0.01,
+  MAX_LOG_RATIO = 15.0,
+  MAX_EXPONENT = 15.0,
+  MAX_CRPS = 1e4,
+  TAIL_QUANTILES_FOR_ESTIMATION = 20L
 )
 
 #' Pool Adjacent Violators Algorithm (PAVA) for isotonic regression
@@ -201,7 +186,7 @@ enforce_monotonicity <- function(quantiles, method = "sort", weights = NULL) {
 #'
 #' @noRd
 estimate_exp_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles = 20L) {
-  cfg <- QuantileDistributionConfig$new()
+  cfg <- QuantileDistributionConfig
   n <- quantiles$shape[length(quantiles$shape)]
   k <- min(num_tail_quantiles, n %/% 4L)
 
@@ -266,7 +251,7 @@ estimate_exp_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles
 #'
 #' @noRd
 estimate_gpd_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles = 20L) {
-  cfg <- QuantileDistributionConfig$new()
+  cfg <- QuantileDistributionConfig
   n <- quantiles$shape[length(quantiles$shape)]
   k <- min(num_tail_quantiles, n %/% 4L)
 
@@ -372,120 +357,45 @@ estimate_gpd_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles
 #' - Tail extrapolation (exponential or GPD) with data-inferred parameters
 #' - Analytical statistics (CDF, PDF, CRPS, mean, variance)
 #'
-#' @importFrom R6 R6Class
+#' @importFrom torch nn_module
 #' @export
-QuantileDistribution <- R6::R6Class(
+QuantileDistribution <- nn_module(
   "QuantileDistribution",
-  public = list(
-    #' @field cfg Configuration object
-    cfg = NULL,
-    #' @field tol Numerical tolerance
-    tol = NULL,
-    #' @field tail_type Type of tail ("exp" or "gpd")
-    tail_type = NULL,
-    #' @field batch_shape Batch shape
-    batch_shape = NULL,
-    #' @field num_quantiles Number of quantiles
-    num_quantiles = NULL,
-    #' @field alpha_levels Probability levels
-    alpha_levels = NULL,
-    #' @field quantiles Quantile values
-    quantiles = NULL,
 
-    # Spline fields
-    #' @field alpha_lo Lower alpha boundaries
-    alpha_lo = NULL,
-    #' @field alpha_hi Upper alpha boundaries
-    alpha_hi = NULL,
-    #' @field q_lo Lower quantile boundaries
-    q_lo = NULL,
-    #' @field q_hi Upper quantile boundaries
-    q_hi = NULL,
-    #' @field delta_alpha Alpha differences
-    delta_alpha = NULL,
-    #' @field delta_q Quantile differences
-    delta_q = NULL,
-    #' @field slopes Segment slopes
-    slopes = NULL,
-    #' @field num_segments Number of segments
-    num_segments = NULL,
-    #' @field alpha_l Left boundary alpha
-    alpha_l = NULL,
-    #' @field alpha_r Right boundary alpha
-    alpha_r = NULL,
-    #' @field q_l Left boundary quantile
-    q_l = NULL,
-    #' @field q_r Right boundary quantile
-    q_r = NULL,
-    #' @field alpha_lo_1d 1D alpha lower boundaries
-    alpha_lo_1d = NULL,
-    #' @field alpha_hi_1d 1D alpha upper boundaries
-    alpha_hi_1d = NULL,
+  initialize = function(quantiles,
+                        alpha_levels = NULL,
+                        tail_type = "exp",
+                        fix_crossing = TRUE,
+                        crossing_method = "sort") {
+    self$cfg <- QuantileDistributionConfig
+    self$tol <- self$cfg$TOL
+    self$tail_type <- tail_type
 
-    # Tail fields (exponential)
-    #' @field beta_l Left tail beta
-    beta_l = NULL,
-    #' @field beta_r Right tail beta
-    beta_r = NULL,
-    #' @field tail_a_l Left tail coefficient a
-    tail_a_l = NULL,
-    #' @field tail_b_l Left tail coefficient b
-    tail_b_l = NULL,
-    #' @field tail_a_r Right tail coefficient a
-    tail_a_r = NULL,
-    #' @field tail_b_r Right tail coefficient b
-    tail_b_r = NULL,
+    # Store shapes
+    self$batch_shape <- quantiles$shape[-quantiles$ndim]
+    self$num_quantiles <- quantiles$shape[quantiles$ndim]
 
-    # Tail fields (GPD)
-    #' @field eta_l Left tail GPD shape
-    eta_l = NULL,
-    #' @field mu_l Left tail GPD scale
-    mu_l = NULL,
-    #' @field eta_r Right tail GPD shape
-    eta_r = NULL,
-    #' @field mu_r Right tail GPD scale
-    mu_r = NULL,
+    # Default alpha levels
+    if (is.null(alpha_levels)) {
+      alpha_levels <- torch_linspace(
+        0.0, 1.0, self$num_quantiles + 2L,
+        device = quantiles$device,
+        dtype = quantiles$dtype
+      )[2:(self$num_quantiles + 1L)]
+    }
+    self$alpha_levels <- alpha_levels
 
-    #' @description Initialize QuantileDistribution
-    #' @param quantiles Tensor. Predicted quantile values.
-    #' @param alpha_levels Tensor or NULL. Probability levels.
-    #' @param tail_type Character. "exp" or "gpd".
-    #' @param fix_crossing Logical. Fix quantile crossing?
-    #' @param crossing_method Character. Method for fixing crossing.
-    initialize = function(quantiles,
-                         alpha_levels = NULL,
-                         tail_type = "exp",
-                         fix_crossing = TRUE,
-                         crossing_method = "sort") {
-      self$cfg <- QuantileDistributionConfig$new()
-      self$tol <- self$cfg$TOL
-      self$tail_type <- tail_type
+    # Fix quantile crossing
+    if (fix_crossing) {
+      quantiles <- enforce_monotonicity(quantiles, method = crossing_method)
+    }
 
-      # Store shapes
-      self$batch_shape <- quantiles$shape[-quantiles$ndim]
-      self$num_quantiles <- quantiles$shape[quantiles$ndim]
+    self$quantiles <- quantiles
 
-      # Default alpha levels
-      if (is.null(alpha_levels)) {
-        alpha_levels <- torch_linspace(
-          0.0, 1.0, self$num_quantiles + 2L,
-          device = quantiles$device,
-          dtype = quantiles$dtype
-        )[2:(self$num_quantiles + 1L)]
-      }
-      self$alpha_levels <- alpha_levels
-
-      # Fix quantile crossing
-      if (fix_crossing) {
-        quantiles <- enforce_monotonicity(quantiles, method = crossing_method)
-      }
-
-      self$quantiles <- quantiles
-
-      # Setup internal structures
-      self$.setup_spline()
-      self$.setup_tails()
-    },
+    # Setup internal structures
+    self$.setup_spline()
+    self$.setup_tails()
+  },
 
     #' @description Setup linear spline segments
     .setup_spline = function() {
@@ -1432,8 +1342,9 @@ QuantileDistribution <- R6::R6Class(
         seq_len(n_batch)
       )
       q$permute(perm)
-    }
-  )
+    },
+
+  forward = function() self
 )
 
 #' Module wrapper for QuantileDistribution
@@ -1469,7 +1380,7 @@ quantile_to_distribution <- nn_module(
   },
 
   forward = function(quantiles) {
-    QuantileDistribution$new(
+    QuantileDistribution(
       quantiles = quantiles,
       alpha_levels = self$alpha_levels$to(device = quantiles$device, dtype = quantiles$dtype),
       tail_type = self$tail_type,

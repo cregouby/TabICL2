@@ -1,5 +1,5 @@
 test_that("QuantileDistributionConfig has correct default values", {
-  cfg <- QuantileDistributionConfig$new()
+  cfg <- QuantileDistributionConfig
 
   expect_equal(cfg$TOL, 1e-6)
   expect_equal(cfg$MIN_SLOPE, 1e-6)
@@ -124,7 +124,7 @@ test_that("estimate_exp_tail_params returns valid parameters", {
   expect_tensor(params$beta_r)
 
   # Beta should be positive and within bounds
-  cfg <- QuantileDistributionConfig$new()
+  cfg <- QuantileDistributionConfig
   expect_true(all(as.numeric(params$beta_l) >= cfg$MIN_BETA))
   expect_true(all(as.numeric(params$beta_l) <= cfg$MAX_BETA))
   expect_true(all(as.numeric(params$beta_r) >= cfg$MIN_BETA))
@@ -146,7 +146,7 @@ test_that("estimate_gpd_tail_params returns valid parameters", {
   expect_tensor(params$mu_r)
 
   # Eta should be within bounds
-  cfg <- QuantileDistributionConfig$new()
+  cfg <- QuantileDistributionConfig
   expect_gte(as.numeric(params$eta_l), cfg$MIN_ETA - cfg$TOL)
   expect_lte(as.numeric(params$eta_l), cfg$MAX_ETA + cfg$TOL)
   expect_gte(as.numeric(params$eta_r), cfg$MIN_ETA - cfg$TOL)
@@ -157,7 +157,7 @@ test_that("estimate_gpd_tail_params returns valid parameters", {
 test_that("QuantileDistribution initializes with exponential tails", {
   quantiles <- torch_linspace(0.0, 10.0, 50)$unsqueeze(1)
 
-  dist <- QuantileDistribution$new(
+  dist <- QuantileDistribution(
     quantiles = quantiles,
     tail_type = "exp",
     fix_crossing = TRUE
@@ -173,7 +173,7 @@ test_that("QuantileDistribution initializes with exponential tails", {
 test_that("QuantileDistribution initializes with GPD tails", {
   quantiles <- torch_linspace(0.0, 10.0, 50)$unsqueeze(1)
 
-  dist <- QuantileDistribution$new(
+  dist <- QuantileDistribution(
     quantiles = quantiles,
     tail_type = "gpd",
     fix_crossing = TRUE
@@ -191,7 +191,7 @@ test_that("QuantileDistribution fixes quantile crossing", {
   # Create quantiles with crossing
   quantiles <- torch_tensor(c(0.0, 2.0, 1.5, 3.0, 4.0))$unsqueeze(1)
 
-  dist <- QuantileDistribution$new(
+  dist <- QuantileDistribution(
     quantiles = quantiles,
     fix_crossing = TRUE,
     crossing_method = "sort"
@@ -206,7 +206,7 @@ test_that("QuantileDistribution fixes quantile crossing", {
 
 test_that("QuantileDistribution icdf is monotonic", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   alphas <- torch_linspace(0.01, 0.99, 100)
   q_values <- dist$icdf(alphas)
@@ -224,7 +224,7 @@ test_that("QuantileDistribution icdf at alpha_levels recovers quantiles", {
   quantiles <- torch_linspace(-5.0, 5.0, 20)$unsqueeze(1)
   alpha_levels <- torch_linspace(0.01, 0.99, 20)
 
-  dist <- QuantileDistribution$new(
+  dist <- QuantileDistribution(
     quantiles = quantiles,
     alpha_levels = alpha_levels,
     tail_type = "exp"
@@ -242,7 +242,7 @@ test_that("QuantileDistribution icdf at alpha_levels recovers quantiles", {
 
 test_that("QuantileDistribution cdf is monotonic", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   z_values <- torch_linspace(-10.0, 10.0, 100)
   cdf_values <- dist$cdf(z_values)
@@ -262,7 +262,7 @@ test_that("QuantileDistribution cdf is monotonic", {
 
 test_that("QuantileDistribution cdf and icdf are inverses", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   alphas <- torch_tensor(c(0.1, 0.3, 0.5, 0.7, 0.9))$unsqueeze(1)
 
@@ -276,7 +276,7 @@ test_that("QuantileDistribution cdf and icdf are inverses", {
 
 test_that("QuantileDistribution pdf is non-negative", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   z_values <- torch_linspace(-8.0, 8.0, 100)
   pdf_values <- dist$pdf(z_values)
@@ -287,7 +287,7 @@ test_that("QuantileDistribution pdf is non-negative", {
 
 test_that("QuantileDistribution log_prob and pdf are consistent", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   z_values <- torch_linspace(-5.0, 5.0, 50)
 
@@ -301,7 +301,7 @@ test_that("QuantileDistribution log_prob and pdf are consistent", {
 test_that("QuantileDistribution mean is computed correctly", {
   # Uniform-like quantiles centered at 0
   quantiles <- torch_linspace(-5.0, 5.0, 100)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   mean_val <- dist$mean()
 
@@ -312,7 +312,7 @@ test_that("QuantileDistribution mean is computed correctly", {
 
 test_that("QuantileDistribution variance is non-negative", {
   quantiles <- torch_linspace(-5.0, 5.0, 100)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   var_val <- dist$variance()
 
@@ -322,7 +322,7 @@ test_that("QuantileDistribution variance is non-negative", {
 
 test_that("QuantileDistribution stddev equals sqrt of variance", {
   quantiles <- torch_linspace(-5.0, 5.0, 100)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   std_val <- dist$stddev()
   var_val <- dist$variance()
@@ -332,7 +332,7 @@ test_that("QuantileDistribution stddev equals sqrt of variance", {
 
 test_that("QuantileDistribution crps is non-negative", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   observations <- torch_tensor(c(-2.0, 0.0, 2.0))
   crps_values <- dist$crps(observations)
@@ -345,7 +345,7 @@ test_that("QuantileDistribution crps is non-negative", {
 test_that("QuantileDistribution crps is zero for perfect prediction", {
   # Create a very narrow distribution
   quantiles <- torch_linspace(5.0, 5.001, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   # Observation at the center
   observation <- torch_tensor(5.0)
@@ -357,7 +357,7 @@ test_that("QuantileDistribution crps is zero for perfect prediction", {
 
 test_that("QuantileDistribution pinball approximates crps", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   observation <- torch_tensor(0.0)
 
@@ -374,7 +374,7 @@ test_that("QuantileDistribution pinball approximates crps", {
 
 test_that("QuantileDistribution sample returns correct shape", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   # Single sample
   sample_single <- dist$sample()
@@ -390,7 +390,7 @@ test_that("QuantileDistribution sample returns correct shape", {
 test_that("QuantileDistribution sample statistics match distribution", {
   # Create a distribution
   quantiles <- torch_linspace(-5.0, 5.0, 100)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   # Draw many samples
   samples <- dist$sample(c(10000))
@@ -416,7 +416,7 @@ test_that("QuantileDistribution works with batch input", {
     torch_linspace(-8.0, 2.0, 50)
   ), dim = 1)
 
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   expect_equal(dist$batch_shape, c(3))
 
@@ -431,7 +431,7 @@ test_that("QuantileDistribution works with batch input", {
 
 test_that("QuantileDistribution GPD tails work correctly", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "gpd")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "gpd")
 
   # icdf should work
   alphas <- torch_linspace(0.01, 0.99, 100)
@@ -463,7 +463,7 @@ test_that("QuantileDistribution handles custom alpha_levels", {
   quantiles <- torch_linspace(-5.0, 5.0, 10)$unsqueeze(1)
   custom_alphas <- torch_linspace(0.1, 0.9, 10)
 
-  dist <- QuantileDistribution$new(
+  dist <- QuantileDistribution(
     quantiles = quantiles,
     alpha_levels = custom_alphas,
     tail_type = "exp"
@@ -475,7 +475,7 @@ test_that("QuantileDistribution handles custom alpha_levels", {
 
 test_that("QuantileDistribution numerical stability in extreme tails", {
   quantiles <- torch_linspace(-10.0, 10.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   # Very extreme alphas
   extreme_alphas <- torch_tensor(c(1e-8, 0.5, 1 - 1e-8))
@@ -554,7 +554,7 @@ test_that("quantile_to_distribution with custom alpha_levels", {
 
 test_that("QuantileDistribution CRPS for GPD tails", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "gpd")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "gpd")
 
   observations <- torch_tensor(c(-3.0, 0.0, 3.0))
   crps_values <- dist$crps(observations)
@@ -569,7 +569,7 @@ test_that("QuantileDistribution handles edge case with few quantiles", {
   # Only 5 quantiles
   quantiles <- torch_linspace(-1.0, 1.0, 5)$unsqueeze(1)
 
-  dist <- QuantileDistribution$new(
+  dist <- QuantileDistribution(
     quantiles = quantiles,
     tail_type = "exp",
     fix_crossing = TRUE
@@ -588,7 +588,7 @@ test_that("QuantileDistribution handles edge case with few quantiles", {
 
 test_that("QuantileDistribution icdf handles scalar input", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   # Scalar alpha
   alpha <- torch_tensor(0.5)
@@ -600,7 +600,7 @@ test_that("QuantileDistribution icdf handles scalar input", {
 
 test_that("QuantileDistribution cdf handles scalar input", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   # Scalar z
   z <- torch_tensor(0.0)
@@ -614,7 +614,7 @@ test_that("QuantileDistribution cdf handles scalar input", {
 
 test_that("QuantileDistribution derivative is positive", {
   quantiles <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   alphas <- torch_linspace(0.01, 0.99, 100)
   derivs <- dist$.icdf_derivative(alphas)
@@ -626,7 +626,7 @@ test_that("QuantileDistribution derivative is positive", {
 
 test_that("QuantileDistribution integrates to 1 approximately", {
   quantiles <- torch_linspace(-5.0, 5.0, 100)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   # Numerical integration of PDF
   z_grid <- torch_linspace(-20.0, 20.0, 1000)
@@ -642,7 +642,7 @@ test_that("QuantileDistribution integrates to 1 approximately", {
 
 test_that("QuantileDistribution mean via sampling matches analytical", {
   quantiles <- torch_linspace(-5.0, 5.0, 100)$unsqueeze(1)
-  dist <- QuantileDistribution$new(quantiles = quantiles, tail_type = "exp")
+  dist <- QuantileDistribution(quantiles = quantiles, tail_type = "exp")
 
   # Analytical mean
   mean_analytical <- as.numeric(dist$mean())
@@ -658,13 +658,13 @@ test_that("QuantileDistribution crossing_method affects result", {
   # Create quantiles with crossing
   quantiles_crossed <- torch_tensor(c(0.0, 3.0, 2.0, 5.0, 4.0, 6.0))$unsqueeze(1)
 
-  dist_sort <- QuantileDistribution$new(
+  dist_sort <- QuantileDistribution(
     quantiles = quantiles_crossed,
     fix_crossing = TRUE,
     crossing_method = "sort"
   )
 
-  dist_cummax <- QuantileDistribution$new(
+  dist_cummax <- QuantileDistribution(
     quantiles = quantiles_crossed,
     fix_crossing = TRUE,
     crossing_method = "cummax"
@@ -685,7 +685,7 @@ test_that("QuantileDistribution no crossing when fix_crossing=FALSE", {
   # Create monotonic quantiles
   quantiles_mono <- torch_linspace(-5.0, 5.0, 50)$unsqueeze(1)
 
-  dist_no_fix <- QuantileDistribution$new(
+  dist_no_fix <- QuantileDistribution(
     quantiles = quantiles_mono,
     fix_crossing = FALSE
   )
