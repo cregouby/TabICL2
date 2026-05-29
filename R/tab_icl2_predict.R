@@ -36,7 +36,12 @@
 predict.tab_icl_v2 <- function(object, new_data, ...) {
   rlang::check_dots_empty()
 
-  forged <- hardhat::forge(new_data, object$blueprint)$predictors
+  # Recipe blueprints may have outcome-transforming steps (e.g. step_log(all_outcomes()))
+  # that require the outcome column during bake. Use outcomes=TRUE only when the blueprint
+  # is a recipe AND the outcome column is actually present in new_data.
+  needs_outcomes <- inherits(object$blueprint, "default_recipe_blueprint") &&
+    all(names(object$blueprint$ptypes$outcomes) %in% names(new_data))
+  forged <- hardhat::forge(new_data, object$blueprint, outcomes = needs_outcomes)$predictors
   # TODO need to turn into a proper torch_dataset
   batch <- resolve_data(bind_rows(object$t_predictors[1:object$training[1], ], forged),
                         object$t_outcome)

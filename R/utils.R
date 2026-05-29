@@ -83,7 +83,7 @@ load_checkpoint_path <- function(model_version, progress = TRUE) {
   if (startsWith(model_version, "file://")) {
     path <- sub("^file://", "", model_version)
     if (!file.exists(path)) {
-      cli_abort("Checkpoint not found at {.file {local_path}}.")
+      cli_abort("Checkpoint not found at {.file {path}}.")
     }
   } else if (startsWith(model_version, "https://") || startsWith(model_version, "http://")) {
   # https:// or http:// URL
@@ -113,11 +113,6 @@ load_checkpoint_path <- function(model_version, progress = TRUE) {
     }
   }
 
-
-  if (fs::path_ext(path) == "safetensors") {
-    return(torch_load(path))
-  } else {
-    return(load_state_dict(path))
-  }
+  return(load_state_dict(path))
 }
 

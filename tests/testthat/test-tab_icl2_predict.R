@@ -1,19 +1,3 @@
-test_that("tab_icl2 fits with all versions", {
-  skip_if_not(torch::torch_is_installed())
-
-  mod <- tab_icl2(species ~ island + bill_len + bill_dep + sex, data = rsample::initial_split(penguins),
-                  model_version = paste0("file://",rappdirs::user_cache_dir("torch/TabICL2/tabicl-classifier-v2-20260212.pt"))
-  )
-  expect_s3_class(mod, "tab_icl_v2")
-
-
-  mod <- tab_icl2(am ~ mpg + wt, data = rsample::initial_split(mtcars),
-                  model_version = paste0("file://",rappdirs::user_cache_dir("torch/TabICL2/tabicl-regressor-v2-20260212.pt")),
-                  config = tab_icl2_config(num_quantiles = 5))
-  expect_s3_class(mod, "tab_icl_v2")
-
-})
-
 test_that("check_data_constraints errors when too many classes", {
   x <- matrix(0, nrow = 11, ncol = 2)
   y <- factor(letters[1:11])
@@ -94,7 +78,6 @@ test_that("Training classification works for data.frame", {
     fit <- tab_icl2(attrix, attriy)
   )
 
-
   expect_no_error(
     pred <- predict(fit, attrix)
   )
@@ -138,7 +121,6 @@ test_that("Training classification from a recipe", {
 
 })
 
-
 test_that("Training regression for recipe works with pretrained model", {
 
   rec <- recipe(Sale_Price ~ ., data = ames) %>%
@@ -161,8 +143,49 @@ test_that("Training regression for recipe works with pretrained model", {
     augm <- augment(fit, rsample::training(ames_split))
   )
   # recipe capture the y name
-  expect_named(augm, c(".pred", ".outcome"))
+  expect_named(augm, c(".pred", "Sale_Price"))
   expect_type(augm$.pred, "double")
   expect_length(augm$.pred, nrow(rsample::training(ames_split)))
 })
 
+
+test_that("Training classifier for recipe works with pretrained model", {
+
+  rec <- recipe(Attrition ~ ., data = attrition) %>%
+    step_normalize(all_numeric(), -all_outcomes())
+
+  expect_no_error(
+    fit <- tab_icl2(rec, attri_split, model_version = "tabicl_classifier_v2")
+  )
+
+  expect_no_error(
+    pred <- predict(fit, rsample::testing(attri_split))
+  )
+  expect_named(pred, c(".pred_No", ".pred_Yes", ".pred_class"))
+  expect_true(is.factor(pred$.pred_class))
+  expect_equal(levels(pred$.pred_class), levels(rec$ptype$Attrition))
+
+  expect_no_error(
+    augm <- augment(fit, rsample::training(attri_split))
+  )
+  expect_named(augm, c(".pred_No", ".pred_Yes", ".pred_class", "Attrition"))
+  expect_type(augm$.pred_class, "integer")
+  expect_length(augm$.pred_class, nrow(rsample::training(attri_split)))
+
+})
+
+test_that("tab_icl2 fits with file:// models", {
+  skip_if_not(torch::torch_is_installed())
+
+  mod <- tab_icl2(species ~ island + bill_len + bill_dep + sex, data = rsample::initial_split(penguins),
+                  model_version = paste0("file://",rappdirs::user_cache_dir("torch/TabICL2/tabicl_classifier_v2.pth"))
+  )
+  expect_s3_class(mod, "tab_icl_v2")
+
+
+  mod <- tab_icl2(am ~ mpg + wt, data = rsample::initial_split(mtcars),
+                  model_version = paste0("file://",rappdirs::user_cache_dir("torch/TabICL2/tabicl_regressor_v2.pth")),
+                  config = tab_icl2_config(num_quantiles = 5))
+  expect_s3_class(mod, "tab_icl_v2")
+
+})

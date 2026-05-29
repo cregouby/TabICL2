@@ -284,7 +284,6 @@ tab_icl2.recipe <- function(
   tab_icl2_bridge(processed, options, model_version = model_version, ...)
 }
 
-# ------------------------------------------------------------------------------
 # Bridge
 
 tab_icl2_bridge <- function(processed, options, model_version = NULL, ...) {
@@ -307,7 +306,6 @@ tab_icl2_bridge <- function(processed, options, model_version = NULL, ...) {
   )
 }
 
-# ------------------------------------------------------------------------------
 # Implementation
 
 tab_icl2_impl <- function(x, y, opts, model_version = NULL) {
@@ -315,6 +313,34 @@ tab_icl2_impl <- function(x, y, opts, model_version = NULL) {
   # TODO need to turn into a proper torch_dataset
   batch <- resolve_data(x, y)
   is_classification <- !is.null(batch$output_lvls)
+
+  arch <- list(
+    embed_dim          = opts$embed_dim,
+    col_n_block        = opts$col_n_block,
+    row_n_block        = opts$row_n_block,
+    icl_n_block        = opts$icl_n_block,
+    col_n_head         = opts$col_n_head,
+    row_n_head         = opts$row_n_head,
+    icl_n_head         = opts$icl_n_head,
+    feature_group_size = opts$feature_group_size,
+    col_n_cls          = opts$col_n_cls,
+    row_n_cls          = opts$row_n_cls
+  )
+
+
+  if (is_classification) {
+    mod_obj <- do.call(
+      NanoTabICLv2,
+      c(arch, list(max_classes = sum(batch$output_dim), out_dim = sum(batch$output_dim)))
+    )
+    class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.classifier")
+  } else {
+    mod_obj <- do.call(
+      NanoTabICLv2,
+      c(arch, list(max_classes = 0L, out_dim = opts$num_quantiles))
+    )
+    class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.regressor")
+  }
 
   if (!is.null(model_version)) {
     is_cls_ckpt <- grepl("classifier", model_version, fixed = TRUE)
@@ -331,46 +357,30 @@ tab_icl2_impl <- function(x, y, opts, model_version = NULL) {
           i = "Supply a numeric outcome or switch to a classifier version.")
       )
     }
+    state_dict <-  load_checkpoint_path(model_version)
 
-
-    mod_obj   <-  load_checkpoint_path(model_version)
-
-  } else {
-    arch <- list(
-      embed_dim          = opts$embed_dim,
-      col_n_block        = opts$col_n_block,
-      row_n_block        = opts$row_n_block,
-      icl_n_block        = opts$icl_n_block,
-      col_n_head         = opts$col_n_head,
-      row_n_head         = opts$row_n_head,
-      icl_n_head         = opts$icl_n_head,
-      feature_group_size = opts$feature_group_size,
-      col_n_cls          = opts$col_n_cls,
-      row_n_cls          = opts$row_n_cls
-    )
-
-    if (is_classification) {
-      mod_obj <- do.call(
-        NanoTabICLv2,
-        c(arch, list(max_classes = sum(batch$output_dim), out_dim = sum(batch$output_dim)))
-      )
-    } else {
-      mod_obj <- do.call(
-        NanoTabICLv2,
-        c(arch, list(max_classes = 0L, out_dim = opts$num_quantiles))
-      )
+    # Load with flexible matching
+    model_state <- mod_obj$state_dict()
+    state_dict <- state_dict[names(state_dict) %in% names(model_state)]
+    for (n in names(state_dict)) {
+      if (!all(state_dict[[n]]$size() == model_state[[n]]$size())) {
+        state_dict[[n]] <- model_state[[n]]
+      }
     }
-  }
+    missing <- setdiff(names(model_state), names(state_dict))
+    if (length(missing) > 0) {
+      for (n in missing) {
+        state_dict[[n]] <- model_state[[n]]
+      }
+    }
 
-  if (is_classification) {
-    class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.classifier")
-  } else {
-    class(mod_obj) <- c(class(mod_obj), "tab_icl_v2.regressor")
+    mod_obj$load_state_dict(state_dict)
   }
 
   res <- list(
     fit    = mod_obj,
     levels = batch$output_lvls,
+  # TODO will become shape[2] when batch will be a proper batch
     train  = c(batch$y$shape[1], ncol(x))
   )
   class(res) <- c("tab_icl2")
@@ -475,12 +485,8 @@ check_fit_args <- function(opts, call = rlang::caller_env()) {
   #   call = call
   # )
 
-  # ------------------------------------------------------------------------------
   # There have been some argument name differences in the python package versions
-
   arg_names <- names(opts)
-
-  # ------------------------------------------------------------------------------
 
   opts
 }
