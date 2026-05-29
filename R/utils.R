@@ -6,10 +6,10 @@
   #   "https://huggingface.co/jingang/TabICL/resolve/main/tabicl-classifier-v1.1-20250506.ckpt",
   #   "TODO_MD5_V1_1", "87 MB"),
   tabicl_classifier_v2 = c(
-    "https://torch-cdn.mlverse.org/models/vision/v2/models/tabicl2_classifier.safetensors",
+    "https://torch-cdn.mlverse.org/models/vision/v2/models/tabicl_classifier_v2.pth",
     "5dd8f9d75f1512b08633c8b242e645c4", "105 MB"),
   tabicl_regressor_v2 = c(
-    "https://torch-cdn.mlverse.org/models/vision/v2/models/tabicl2_regressor.safetensors",
+    "https://torch-cdn.mlverse.org/models/vision/v2/models/tabicl_regressor_v2.pth",
     "ffccabca67b4fd8ca61860e1195afc8b", "109 MB")
 )
 

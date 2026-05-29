@@ -147,7 +147,7 @@ test_that("Training regression for recipe works with pretrained model", {
     step_normalize(all_numeric())
 
   expect_no_error(
-    fit <- tab_icl2(rec, ames_split, model_version = "file://~/.cache/torch/TabICL2/tabicl-regressor-v2-20260212.pt")
+    fit <- tab_icl2(rec, ames_split, model_version = "tabicl_regressor_v2")
   )
 
   expect_no_error(
