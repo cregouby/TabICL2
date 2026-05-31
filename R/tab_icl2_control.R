@@ -39,7 +39,7 @@
   utils::modifyList(base, overrides)
 }
 
-# ------------------------------------------------------------------------------
+
 
 #' Control TabICL2 inference execution
 #'

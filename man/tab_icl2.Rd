@@ -101,9 +101,10 @@ A \code{tab_icl2} object with elements:
 \itemize{
 \item \code{fit}: the object containing the model.
 \item \code{levels}: a character string of class levels (or NULL for regression)
-\item \code{training}: a vector with the training set dimensions.
-\item \code{blueprint}: am object produced by \code{\link[hardhat:mold]{hardhat::mold()}} used to process
-new data during prediction.
+\item \code{t_dim} : the dimension of the training set inside the T-shape XY dataset
+\item \code{t_predictors} : a tibble of training and validation set predictors
+\item \code{t_outcome} : a tibble of validation set outcome
+\item \code{logging} : unused
 }
 }
 \description{
@@ -173,7 +174,7 @@ outcome <- mtcars[, 1]
 mtcars_split <- rsample::initial_split(mtcars)
 
 \dontrun{
-if (torch_is_installed() & interactive()) {
+if (torch_is_installed() && interactive()) {
  # XY interface
  mod <- tab_icl2(predictors, outcome)
  mod
@@ -184,10 +185,9 @@ if (torch_is_installed() & interactive()) {
 
  # Recipes interface
  if (rlang::is_installed("recipes")) {
-  suppressPackageStartupMessages(library(recipes))
   rec <-
-   recipe(mpg ~ ., mtcars) \%>\%
-   step_log(disp)
+   recipes::recipe(mpg ~ ., mtcars) \%>\%
+   recipes::step_log(disp)
 
   mod3 <- tab_icl2(rec, mtcars_split)
   mod3

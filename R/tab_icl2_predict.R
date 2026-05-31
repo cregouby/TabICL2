@@ -18,8 +18,7 @@
 #' `level` is the levels of the outcome factor vector.
 #'
 #' @examples
-#' # Minimal example for quick execution
-#' car_split <- rsample::initial_split(mtcars[ 1:6,   ])
+#' car_split <- rsample::initial_split(mtcars)
 #'
 #' \dontrun{
 #' # Fit
@@ -28,6 +27,8 @@
 #'
 #'  # Predict
 #'  predict(mod, testing(car_split))
+#'
+#'  # Augment
 #'  augment(mod, testing(car_split))
 #' }
 #' }
@@ -43,13 +44,13 @@ predict.tab_icl_v2 <- function(object, new_data, ...) {
     all(names(object$blueprint$ptypes$outcomes) %in% names(new_data))
   forged <- hardhat::forge(new_data, object$blueprint, outcomes = needs_outcomes)$predictors
   # TODO need to turn into a proper torch_dataset
-  batch <- resolve_data(bind_rows(object$t_predictors[1:object$training[1], ], forged),
+  batch <- resolve_data(bind_rows(object$t_predictors[1:object$t_dim[1], ], forged),
                         object$t_outcome)
-  res <- predict(object$fit, batch, object$levels, object$training)
+  res <- predict(object$fit, batch, object$levels, object$t_dim)
   res
 }
 
-# ------------------------------------------------------------------------------
+
 # Implementation
 
 #' @export
@@ -85,8 +86,9 @@ predict.tab_icl_v2.classifier <- function(object, new_data, levels, train_dim, .
 
 #' @export
 #' @rdname predict.tab_icl2
-augment.tab_icl_v2 <- function(object, new_data) {
-  res <- predict(object, new_data)
-  forged_truth <- hardhat::forge(new_data, blueprint = object$blueprint, outcomes = TRUE)$outcomes
-  res <- dplyr::bind_cols(res, forged_truth)
+#' @inheritParams predict.tab_icl_v2
+augment.tab_icl_v2 <- function(x, new_data) {
+  res <- predict(x, new_data)
+  forged_truth <- hardhat::forge(new_data, blueprint = x$blueprint, outcomes = TRUE)$outcomes
+  dplyr::bind_cols(res, forged_truth)
 }

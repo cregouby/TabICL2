@@ -105,9 +105,10 @@
 #'
 #'   * `fit`: the object containing the model.
 #'   * `levels`: a character string of class levels (or NULL for regression)
-#'   * `training`: a vector with the training set dimensions.
-#'   * `blueprint`: am object produced by [hardhat::mold()] used to process
-#'      new data during prediction.
+#'   * `t_dim` : the dimension of the training set inside the T-shape XY dataset
+#'   * `t_predictors` : a tibble of training and validation set predictors
+#'   * `t_outcome` : a tibble of validation set outcome
+#'   * `logging` : unused
 #'
 #' @references
 #'
@@ -126,7 +127,7 @@
 #' mtcars_split <- rsample::initial_split(mtcars)
 #'
 #' \dontrun{
-#' if (torch_is_installed() & interactive()) {
+#' if (torch_is_installed() && interactive()) {
 #'  # XY interface
 #'  mod <- tab_icl2(predictors, outcome)
 #'  mod
@@ -137,10 +138,9 @@
 #'
 #'  # Recipes interface
 #'  if (rlang::is_installed("recipes")) {
-#'   suppressPackageStartupMessages(library(recipes))
 #'   rec <-
-#'    recipe(mpg ~ ., mtcars) %>%
-#'    step_log(disp)
+#'    recipes::recipe(mpg ~ ., mtcars) %>%
+#'    recipes::step_log(disp)
 #'
 #'   mod3 <- tab_icl2(rec, mtcars_split)
 #'   mod3
@@ -296,13 +296,17 @@ tab_icl2_bridge <- function(processed, options, model_version = NULL, ...) {
 
   res <- tab_icl2_impl(predictors, outcome, options, model_version = model_version)
 
-  new_tab_icl2(
+  check_character(res$levels, allow_null = TRUE)
+
+  hardhat::new_model(
     fit = res$fit,
     levels = res$levels,
-    training = res$train,
-    blueprint = processed$blueprint,
+    t_dim = res$train_dim,
     t_predictors = predictors,
-    t_outcome = outcome
+    t_outcome = outcome,
+    logging = NULL,
+    blueprint = processed$blueprint,
+    class = "tab_icl_v2"
   )
 }
 
@@ -381,7 +385,7 @@ tab_icl2_impl <- function(x, y, opts, model_version = NULL) {
     fit    = mod_obj,
     levels = batch$output_lvls,
   # TODO will become shape[2] when batch will be a proper batch
-    train  = c(batch$y$shape[1], ncol(x))
+    train_dim  = c(batch$y$shape[1], ncol(x))
   )
   class(res) <- c("tab_icl2")
   res

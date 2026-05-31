@@ -27,8 +27,7 @@ probability estimates are in columns with the pattern \verb{.pred_\{level\}} whe
 Predict using \code{TabICL2}
 }
 \examples{
-# Minimal example for quick execution
-car_split <- rsample::initial_split(mtcars[ 1:6,   ])
+car_split <- rsample::initial_split(mtcars)
 
 \dontrun{
 # Fit
@@ -37,6 +36,8 @@ if (torch_is_installed() & interactive()) {
 
  # Predict
  predict(mod, testing(car_split))
+
+ # Augment
  augment(mod, testing(car_split))
 }
 }

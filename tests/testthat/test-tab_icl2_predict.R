@@ -24,7 +24,7 @@ test_that("classifier takes `training_set_limit` into account", {
     data = two_class_split
   )
 
-  expect_equal(orig_data$training[1], nrow(rsample::training(two_class_split)))
+  expect_equal(orig_data$t_dim[1], nrow(rsample::training(two_class_split)))
 })
 
 test_that("Training regression for data.frame and formula, with different num_quantiles", {
