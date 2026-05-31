@@ -55,7 +55,7 @@ QuantileDistributionConfig <- list(
 #'
 #' @noRd
 isotonic_regression_pava <- function(y, weights = NULL) {
-  # For R implementation, use simpler approach
+  # R implementation simplified approach
   # Can be optimized later with Rcpp if needed
 
   batch_shape <- y$shape[-length(y$shape)]
@@ -1358,7 +1358,6 @@ QuantileDistribution <- nn_module(
 #' @param fix_crossing Logical. Enforce monotonicity?
 #' @param crossing_method Character. Method for fixing crossing.
 #'
-#' @importFrom torch nn_module
 #' @export
 quantile_to_distribution <- nn_module(
   "QuantileToDistribution",

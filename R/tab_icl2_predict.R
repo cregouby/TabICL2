@@ -68,6 +68,7 @@ predict.tab_icl_v2.regressor <- function(object, new_data, levels, train_dim, ..
 }
 
 #' @export
+#' @importFrom torch as_array
 predict.tab_icl_v2.classifier <- function(object, new_data, levels, train_dim, ...) {
 
   res <- object(new_data$x$unsqueeze(1), new_data$y$unsqueeze(1))
@@ -87,8 +88,9 @@ predict.tab_icl_v2.classifier <- function(object, new_data, levels, train_dim, .
 #' @export
 #' @rdname predict.tab_icl2
 #' @inheritParams predict.tab_icl_v2
-augment.tab_icl_v2 <- function(x, new_data) {
+#' @importFrom dplyr bind_cols
+augment.tab_icl_v2 <- function(x, new_data, ...) {
   res <- predict(x, new_data)
   forged_truth <- hardhat::forge(new_data, blueprint = x$blueprint, outcomes = TRUE)$outcomes
-  dplyr::bind_cols(res, forged_truth)
+  bind_cols(res, forged_truth)
 }

@@ -59,30 +59,30 @@ sample_indicies <- function(molded, size_limit = row_limits) {
 
   if (is_factor) {
     data_subset <- dat %>%
-      dplyr::group_by(outcome) %>%
+      dplyr::group_by(.data$outcome) %>%
       dplyr::group_nest(keep = TRUE) %>%
       dplyr::mutate(
         size = purrr::map_int(data, nrow),
-        sample_prop = size / num_rows,
-        sample_num = ceiling(sample_prop * size_limit),
-        data = purrr::map2(data, sample_num, ~ dplyr::slice_sample(.x, n = .y))
+        sample_prop = .data$size / num_rows,
+        sample_num = ceiling(.data$sample_prop * size_limit),
+        data = purrr::map2(.data, .data$sample_num, ~ dplyr::slice_sample(.x, n = .y))
       )
   } else {
     data_subset <- dat %>%
-      dplyr::mutate(quantile = dplyr::ntile(outcome, n = 4)) %>%
-      dplyr::group_by(quantile) %>%
+      dplyr::mutate(quantile = dplyr::ntile(.data$outcome, n = 4)) %>%
+      dplyr::group_by(.data$quantile) %>%
       dplyr::group_nest(keep = TRUE) %>%
       dplyr::mutate(
         size = purrr::map_int(data, nrow),
-        sample_prop = size / num_rows,
-        sample_num = ceiling(sample_prop * size_limit),
-        data = purrr::map2(data, sample_num, ~ dplyr::slice_sample(.x, n = .y))
+        sample_prop = .data$size / num_rows,
+        sample_num = ceiling(.data$sample_prop * size_limit),
+        data = purrr::map2(.data, .data$sample_num, ~ dplyr::slice_sample(.x, n = .y))
       )
   }
 
   purrr::map_dfr(data_subset$data, ~.x) %>%
-    dplyr::arrange(.row_order) %>%
-    dplyr::select(.row_order) %>%
+    dplyr::arrange(.data$.row_order) %>%
+    dplyr::select(.data$.row_order) %>%
     dplyr::slice(1:size_limit) %>%
     purrr::pluck(".row_order")
 }
