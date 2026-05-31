@@ -14,4 +14,4 @@ generics::augment
 ## usethis namespace: end
 NULL
 # prevent `no visible binding for global variable`
-.. <- NULL
+.. <- .row_order <- data <- NULL

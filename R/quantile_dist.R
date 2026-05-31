@@ -351,6 +351,8 @@ estimate_gpd_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles
 
 #' Probability distribution constructed from predicted quantiles
 #'
+#' @param quantiles Tensor. Quantile values after monotonicity correction.
+#'   Shape: `(*batch_shape, num_quantiles)`.
 #' @description
 #' Wraps a set of predicted quantiles into a proper distribution with:
 #' - Monotonicity enforcement (fixes quantile crossing)
@@ -359,6 +361,7 @@ estimate_gpd_tail_params <- function(quantiles, alpha_levels, num_tail_quantiles
 #'
 #' @importFrom torch nn_module
 #' @export
+#' @inheritParams quantile_to_distribution
 QuantileDistribution <- nn_module(
   "QuantileDistribution",
 

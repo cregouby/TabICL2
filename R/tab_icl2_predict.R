@@ -1,6 +1,6 @@
 #' Predict using `TabICL2`
 #'
-#' @param object,x A `tab_icl_v2` object.
+#' @param object A `tab_icl_v2` object.
 #'
 #' @param new_data A data frame or matrix of new predictors.
 #'

@@ -65,7 +65,7 @@ sample_indicies <- function(molded, size_limit = row_limits) {
         size = purrr::map_int(data, nrow),
         sample_prop = .data$size / num_rows,
         sample_num = ceiling(.data$sample_prop * size_limit),
-        data = purrr::map2(.data, .data$sample_num, ~ dplyr::slice_sample(.x, n = .y))
+        data = purrr::map2(data, .data$sample_num, ~ dplyr::slice_sample(.x, n = .y))
       )
   } else {
     data_subset <- dat %>%
@@ -76,13 +76,13 @@ sample_indicies <- function(molded, size_limit = row_limits) {
         size = purrr::map_int(data, nrow),
         sample_prop = .data$size / num_rows,
         sample_num = ceiling(.data$sample_prop * size_limit),
-        data = purrr::map2(.data, .data$sample_num, ~ dplyr::slice_sample(.x, n = .y))
+        data = purrr::map2(data, .data$sample_num, ~ dplyr::slice_sample(.x, n = .y))
       )
   }
 
   purrr::map_dfr(data_subset$data, ~.x) %>%
-    dplyr::arrange(.data$.row_order) %>%
-    dplyr::select(.data$.row_order) %>%
+    dplyr::arrange(.row_order) %>%
+    dplyr::select(.row_order) %>%
     dplyr::slice(1:size_limit) %>%
     purrr::pluck(".row_order")
 }

@@ -13,6 +13,17 @@ QuantileDistribution(
 )
 }
 \arguments{
+\item{quantiles}{Tensor. Quantile values after monotonicity correction.
+Shape: \verb{(*batch_shape, num_quantiles)}.}
+
+\item{alpha_levels}{Numeric vector or NULL. Quantile levels.}
+
+\item{tail_type}{Character. "exp" or "gpd".}
+
+\item{fix_crossing}{Logical. Enforce monotonicity?}
+
+\item{crossing_method}{Character. Method for fixing crossing.}
+
 \item{param}{Tensor. Parameter estimates of the tail function.}
 
 \item{alpha}{Tensor. Probability levels.}

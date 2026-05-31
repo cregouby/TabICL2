@@ -7,7 +7,7 @@
 \method{predict}{tab_icl_v2}(object, new_data, ...)
 }
 \arguments{
-\item{object, x}{A \code{tab_icl_v2} object.}
+\item{object}{A \code{tab_icl_v2} object.}
 
 \item{new_data}{A data frame or matrix of new predictors.}
 
