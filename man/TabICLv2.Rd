@@ -8,21 +8,21 @@ TabICLv2(
   max_classes = 10L,
   num_quantiles = 999L,
   embed_dim = 128L,
-  col_num_blocks = 3L,
-  col_nhead = 8L,
-  col_num_inds = 128L,
+  col_n_block = 3L,
+  col_n_head = 8L,
+  col_n_cls = 128L,
   col_affine = FALSE,
   col_feature_group = "same",
   col_feature_group_size = 3L,
   col_target_aware = TRUE,
   col_ssmax = "qassmax-mlp-elementwise",
-  row_num_blocks = 3L,
-  row_nhead = 8L,
-  row_num_cls = 4L,
+  row_n_block = 3L,
+  row_n_head = 8L,
+  row_n_cls = 4L,
   row_rope_base = 1e+05,
   row_rope_interleaved = FALSE,
-  icl_num_blocks = 12L,
-  icl_nhead = 8L,
+  icl_n_block = 12L,
+  icl_n_head = 8L,
   icl_ssmax = "qassmax-mlp-elementwise",
   ff_factor = 2L,
   dropout = 0,
@@ -39,11 +39,11 @@ TabICLv2(
 
 \item{embed_dim}{Integer, default \code{128L}. Model dimension.}
 
-\item{col_num_blocks}{Integer, default \code{3L}.}
+\item{col_n_block}{Integer, default \code{3L}.}
 
-\item{col_nhead}{Integer, default \code{8L}.}
+\item{col_n_head}{Integer, default \code{8L}.}
 
-\item{col_num_inds}{Integer, default \code{128L}.}
+\item{col_n_cls}{Integer, default \code{128L}.}
 
 \item{col_affine}{Logical, default \code{FALSE}.}
 
@@ -55,19 +55,19 @@ TabICLv2(
 
 \item{col_ssmax}{Character, default \code{"qassmax-mlp-elementwise"}.}
 
-\item{row_num_blocks}{Integer, default \code{3L}.}
+\item{row_n_block}{Integer, default \code{3L}.}
 
-\item{row_nhead}{Integer, default \code{8L}.}
+\item{row_n_head}{Integer, default \code{8L}.}
 
-\item{row_num_cls}{Integer, default \code{4L}.}
+\item{row_n_cls}{Integer, default \code{4L}.}
 
 \item{row_rope_base}{Float, default \code{100000}.}
 
 \item{row_rope_interleaved}{Logical, default \code{FALSE}.}
 
-\item{icl_num_blocks}{Integer, default \code{12L}.}
+\item{icl_n_block}{Integer, default \code{12L}.}
 
-\item{icl_nhead}{Integer, default \code{8L}.}
+\item{icl_n_head}{Integer, default \code{8L}.}
 
 \item{icl_ssmax}{Character, default \code{"qassmax-mlp-elementwise"}.}
 

@@ -1391,3 +1391,5 @@ quantile_to_distribution <- nn_module(
     )
   }
 )
+
+QuantileToDistribution <- quantile_to_distribution

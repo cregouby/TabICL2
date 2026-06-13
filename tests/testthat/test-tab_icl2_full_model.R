@@ -1,20 +1,20 @@
 test_that("TabICLv2 initializes with default parameters", {
   model <- TabICLv2(max_classes = 10L)
   expect_true(inherits(model, "nn_module"))
-  expect_equal(model$feature_group_size, 3L)
-  expect_tensor_shape(model$row_cls_tokens, c(1, 1, 4, 128))
+  expect_equal(model$col_embedder$feature_group_size, 3L)
+  expect_tensor_shape(model$row_interactor$cls_tokens, c(1, 1, 4, 128))
 })
 
 test_that("TabICLv2 initializes for regression mode", {
   model <- TabICLv2(max_classes = 0L, num_quantiles = 5L)
-  expect_true(inherits(model$y_embed_in, "nn_linear"))
-  expect_true(inherits(model$y_embed_icl, "nn_linear"))
+  expect_true(inherits(model$icl_predictor$icl_block, "nn_linear"))
+  expect_true(inherits(model$icl_predictor$y_embed_icl, "nn_linear"))
 })
 
 test_that("TabICLv2 initializes for classification mode", {
   model <- TabICLv2(max_classes = 10L)
-  expect_true(inherits(model$y_embed_in, "nn_module"))
-  expect_true(inherits(model$y_embed_icl, "nn_module"))
+  expect_true(inherits(model$icl_predictor$icl_block, "nn_module"))
+  expect_true(inherits(model$icl_predictor$y_embed_icl, "nn_module"))
 })
 
 test_that("TabICLv2 forward pass basic classification", {

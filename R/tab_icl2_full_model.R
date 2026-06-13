@@ -93,7 +93,7 @@ TransformerBlock <- torch::nn_module(
     } else {
       NULL
     }
-    self$ssmax_layer <- if (ssmax) {
+    self$ssmax_layer <- if (isTRUE(ssmax)) {
       QASSMax(num_heads = num_heads, head_dim = self$head_dim)
     } else {
       NULL
@@ -310,21 +310,21 @@ ICLPredictor <- torch::nn_module(
 #' @param max_classes Integer, default `10L`. 0 for regression.
 #' @param num_quantiles Integer, default `999L`. Number of quantiles for regression.
 #' @param embed_dim Integer, default `128L`. Model dimension.
-#' @param col_num_blocks Integer, default `3L`.
-#' @param col_nhead Integer, default `8L`.
-#' @param col_num_inds Integer, default `128L`.
+#' @param col_n_block Integer, default `3L`.
+#' @param col_n_head Integer, default `8L`.
+#' @param col_n_cls Integer, default `128L`.
 #' @param col_affine Logical, default `FALSE`.
 #' @param col_feature_group Character, default `"same"`.
 #' @param col_feature_group_size Integer, default `3L`.
 #' @param col_target_aware Logical, default `TRUE`.
 #' @param col_ssmax Character, default `"qassmax-mlp-elementwise"`.
-#' @param row_num_blocks Integer, default `3L`.
-#' @param row_nhead Integer, default `8L`.
-#' @param row_num_cls Integer, default `4L`.
+#' @param row_n_block Integer, default `3L`.
+#' @param row_n_head Integer, default `8L`.
+#' @param row_n_cls Integer, default `4L`.
 #' @param row_rope_base Float, default `100000`.
 #' @param row_rope_interleaved Logical, default `FALSE`.
-#' @param icl_num_blocks Integer, default `12L`.
-#' @param icl_nhead Integer, default `8L`.
+#' @param icl_n_block Integer, default `12L`.
+#' @param icl_n_head Integer, default `8L`.
 #' @param icl_ssmax Character, default `"qassmax-mlp-elementwise"`.
 #' @param ff_factor Integer, default `2L`.
 #' @param dropout Float, default `0`.
@@ -456,16 +456,16 @@ TabICLv2 <- torch::nn_module(
 
   initialize = function(
     max_classes = 10L, num_quantiles = 999L, embed_dim = 128L,
-    col_num_blocks = 3L, col_nhead = 8L, col_num_inds = 128L,
+    col_n_block = 3L, col_n_head = 8L, col_n_cls = 128L,
     col_affine = FALSE, col_feature_group = "same", col_feature_group_size = 3L,
     col_target_aware = TRUE, col_ssmax = "qassmax-mlp-elementwise",
-    row_num_blocks = 3L, row_nhead = 8L, row_num_cls = 4L,
+    row_n_block = 3L, row_n_head = 8L, row_n_cls = 4L,
     row_rope_base = 100000, row_rope_interleaved = FALSE,
-    icl_num_blocks = 12L, icl_nhead = 8L, icl_ssmax = "qassmax-mlp-elementwise",
+    icl_n_block = 12L, icl_n_head = 8L, icl_ssmax = "qassmax-mlp-elementwise",
     ff_factor = 2L, dropout = 0, activation = "gelu",
     norm_first = TRUE, bias_free_ln = FALSE, recompute = FALSE
   ) {
-    icl_dim <- as.integer(embed_dim * row_num_cls)
+    icl_dim <- as.integer(embed_dim * row_n_cls)
 
     if (max_classes == 0L) {
       if (num_quantiles <= 0L) {
@@ -483,25 +483,25 @@ TabICLv2 <- torch::nn_module(
 
     # Sub-modules
     self$col_embedder <- ColEmbedding(
-      embed_dim = embed_dim, num_blocks = col_num_blocks, nhead = col_nhead,
-      num_inds = col_num_inds, dim_feedforward = embed_dim * ff_factor,
+      embed_dim = embed_dim, num_blocks = col_n_block, nhead = col_n_head,
+      num_inds = col_n_cls, dim_feedforward = embed_dim * ff_factor,
       dropout = dropout, activation = activation, norm_first = norm_first,
       bias_free_ln = bias_free_ln, affine = col_affine, feature_group = col_feature_group,
       feature_group_size = col_feature_group_size, target_aware = col_target_aware,
-      max_classes = max_classes, reserve_cls_tokens = row_num_cls,
+      max_classes = max_classes, reserve_cls_tokens = row_n_cls,
       ssmax = col_ssmax, recompute = recompute
     )
 
     self$row_interactor <- RowInteractor(
-      embed_dim = embed_dim, num_blocks = row_num_blocks, nhead = row_nhead,
-      num_cls = row_num_cls, rope_base = row_rope_base, rope_interleaved = row_rope_interleaved,
+      embed_dim = embed_dim, num_blocks = row_n_block, nhead = row_n_head,
+      num_cls = row_n_cls, rope_base = row_rope_base, rope_interleaved = row_rope_interleaved,
       dropout = dropout, activation = activation, norm_first = norm_first,
       bias_free_ln = bias_free_ln, recompute = recompute
     )
 
     self$icl_predictor <- ICLPredictor(
       out_dim = out_dim, max_classes = max_classes, d_model = icl_dim,
-      num_blocks = icl_num_blocks, nhead = icl_nhead, dim_feedforward = icl_dim * ff_factor,
+      num_blocks = icl_n_block, nhead = icl_n_head, dim_feedforward = icl_dim * ff_factor,
       dropout = dropout, activation = activation, norm_first = norm_first,
       bias_free_ln = bias_free_ln, ssmax = icl_ssmax, recompute = recompute
     )

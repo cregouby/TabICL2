@@ -33,7 +33,7 @@ ClassEmbedding <- torch::nn_module(
 )
 
 
-Rope <- torch::nn_module(
+NanoRope <- torch::nn_module(
   "Rope",
 
   initialize = function(head_dim, theta = 100000) {
@@ -91,7 +91,7 @@ QASSMax <- torch::nn_module(
   }
 )
 
-TransformerBlock <- torch::nn_module(
+NanoTransformerBlock <- torch::nn_module(
   "TransformerBlock",
 
   initialize = function(embed_dim, num_heads, use_rope = FALSE, ssmax = FALSE) {
@@ -102,7 +102,7 @@ TransformerBlock <- torch::nn_module(
     self$num_heads <- num_heads
     self$head_dim <- embed_dim %/% num_heads
 
-    self$rope <- if (use_rope) Rope(head_dim = embed_dim %/% num_heads, theta = 100000) else NULL
+    self$rope <- if (use_rope) NanoRope(head_dim = embed_dim %/% num_heads, theta = 100000) else NULL
     self$ssmax_layer <- if (ssmax) QASSMax(num_heads = num_heads, head_dim = embed_dim %/% num_heads) else NULL
     self$mlp <- .get_mlp(embed_dim, embed_dim * 2, embed_dim)
     self$ln_attn <- nn_layer_norm(embed_dim)
@@ -190,12 +190,12 @@ TransformerBlock <- torch::nn_module(
   }
 )
 
-InducedTransformerBlock <- torch::nn_module(
+NanoInducedTransformerBlock <- torch::nn_module(
   "InducedTransformerBlock",
 
   initialize = function(embed_dim, num_heads, n_inducing, ssmax = FALSE) {
-    self$tfm1 <- TransformerBlock(embed_dim = embed_dim, num_heads = num_heads, ssmax = ssmax)
-    self$tfm2 <- TransformerBlock(embed_dim = embed_dim, num_heads = num_heads)
+    self$tfm1 <- NanoTransformerBlock(embed_dim = embed_dim, num_heads = num_heads, ssmax = ssmax)
+    self$tfm2 <- NanoTransformerBlock(embed_dim = embed_dim, num_heads = num_heads)
     self$inducing_vectors <- nn_parameter(0.02 * torch_randn(1, n_inducing, embed_dim))
   },
 
@@ -269,7 +269,7 @@ NanoTabICLv2 <- torch::nn_module(
 
     self$col_blocks <- nn_module_list(
       purrr::map(seq_len(col_n_block), function(i) {
-        InducedTransformerBlock(
+        NanoInducedTransformerBlock(
           embed_dim = embed_dim,
           num_heads = col_n_head,
           n_inducing = row_n_cls,
@@ -280,7 +280,7 @@ NanoTabICLv2 <- torch::nn_module(
 
     self$row_blocks <- nn_module_list(
       purrr::map(seq_len(row_n_block), function(i) {
-        TransformerBlock(
+        NanoTransformerBlock(
           embed_dim = embed_dim,
           num_heads = row_n_head,
           use_rope = TRUE
@@ -290,7 +290,7 @@ NanoTabICLv2 <- torch::nn_module(
 
     self$icl_blocks <- nn_module_list(
       purrr::map(seq_len(icl_n_block), function(i) {
-        TransformerBlock(
+        NanoTransformerBlock(
           embed_dim = icl_dim,
           num_heads = icl_n_head,
           ssmax = TRUE
