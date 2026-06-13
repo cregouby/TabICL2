@@ -7,13 +7,13 @@ test_that("TabICLv2 initializes with default parameters", {
 
 test_that("TabICLv2 initializes for regression mode", {
   model <- TabICLv2(max_classes = 0L, num_quantiles = 5L)
-  expect_true(inherits(model$icl_predictor$icl_block, "nn_linear"))
+  expect_true(inherits(model$icl_predictor$out_mlp$`2`, "nn_linear"))
   expect_true(inherits(model$icl_predictor$y_embed_icl, "nn_linear"))
 })
 
 test_that("TabICLv2 initializes for classification mode", {
   model <- TabICLv2(max_classes = 10L)
-  expect_true(inherits(model$icl_predictor$icl_block, "nn_module"))
+  expect_true(inherits(model$icl_predictor$out_mlp$`2`, "nn_module"))
   expect_true(inherits(model$icl_predictor$y_embed_icl, "nn_module"))
 })
 
@@ -276,18 +276,18 @@ test_that("TabICLv2 handles different embed_dim values", {
 
 test_that("TabICLv2 handles different block counts", {
   model <- TabICLv2(max_classes = 4L, col_n_block = 1L, row_n_block = 2L, icl_n_block = 4L  )
-  expect_equal(length(model$col_blocks), 1L)
-  expect_equal(length(model$row_blocks), 2L)
-  expect_equal(length(model$icl_blocks), 4L)
+  expect_equal(length(model$col_embedder$tf_col$blocks), 1L)
+  expect_equal(length(model$row_interactor$row_blocks), 2L)
+  expect_equal(length(model$icl_predictor$icl_blocks), 4L)
 })
 
 test_that("TabICLv2 handles different nhead values", {
   model <- TabICLv2(
     max_classes = 3L, col_n_head = 4L, row_n_head = 2L, icl_n_head = 8L, embed_dim = 32L
   )
-  expect_equal(model$col_blocks[[1]]$tfm1$num_heads, 4L)
-  expect_equal(model$row_blocks[[1]]$num_heads, 2L)
-  expect_equal(model$icl_blocks[[1]]$num_heads, 8L)
+  expect_equal(model$col_embedder$tf_col$blocks[[1]]$tfm1$num_heads, 4L)
+  expect_equal(model$row_interactor$row_blocks[[1]]$num_heads, 2L)
+  expect_equal(model$icl_predictor$icl_blocks[[1]]$num_heads, 8L)
 })
 
 test_that("TabICLv2 output is finite for random input", {
@@ -331,11 +331,11 @@ test_that("TabICLv2 state dict contains expected keys", {
   state <- model$state_dict()
   expected_keys <- c(
     "x_embed.weight", "x_embed.bias",
-    "y_embed_in.embedding.weight",
-    "y_embed_icl.embedding.weight",
-    "row_cls_tokens",
-    "row_ln.weight", "row_ln.bias",
-    "out_ln.weight", "out_ln.bias"
+    "col_embedder.y_encoder.weight",
+    "icl_predictor.y_embed_icl.embedding.weight",
+    "row_interactor.cls_tokens",
+    "row_interactor.row_blocks.0.ln_attn.weight", "row_interactor.row_blocks.0.ln_attn..bias",
+    "icl_predictor.out_ln.weight", "icl_predictor.out_ln.bias"
   )
   purrr::walk(expected_keys, function(key) {
     expect_true(key %in% names(state))
