@@ -2,7 +2,7 @@
 % Please edit documentation in R/column_embedding.R
 \name{ColEmbedding}
 \alias{ColEmbedding}
-\title{Distribution-aware column-wise embedding module}
+\title{Distribution-aware Column-wise Embedding Module}
 \usage{
 ColEmbedding(
   embed_dim,
@@ -28,94 +28,50 @@ ColEmbedding(
 \arguments{
 \item{embed_dim}{Integer. Embedding dimension.}
 
-\item{num_blocks}{Integer. Number of induced self-attention blocks in the set transformer.}
+\item{num_blocks}{Integer. Number of induced self-attention blocks.}
 
-\item{nhead}{Integer. Number of attention heads in the set transformer.}
+\item{nhead}{Integer. Number of attention heads.}
 
-\item{dim_feedforward}{Integer. Dimension of the feedforward network in the set transformer.}
+\item{dim_feedforward}{Integer. Feedforward network dimension.}
 
-\item{num_inds}{Integer. Number of inducing points used in self-attention blocks.}
+\item{num_inds}{Integer. Number of inducing points.}
 
-\item{dropout}{Numeric. Dropout probability in the set transformer (default: \code{0.0}).}
+\item{dropout}{Numeric. Dropout probability (default: \code{0.0}).}
 
-\item{activation}{Character or function. Activation function for feedforward network:
-\code{"relu"}, \code{"gelu"}, or a unary callable (default: \code{"gelu"}).}
+\item{activation}{Character. Activation function (default: \code{"gelu"}).}
 
-\item{norm_first}{Logical. If \code{TRUE}, uses pre-norm architecture (default: \code{TRUE}).}
+\item{norm_first}{Logical. Pre-norm architecture (default: \code{TRUE}).}
 
-\item{bias_free_ln}{Logical. If \code{TRUE}, removes bias from LayerNorm layers (default: \code{FALSE}).}
+\item{bias_free_ln}{Logical. Remove LayerNorm bias (default: \code{FALSE}).}
 
-\item{affine}{Logical. If \code{TRUE}, computes embeddings as \code{features * W + b} (default: \code{TRUE}).}
+\item{affine}{Logical. Compute \code{features * W + b} (default: \code{TRUE}).}
 
-\item{feature_group}{Logical or character. Feature grouping mode:
-\code{FALSE} (no grouping), \code{TRUE} or \code{"same"} (circular permutation),
-\code{"valid"} (padding + reshaping) (default: \code{FALSE}).}
+\item{feature_group}{Logical or Character. Grouping mode:
+\itemize{
+\item \code{FALSE}: No grouping.
+\item \code{TRUE} or \code{"same"}: Circular permutation.
+\item \code{"valid"}: Padding and reshaping.
+}}
 
-\item{feature_group_size}{Integer. Number of features per group when grouping is enabled (default: \code{3L}).}
+\item{feature_group_size}{Integer. Size of feature groups (default: \code{3L}).}
 
-\item{target_aware}{Logical. If \code{TRUE}, incorporates target information into embeddings (default: \code{FALSE}).}
+\item{target_aware}{Logical. Use target info (default: \code{FALSE}).}
 
-\item{max_classes}{Integer. Number of classes for classification; \code{0L} for regression (default: \code{10L}).}
+\item{max_classes}{Integer. Number of classes (default: \code{10L}).}
 
-\item{reserve_cls_tokens}{Integer. Number of slots to reserve for CLS tokens (default: \code{4L}).}
+\item{reserve_cls_tokens}{Integer. CLS token slots (default: \code{4L}).}
 
-\item{ssmax}{Logical or character. Scalable softmax type for attention:
-\code{FALSE}/\code{"none"}, \code{TRUE}/\code{"qassmax-mlp-elementwise"}, or custom string (default: \code{FALSE}).}
+\item{ssmax}{Logical or Character. Scalable softmax type.}
 
-\item{mixed_radix_ensemble}{Logical. Enable mixed-radix ensembling for many-class classification
-(only if \code{target_aware = TRUE} and \code{max_classes > 0}) (default: \code{TRUE}).}
+\item{mixed_radix_ensemble}{Logical. Mixed-radix ensembling (default: \code{TRUE}).}
 
-\item{recompute}{Logical. If \code{TRUE}, uses gradient checkpointing (default: \code{FALSE}).}
+\item{recompute}{Logical. Gradient checkpointing (default: \code{FALSE}).}
 }
 \value{
-A \code{nn_module} object that can be used like any other torch module.
+An \code{nn_module} object.
 }
 \description{
-This module maps each scalar cell in a column to a high-dimensional embedding while
-capturing statistical regularities within the column. Unlike traditional approaches
-that use separate embedding layers per column, it employs a shared set transformer
-to process all features.
-}
-\details{
-ColEmbedding operates in two modes depending on the \code{affine} parameter:
-
-\strong{When \code{affine = TRUE}:}
-\enumerate{
-\item Each scalar cell is first linearly projected into the embedding dimension
-\item The set transformer generates distribution-aware weights and biases for each column
-\item The final column embeddings are computed as: \eqn{\text{column} \times W + b}
-}
-
-\strong{When \code{affine = FALSE}:}
-\enumerate{
-\item Each scalar cell is first linearly projected into the embedding dimension
-\item The set transformer processes the projected features
-\item The final column embeddings are directly the set transformer's output
-}
-}
-\examples{
-\dontrun{
-# Create a ColEmbedding module
-col_emb <- col_embedding(
-  embed_dim = 128L,
-  num_blocks = 2L,
-  nhead = 4L,
-  dim_feedforward = 256L,
-  num_inds = 32L,
-  affine = TRUE,
-  target_aware = FALSE
-)
-
-# Forward pass during training
-X <- torch_randn(2L, 100L, 20L)  # [batch, rows, features]
-y_train <- torch_randint(1L, 11L, c(2L, 80L))  # [batch, train_size]
-embeddings <- col_emb(X, y_train)
-
-# Forward pass during inference with caching
-col_cache <- kv_cache()  # assuming KVCache has nn_module wrapper
-embeddings_inf <- col_emb$forward_with_cache(
-  X, col_cache, y_train, store_cache = TRUE
-)
-}
-
+This module maps scalar cells to high-dimensional embeddings using a shared
+Set Transformer. It supports feature grouping, target-aware encoding,
+and affine transformation of features.
 }
