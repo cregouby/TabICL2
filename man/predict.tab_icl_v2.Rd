@@ -2,9 +2,15 @@
 % Please edit documentation in R/tab_icl2_predict.R
 \name{predict.tab_icl_v2}
 \alias{predict.tab_icl_v2}
+\alias{predict.tab_icl_v2.regressor}
+\alias{predict.tab_icl_v2.classifier}
 \title{Predict using \code{TabICL2}}
 \usage{
 \method{predict}{tab_icl_v2}(object, new_data, ...)
+
+\method{predict}{tab_icl_v2.regressor}(object, new_data, levels, train_dim, ...)
+
+\method{predict}{tab_icl_v2.classifier}(object, new_data, levels, train_dim, ...)
 }
 \arguments{
 \item{object}{A \code{tab_icl_v2} object.}

@@ -175,6 +175,7 @@ offload_reason <- function(key, detail = NULL) {
 #' @param x An OffloadReason object
 #' @param ... Additional arguments (unused)
 #' @noRd
+#' @exportS3Method base::format
 format.OffloadReason <- function(x, ...) {
   if (is.null(x$detail)) {
     x$key
@@ -182,7 +183,7 @@ format.OffloadReason <- function(x, ...) {
     sprintf("%s: %s", x$key, x$detail)
   }
 }
-
+F
 
 #' Create an OffloadConfig object
 #'

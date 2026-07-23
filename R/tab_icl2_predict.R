@@ -1,11 +1,8 @@
 #' Predict using `TabICL2`
 #'
 #' @param object A `tab_icl_v2` object.
-#'
 #' @param new_data A data frame or matrix of new predictors.
-#'
 #' @param ... Not used, but required for extensibility.
-#'
 #' @return
 #'
 #' [predict()] returns a tibble of predictions and [augment()] appends the
@@ -54,6 +51,7 @@ predict.tab_icl_v2 <- function(object, new_data, ...) {
 # Implementation
 
 #' @export
+#' @rdname predict.tab_icl_v2
 predict.tab_icl_v2.regressor <- function(object, new_data, levels, train_dim, ...) {
 
   raw_quantiles <- object(new_data$x$unsqueeze(1), new_data$y$unsqueeze(1))
@@ -69,6 +67,7 @@ predict.tab_icl_v2.regressor <- function(object, new_data, levels, train_dim, ..
 
 #' @export
 #' @importFrom torch as_array
+#' @rdname predict.tab_icl_v2
 predict.tab_icl_v2.classifier <- function(object, new_data, levels, train_dim, ...) {
 
   res <- object(new_data$x$unsqueeze(1), new_data$y$unsqueeze(1))
