@@ -155,7 +155,7 @@ TransformerBlock <- torch::nn_module(
     q_flat <- q$reshape(c(n_batch * n_rows, -1L, embed_dim))
     kv_flat <- if (is.null(kv)) NULL else kv$reshape(c(n_batch * n_rows, -1L, embed_dim))
     result <- self$forward(q_flat, kv_flat, ...)
-    # (B*R, C, D) -> (B, R, C, D)
+    # (B*R, C, D) ->  (B, R, C, D)
     result$reshape(c(n_batch, n_rows, -1L, embed_dim))
   },
   col_attn = function(q, kv = NULL, ...) {
@@ -225,8 +225,8 @@ RowInteractor <- torch::nn_module(
     n_cls <- cls_shape[3L]
     x <- self$row_blocks[[n_row_blocks]]$row_attn(x, q_max_idx = n_cls)
 
-    # (B, n_cls, T, E) -> permute -> (B, T, n_cls, E) -> flatten -> (B, T, n_cls * E)
-    x <- x$permute(c(1L, 3L, 2L, 4L))$flatten(start_dim = 3L, end_dim = 4L)
+    # (B, n_cls, T, E) ->  -> flatten -> (B, T, n_cls * E)
+    x <- x$flatten(start_dim = 3L, end_dim = 4L)
 
     self$out_ln(x)
   }
@@ -260,9 +260,17 @@ ICLPredictor <- torch::nn_module(
     n_train <- y_train$shape[2L]
     n_rows <- emb$shape[2L] # Shape is now (B, T, icl_dim) thanks to RowInteractor fix
 
+    y_emb <- self$y_embed_icl(y_train) # (B, train_size, icl_dim)
     # Add y embedding to training rows
-    y_icl_expanded <- y_train[.., NULL]
-    emb[, seq_len(n_train), ..] <- emb[, seq_len(n_train), ..] + self$y_embed_icl(y_icl_expanded)
+    emb_train <- emb$narrow(2L, 1L, n_train)
+    emb_train_added <- emb_train + y_emb
+
+    if (n_train < n_rows) {
+      emb_test <- emb$narrow(2L, n_train + 1L, n_rows - n_train)
+      emb <- torch_cat(list(emb_train_added, emb_test), dim = 2L)
+    } else {
+      emb <- emb_train_added
+    }
 
     n_icl_blocks <- length(self$icl_blocks)
     if (n_icl_blocks > 1L) {

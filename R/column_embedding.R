@@ -187,12 +187,24 @@ ColEmbedding <- torch::nn_module(
           y_emb <- self$y_encoder(y_train$unsqueeze(-1L))
         }
         # use narrow() to extract, modify, and reinsert
+        B <- y_emb$size(1L)
+        train_size_emb <- y_emb$size(2L)
+        E <- y_emb$size(3L)
+        y_emb <- y_emb$view(c(B, 1L, train_size_emb, E))  # -> (B, 1, train_size, E)
+
         src_train <- src$narrow(3L, 1L, train_size)
-        src_train$add_(y_emb)  # modify src in place via narrow view
+        src_train_added <- src_train + y_emb
+        if (train_size < src$size(3L)) {
+          src_test <- src$narrow(3L, train_size + 1L, src$size(3L) - train_size)
+          src <- torch_cat(list(src_train_added, src_test), dim = 3L)
+        } else {
+          src <- src_train_added
+        }
 
         train_size_arg <- if (embed_with_test) NULL else train_size
         src <- self$tf_col(src, train_size = train_size_arg)
       } else {
+        # Mixed-radix case
         if (!self$mixed_radix_ensemble) {
           value_error("Too many classes ({num_classes}) for max_classes ({self$max_classes}). Enable mixed_radix_ensemble.")
         }
@@ -204,9 +216,23 @@ ColEmbedding <- torch::nn_module(
         for (digit_idx in seq_len(num_digits) - 1L) {
           y_digit <- self$.extract_mixed_radix_digit(y_train, digit_idx, bases)
           y_emb <- self$y_encoder(y_digit$to(dtype = torch_float()))
+
           # use narrow() to extract, modify, and reinsert
-          src_with_y_train <- src_with_y$narrow(3L, 1L, train_size)
-          src_with_y_train$copy_(src$narrow(3L, 1L, train_size) + y_emb)
+          B <- y_emb$size(1L)
+          train_size_emb <- y_emb$size(2L)
+          E <- y_emb$size(3L)
+          y_emb <- y_emb$view(c(B, 1L, train_size_emb, E))
+
+          src_train <- src$narrow(3L, 1L, train_size)
+          src_train_added <- src_train + y_emb
+
+          if (train_size < src$size(3L)) {
+            src_test <- src$narrow(3L, train_size + 1L, src$size(3L) - train_size)
+            src_with_y <- torch_cat(list(src_train_added, src_test), dim = 3L)
+          } else {
+            src_with_y <- src_train_added
+          }
+
 
           train_size_arg <- if (embed_with_test) NULL else train_size
           src_accum <- src_accum + self$tf_col(src_with_y, train_size = train_size_arg)
@@ -408,7 +434,15 @@ ColEmbedding <- torch::nn_module(
 
         # src in-place modification via narrow()
         src_train <- src$narrow(3L, 1L, train_size)
-        src_train$add_(y_emb)
+        src_train_added <- src_train + y_emb
+
+        if (train_size < src$size(3L)) {
+          src_test <- src$narrow(3L, train_size + 1L, src$size(3L) - train_size)
+          src_with_y <- torch_cat(list(src_train_added, src_test), dim = 3L)
+        } else {
+          src_with_y <- src_train_added
+        }
+
       }
       src <- self$tf_col$forward_with_cache(src, col_cache, train_size, use_cache, store_cache)
     }

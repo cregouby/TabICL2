@@ -16,8 +16,8 @@ NULL
   )
 }
 
-ClassEmbedding <- torch::nn_module(
-  "ClassEmbedding",
+NanoClassEmbedding <- torch::nn_module(
+  "NanoClassEmbedding",
 
   initialize = function(num_embeddings, embedding_dim) {
     self$embedding <- nn_embedding(num_embeddings, embedding_dim)
@@ -257,12 +257,12 @@ NanoTabICLv2 <- torch::nn_module(
 
     self$x_embed <- nn_linear(feature_group_size, embed_dim)
     self$y_embed_in <- if (max_classes > 0) {
-      ClassEmbedding(max_classes, embed_dim)
+      NanoClassEmbedding(max_classes, embed_dim)
     } else {
       nn_linear(1, embed_dim)
     }
     self$y_embed_icl <- if (max_classes > 0) {
-      ClassEmbedding(max_classes, icl_dim)
+      NanoClassEmbedding(max_classes, icl_dim)
     } else {
       nn_linear(1, icl_dim)
     }
