@@ -1,7 +1,7 @@
 test_that("TabICLv2 initializes with default parameters", {
   model <- TabICLv2(max_classes = 10L)
   expect_true(inherits(model, "nn_module"))
-  expect_equal(model$col_embedder$col_feature_group_size, 3L)
+  expect_equal(model$col_embedder$feature_group_size, 3L)
   expect_tensor_shape(model$row_interactor$cls_tokens, c(1, 1, 4, 128))
 })
 
@@ -40,7 +40,7 @@ test_that("TabICLv2 handles single batch", {
   model <- TabICLv2(max_classes = 5L)
   model$eval()
   x <- torch_randn(1L, 10L, 4L)
-  y <- torch_tensor(c(1:6))$view(c(1,6))
+  y <- torch_tensor(c(1L, 2L, 3L, 4L, 5L, 1L))$view(c(1L, 6L))
   output <- model(x, y)
   expect_tensor_shape(output, c(1L, 4L, 5L))
 })
@@ -251,8 +251,8 @@ test_that("TabICLv2 output MLP produces correct final dimension", {
   row_n_cls = 2L
   model <- TabICLv2(max_classes = 6L, embed_dim = embed_dim, row_n_cls = row_n_cls)
   icl_dim <- embed_dim * row_n_cls
-  expect_tensor_shape(model$parameters$icl_predictor.icl_blocks.1.mlp.2.weight, c(64L, icl_dim))
-  expect_tensor_shape(model$parameters$icl_predictor.y_embed_icl.embedding.weight, c(6L, 64L))
+  expect_tensor_shape(model$parameters$icl_predictor.icl_blocks.1.mlp.0.weight, c(64L, icl_dim))
+  expect_tensor_shape(model$parameters$icl_predictor.y_embed_icl.embedding.weight, c(6L, icl_dim))
 })
 
 test_that("TabICLv2 model eval mode disables gradients", {
@@ -346,9 +346,9 @@ test_that("TabICLv2 state dict contains expected keys", {
   #   "icl_predictor.out_ln.weight", "icl_predictor.out_ln.bias"
   # )
   expected_keys <- c(
-    "col_embedder.x_embed.weight",
-    "col_embedder.x_embed.bias",
-    "col_embedder.y_encoder.embedding.weight",
+    "col_embedder.in_linear.weight",
+    "col_embedder.in_linear.bias",
+    "col_embedder.y_encoder.weight",
     "icl_predictor.y_embed_icl.embedding.weight",
     "row_interactor.cls_tokens",
     "row_interactor.row_blocks.0.ln_attn.weight",
