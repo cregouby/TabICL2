@@ -485,7 +485,7 @@ TabICLv2 <- torch::nn_module(
     ff_factor = 2L, dropout = 0, activation = "gelu",
     norm_first = TRUE, bias_free_ln = FALSE, recompute = FALSE
   ) {
-    icl_dim <- as.integer(embed_dim * row_n_cls)
+    icl_dim <- as.integer(embed_dim * col_n_cls)
 
     if (max_classes == 0L) {
       if (num_quantiles <= 0L) {

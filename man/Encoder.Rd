@@ -117,6 +117,6 @@ enc$forward_with_cache(src, icl_cache, train_size, use_cache, store_cache)
 }
 
 \seealso{
-\code{\link{MultiheadAttentionBlock}}, \code{\link{RotaryEmbedding}},
+\code{\link{multihead_attention_block}}, \code{\link{RotaryEmbedding}},
 \code{\link{KVCache}}, \code{\link{KVCacheEntry}}
 }

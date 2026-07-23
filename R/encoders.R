@@ -44,7 +44,7 @@
 #' }
 #' }
 #'
-#' @seealso \code{\link{MultiheadAttentionBlock}}, \code{\link{RotaryEmbedding}},
+#' @seealso \code{\link{multihead_attention_block}}, \code{\link{RotaryEmbedding}},
 #'   \code{\link{KVCache}}, \code{\link{KVCacheEntry}}
 #'
 #' @export

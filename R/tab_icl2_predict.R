@@ -85,7 +85,7 @@ predict.tab_icl_v2.classifier <- function(object, new_data, levels, train_dim, .
 }
 
 #' @export
-#' @rdname predict.tab_icl2
+#' @rdname predict.tab_icl_v2
 #' @inheritParams predict.tab_icl_v2
 #' @importFrom dplyr bind_cols
 augment.tab_icl_v2 <- function(x, new_data, ...) {
