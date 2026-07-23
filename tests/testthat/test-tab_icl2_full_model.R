@@ -1,7 +1,7 @@
 test_that("TabICLv2 initializes with default parameters", {
   model <- TabICLv2(max_classes = 10L)
   expect_true(inherits(model, "nn_module"))
-  expect_equal(model$col_embedder$feature_group_size, 3L)
+  expect_equal(model$col_embedder$col_feature_group_size, 3L)
   expect_tensor_shape(model$row_interactor$cls_tokens, c(1, 1, 4, 128))
 })
 
@@ -215,7 +215,7 @@ test_that("InducedTransformerBlock col_attn delegates to tfm2", {
 })
 
 test_that("TabICLv2 feature grouping creates correct input shape", {
-  model <- TabICLv2(max_classes = 5L, feature_group_size = 2L)
+  model <- TabICLv2(max_classes = 5L, col_feature_group_size = 2L)
   n_cols <- 6L
   x <- torch_randn(1L, 8L, n_cols)
   idxs <- torch_arange(n_cols, dtype = torch_long())
@@ -248,9 +248,9 @@ test_that("TabICLv2 standardization uses training subset only", {
 
 test_that("TabICLv2 output MLP produces correct final dimension", {
   embed_dim = 16L
-  col_n_cls = 2L
-  model <- TabICLv2(max_classes = 6L, embed_dim = embed_dim, col_n_cls = col_n_cls)
-  icl_dim <- embed_dim * col_n_cls
+  row_n_cls = 2L
+  model <- TabICLv2(max_classes = 6L, embed_dim = embed_dim, row_n_cls = row_n_cls)
+  icl_dim <- embed_dim * row_n_cls
   expect_tensor_shape(model$parameters$icl_predictor.icl_blocks.1.mlp.2.weight, c(64L, icl_dim))
   expect_tensor_shape(model$parameters$icl_predictor.y_embed_icl.embedding.weight, c(6L, 64L))
 })
@@ -269,8 +269,16 @@ test_that("TabICLv2 model eval mode disables gradients", {
 test_that("TabICLv2 handles different embed_dim values", {
   purrr::walk(c(64L, 128L, 256L), function(dim) {
     model <- TabICLv2(max_classes = 5L, embed_dim = dim)
-    expect_tensor_shape(model$parameters$row_interactor.row_blocks.weight, c(dim, 3L))
-    # expect_tensor_shape(model$parameters$row_interactor.row_cls_tokens, c(1L, 1L, 4L, dim))
+    expect_tensor_shape(
+      model$parameters$row_interactor.row_blocks.0.mha.in_proj_weight,
+      c(3L * dim, dim)  # in_proj_weight shall be [3*embed_dim, embed_dim]
+    )
+
+    # check cls_tokens shape
+    expect_tensor_shape(
+      model$parameters$row_interactor.cls_tokens,
+      c(1L, 1L, 4L, dim)
+    )
   })
 })
 
@@ -329,13 +337,24 @@ test_that("TabICLv2 reproducibility with fixed seed", {
 test_that("TabICLv2 state dict contains expected keys", {
   model <- TabICLv2(max_classes = 4L)
   state <- model$state_dict()
+  # expected_keys <- c(
+  #   "x_embed.weight", "x_embed.bias",
+  #   "col_embedder.y_encoder.weight",
+  #   "icl_predictor.y_embed_icl.embedding.weight",
+  #   "row_interactor.cls_tokens",
+  #   "row_interactor.row_blocks.0.ln_attn.weight", "row_interactor.row_blocks.0.ln_attn.bias",
+  #   "icl_predictor.out_ln.weight", "icl_predictor.out_ln.bias"
+  # )
   expected_keys <- c(
-    "x_embed.weight", "x_embed.bias",
-    "col_embedder.y_encoder.weight",
+    "col_embedder.x_embed.weight",
+    "col_embedder.x_embed.bias",
+    "col_embedder.y_encoder.embedding.weight",
     "icl_predictor.y_embed_icl.embedding.weight",
     "row_interactor.cls_tokens",
-    "row_interactor.row_blocks.0.ln_attn.weight", "row_interactor.row_blocks.0.ln_attn..bias",
-    "icl_predictor.out_ln.weight", "icl_predictor.out_ln.bias"
+    "row_interactor.row_blocks.0.ln_attn.weight",
+    "row_interactor.row_blocks.0.ln_attn.bias",
+    "icl_predictor.out_ln.weight",
+    "icl_predictor.out_ln.bias"
   )
   purrr::walk(expected_keys, function(key) {
     expect_true(key %in% names(state))

@@ -26,7 +26,8 @@ ClassEmbedding <- torch::nn_module(
     nn_init_uniform_(self$embedding$weight, -bound, bound)
   },
   forward = function(y) {
-    idx <- y$squeeze(-1)$to(dtype = torch_long())
+    # nn_embedding is 1-based
+    idx <- y$squeeze(-1)$to(dtype = torch_long()) # - 1L
     self$embedding(idx)
   }
 )
@@ -250,6 +251,7 @@ ICLPredictor <- torch::nn_module(
     )
     self$out_ln <- nn_layer_norm(d_model)
     self$out_mlp <- .get_mlp(d_model, d_model * 2L, out_dim)
+    self$max_classes <- max_classes
 
     if (max_classes == 0L) {
       # Supposé défini ailleurs dans le package
@@ -260,7 +262,12 @@ ICLPredictor <- torch::nn_module(
     n_train <- y_train$shape[2L]
     n_rows <- emb$shape[2L] # Shape is now (B, T, icl_dim) thanks to RowInteractor fix
 
-    y_emb <- self$y_embed_icl(y_train) # (B, train_size, icl_dim)
+    # y_emb (B, train_size, icl_dim)
+    if (self$max_classes == 0L) {
+      y_emb <- self$y_embed_icl(y_train$unsqueeze(-1L))
+    } else {
+      y_emb <- self$y_embed_icl(y_train)
+    }
     # Add y embedding to training rows
     emb_train <- emb$narrow(2L, 1L, n_train)
     emb_train_added <- emb_train + y_emb
