@@ -186,10 +186,9 @@ ColEmbedding <- torch::nn_module(
         } else {
           y_emb <- self$y_encoder(y_train$unsqueeze(-1L))
         }
-        # y_emb shape is now  (B, train_size, E)
-        y_emb <- y_emb$unsqueeze(2L)  # -> (B, 1, train_size, E)
-
-        src[, , seq_len(train_size), ] <- src[, , seq_len(train_size), ] + y_emb
+        # use narrow() to extract, modify, and reinsert
+        src_train <- src$narrow(3L, 1L, train_size)
+        src_train$add_(y_emb)  # modify src in place via narrow view
 
         train_size_arg <- if (embed_with_test) NULL else train_size
         src <- self$tf_col(src, train_size = train_size_arg)
@@ -205,11 +204,13 @@ ColEmbedding <- torch::nn_module(
         for (digit_idx in seq_len(num_digits) - 1L) {
           y_digit <- self$.extract_mixed_radix_digit(y_train, digit_idx, bases)
           y_emb <- self$y_encoder(y_digit$to(dtype = torch_float()))
-          src_with_y[, , seq_len(train_size), ] <- src[, , seq_len(train_size), ] + y_emb
+          # use narrow() to extract, modify, and reinsert
+          src_with_y_train <- src_with_y$narrow(3L, 1L, train_size)
+          src_with_y_train$copy_(src$narrow(3L, 1L, train_size) + y_emb)
 
           train_size_arg <- if (embed_with_test) NULL else train_size
           src_accum <- src_accum + self$tf_col(src_with_y, train_size = train_size_arg)
-        }
+          }
         src <- src_accum / num_digits
       }
     }
@@ -231,7 +232,7 @@ ColEmbedding <- torch::nn_module(
       X <- nnf_pad(X, pad = c(0L, 0L, self$reserve_cls_tokens, 0L), value = -100.0)
     }
 
-    features <- X$transpose(1L, 2L)
+    features <- X$transpose(2L, 3L)
 
     # if (self$target_aware) {
     #   # y_train becomes (B, 1, train_size, 1) to broadcast with (B, G+C, train_size, E)
@@ -239,7 +240,7 @@ ColEmbedding <- torch::nn_module(
     # }
 
     embeddings <- self$.compute_embeddings(features, train_size, y_train, embed_with_test)
-    embeddings$transpose(1L, 2L)
+    embeddings$transpose(2L, 3L)
   },
 
   .train_forward_without_feature_group = function(X, y_train, d, embed_with_test) {
@@ -250,7 +251,7 @@ ColEmbedding <- torch::nn_module(
     }
 
     if (is.null(d)) {
-      features <- X$transpose(1L, 2L)$unsqueeze(-1L)
+      features <- X$transpose(2L, 3L)$unsqueeze(-1L)
 
       # if (self$target_aware) {
       #   y_train <- y_train$unsqueeze(2L)$unsqueeze(-1L)
@@ -263,7 +264,7 @@ ColEmbedding <- torch::nn_module(
       B <- X$size(1L)
       HC <- X$size(3L)
 
-      X_t <- X$transpose(1L, 2L)
+      X_t <- X$transpose(2L, 3L)
 
       indices <- torch_arange(0L, HC - 1L, device = X$device)$unsqueeze(1L)$expand(B, HC)
       mask <- indices < d$unsqueeze(2L)
@@ -284,7 +285,7 @@ ColEmbedding <- torch::nn_module(
       embeddings <- torch_zeros(c(B, HC, X$size(2L), self$embed_dim), device = X$device, dtype = eff_emb$dtype)
       embeddings[mask] <- eff_emb
     }
-    embeddings$transpose(1L, 2L)
+    embeddings$transpose(2L, 3L)
   },
 
   .train_forward = function(X, y_train, d = NULL, embed_with_test = FALSE) {
@@ -301,7 +302,7 @@ ColEmbedding <- torch::nn_module(
     if (self$reserve_cls_tokens > 0L) {
       X <- nnf_pad(X, pad = c(0L, 0L, self$reserve_cls_tokens, 0L), value = -100.0)
     }
-    features <- X$transpose(1L, 2L)
+    features <- X$transpose(2L, 3L)
 
     if (!self$target_aware) {
     #   y_train <- y_train$unsqueeze(2L)$unsqueeze(-1L)
@@ -320,7 +321,7 @@ ColEmbedding <- torch::nn_module(
       if (self$reserve_cls_tokens > 0L) {
         X <- nnf_pad(X, pad = c(self$reserve_cls_tokens, 0L), value = -100.0)
       }
-      features <- X$transpose(1L, 2L)$unsqueeze(-1L)
+      features <- X$transpose(2L, 3L)$unsqueeze(-1L)
 
       if (!self$target_aware) {
       #   y_train <- y_train$unsqueeze(2L)$unsqueeze(-1L)
@@ -338,11 +339,11 @@ ColEmbedding <- torch::nn_module(
       if (self$reserve_cls_tokens > 0L) {
         first_table <- nnf_pad(first_table, pad = c(self$reserve_cls_tokens, 0L), value = -100.0)
       }
-      features <- first_table$transpose(1L, 2L)$unsqueeze(-1L)$squeeze(1L)
+      features <- first_table$transpose(2L, 3L)$unsqueeze(-1L)$squeeze(1L)
 
       if (self$target_aware) {
         # y_first <- y_train[1L, ]$unsqueeze(2L)$unsqueeze(-1L)$expand(features$size(1L), train_size, 1L)
-        y_first <- y_train[1L, ]
+        y_first <- y_train[1L, , drop = FALSE]
       } else {
         y_first <- NULL
       }
@@ -378,7 +379,7 @@ ColEmbedding <- torch::nn_module(
     } else {
       self$.inference_without_feature_group(X, y_train, train_size, embed_with_test, feature_shuffles)
     }
-    embeddings$transpose(1L, 2L)
+    embeddings$transpose(2L, 3L)
   },
 
   forward = function(X, y_train, d = NULL, embed_with_test = FALSE, feature_shuffles = NULL, mgr_config = NULL) {
@@ -400,9 +401,14 @@ ColEmbedding <- torch::nn_module(
         if (self$max_classes > 0L) {
           y_emb <- self$y_encoder(y_train$to(dtype = torch_float()))
         } else {
-          y_emb <- self$y_encoder(y_train)
+          y_emb <- self$y_encoder(y_train$unsqueeze(-1L))
         }
-        src[, , seq_len(train_size), ] <- src[, , seq_len(train_size), ] + y_emb
+        # y_emb is (B, train_size, E)
+        y_emb <- y_emb$unsqueeze(2L)  # -> (B, 1, train_size, E) will allow broadcasting
+
+        # src in-place modification via narrow()
+        src_train <- src$narrow(3L, 1L, train_size)
+        src_train$add_(y_emb)
       }
       src <- self$tf_col$forward_with_cache(src, col_cache, train_size, use_cache, store_cache)
     }
@@ -431,10 +437,10 @@ ColEmbedding <- torch::nn_module(
     if (!isFALSE(self$feature_group)) {
       X <- self$feature_grouping(X)
       if (self$reserve_cls_tokens > 0L) X <- nnf_pad(X, pad = c(0L, 0L, self$reserve_cls_tokens, 0L), value = -100.0)
-      features <- X$transpose(1L, 2L)
+      features <- X$transpose(2L, 3L)
     } else {
       if (self$reserve_cls_tokens > 0L) X <- nnf_pad(X, pad = c(self$reserve_cls_tokens, 0L), value = -100.0)
-      features <- X$transpose(1L, 2L)$unsqueeze(-1L)
+      features <- X$transpose(2L, 3L)$unsqueeze(-1L)
     }
 
     if (store_cache) {
@@ -449,6 +455,6 @@ ColEmbedding <- torch::nn_module(
       self$.compute_embeddings_with_cache,
       input = list(features = features, col_cache = col_cache, train_size = train_size, y_train = y_train, use_cache = use_cache, store_cache = store_cache)
     )
-    embeddings$transpose(1L, 2L)
+    embeddings$transpose(2L, 3L)
   }
 )

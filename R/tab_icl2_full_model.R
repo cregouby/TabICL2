@@ -151,15 +151,19 @@ TransformerBlock <- torch::nn_module(
     n_batch <- q$shape[1L]
     n_rows <- q$shape[2L]
     embed_dim <- q$shape[4L]
+    # (B, R, C, D) -> (B*R, C, D)
     q_flat <- q$reshape(c(n_batch * n_rows, -1L, embed_dim))
     kv_flat <- if (is.null(kv)) NULL else kv$reshape(c(n_batch * n_rows, -1L, embed_dim))
     result <- self$forward(q_flat, kv_flat, ...)
+    # (B*R, C, D) -> (B, R, C, D)
     result$reshape(c(n_batch, n_rows, -1L, embed_dim))
   },
   col_attn = function(q, kv = NULL, ...) {
+    # (B, R, C, D) -> (B, C, R, D)
     q_t <- q$transpose(2L, 3L)
     kv_t <- if (is.null(kv)) NULL else kv$transpose(2L, 3L)
     result <- self$row_attn(q_t, kv_t, ...)
+    # (B, C, R, D) -> (B, R, C, D)
     result$transpose(2L, 3L)
   }
 )
@@ -198,7 +202,8 @@ RowInteractor <- torch::nn_module(
         )
       })
     )
-    self$out_ln <- nn_layer_norm(embed_dim)
+    icl_dim <- embed_dim * num_cls
+    self$out_ln <- nn_layer_norm(icl_dim)
   },
   forward = function(emb, d = NULL, mgr_config = NULL) {
     n_batch <- emb$shape[1L]
