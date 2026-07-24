@@ -102,14 +102,14 @@ Encoder <- nn_module(
     self$recompute <- recompute
   },
 
-  #' @description Process input through the stacked blocks.
-  #'
-  #' @param src Input tensor of shape \code{(..., seq_len, d_model)}.
-  #' @param train_size Positive integer or \code{NULL}. When provided, queries
-  #'   attend only to the first \code{train_size} positions. Useful in the ICL
-  #'   transformer where only training samples serve as context.
-  #'
-  #' @return Output tensor with same shape as \code{src}.
+  # @description Process input through the stacked blocks.
+  #
+  # @param src Input tensor of shape \code{(..., seq_len, d_model)}.
+  # @param train_size Positive integer or \code{NULL}. When provided, queries
+  #   attend only to the first \code{train_size} positions. Useful in the ICL
+  #   transformer where only training samples serve as context.
+  #
+  # @return Output tensor with same shape as \code{src}.
   forward = function(src, train_size = NULL) {
     out <- src
     for (i in seq_along(self$blocks)) {
@@ -127,31 +127,31 @@ Encoder <- nn_module(
     out
   },
 
-  #' @description Process input through the stacked blocks with KV caching
-  #'   support.
-  #'
-  #' When \code{store_cache = TRUE}, this method processes the full sequence and
-  #' stores K/V projections from training data (positions \code{1:train_size}) at
-  #' each layer.
-  #'
-  #' When \code{use_cache = TRUE}, this method assumes \code{src} only contains
-  #' test data and uses cached K/V from training data for attention at each layer.
-  #'
-  #' @param src Input tensor of shape \code{(..., seq_len, d_model)}.
-  #' @param icl_cache A \code{KVCache} object for storing/retrieving K/V
-  #'   projections per layer.
-  #' @param train_size Positive integer or \code{NULL}. When provided, queries
-  #'   attend only to the first \code{train_size} positions.
-  #' @param use_cache Logical, default \code{FALSE}. Whether to use cached values
-  #'   to avoid redundant computation.
-  #' @param store_cache Logical, default \code{TRUE}. Whether to store computed
-  #'   values in cache.
-  #'
-  #' @return Output tensor with same shape as \code{src}.
-  #'
-  #' @details Exactly one of \code{use_cache} or \code{store_cache} must be
-  #'   \code{TRUE}. \code{train_size} must be provided when
-  #'   \code{store_cache = TRUE}.
+  # @description Process input through the stacked blocks with KV caching
+  #   support.
+  #
+  # When \code{store_cache = TRUE}, this method processes the full sequence and
+  # stores K/V projections from training data (positions \code{1:train_size}) at
+  # each layer.
+  #
+  # When \code{use_cache = TRUE}, this method assumes \code{src} only contains
+  # test data and uses cached K/V from training data for attention at each layer.
+  #
+  # @param src Input tensor of shape \code{(..., seq_len, d_model)}.
+  # @param icl_cache A \code{KVCache} object for storing/retrieving K/V
+  #   projections per layer.
+  # @param train_size Positive integer or \code{NULL}. When provided, queries
+  #   attend only to the first \code{train_size} positions.
+  # @param use_cache Logical, default \code{FALSE}. Whether to use cached values
+  #   to avoid redundant computation.
+  # @param store_cache Logical, default \code{TRUE}. Whether to store computed
+  #   values in cache.
+  #
+  # @return Output tensor with same shape as \code{src}.
+  #
+  # @details Exactly one of \code{use_cache} or \code{store_cache} must be
+  #   \code{TRUE}. \code{train_size} must be provided when
+  #   \code{store_cache = TRUE}.
   forward_with_cache = function(
     src,
     icl_cache,

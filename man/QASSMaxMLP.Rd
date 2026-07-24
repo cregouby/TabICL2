@@ -16,16 +16,9 @@ Default: \code{64L}.}
 
 \item{elementwise}{\code{logical(1)} If \code{TRUE}, apply elementwise
 scaling per head dimension.  Default: \code{FALSE}.}
-
-\item{q}{\code{tensor} of shape \code{(bs, n_heads, seq_len, head_dim)}.
-Query tensor after projection.}
-
-\item{n}{\code{integer(1)} Source sequence length.}
 }
 \value{
 An \code{\link[torch]{nn_module}} object (class generator).
-
-Scaled query tensor, same shape as \code{q}.
 }
 \description{
 Applies scaling to queries using two MLPs:
@@ -37,8 +30,6 @@ The \emph{base MLP} learns length-dependent scaling while the
 \emph{query MLP} learns query-dependent modulation.  The query
 MLP is zero-initialised so that the initial modulation is the
 identity (\eqn{1 + 0 = 1}).
-
-Apply QASSMax scaling to queries.
 }
 \seealso{
 \code{\link{create_ssmax_layer}}

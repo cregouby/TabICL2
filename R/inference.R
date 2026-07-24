@@ -527,7 +527,7 @@ disk_tensor <- R6::R6Class(
 .resolve_dtype_for_disk <- function(dtype) {
   # Simplified: in production, handle bfloat16 -> uint16 mapping
   if (identical(dtype, torch_bfloat16())) {
-    list(storage_dtype = torch_uint16(), needs_view = TRUE)
+    list(storage_dtype = torch_int16(), needs_view = TRUE)
   } else {
     list(storage_dtype = dtype, needs_view = FALSE)
   }

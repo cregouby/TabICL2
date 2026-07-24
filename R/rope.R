@@ -203,7 +203,8 @@ RotaryEmbedding <- torch::nn_module(
     } else if (freqs_for == "lang") {
       # R: torch_arange is 0-based if we start at 0, but we need to slice carefully
       indices <- torch_arange(0L, dim, step = 2L, dtype = torch_float())
-      freqs <- 1.0 / (theta ^ (indices[seq_len(dim %/% 2L)] / dim))
+      indices <- indices[seq_len(dim %/% 2L)]
+      freqs <- 1.0 / (theta ^ (indices / dim))
     } else if (freqs_for == "pixel") {
       freqs <- torch_linspace(1.0, max_freq / 2, dim %/% 2L) * pi
     } else if (freqs_for == "constant") {
@@ -220,6 +221,7 @@ RotaryEmbedding <- torch::nn_module(
     # XPOS initialization
     if (use_xpos) {
       indices <- torch_arange(0L, dim, step = 2L, dtype = torch_float())
+      indices <- indices[seq_len(dim %/% 2L)]
       scale <- (indices + 0.4 * dim) / (1.4 * dim)
       self$scale_base <- xpos_scale_base
       self$register_buffer("scale", scale, persistent = FALSE)
@@ -244,7 +246,7 @@ RotaryEmbedding <- torch::nn_module(
   # @param offset Integer. Offset to add to positions (default: `0L`).
   # @return Tensor of shape `(seq_len,)` with interpolated positions.
   get_seq_pos = function(seq_len, device, dtype, offset = 0L) {
-    (torch_arange(0L, seq_len, device = device, dtype = dtype) + offset) / self$interpolate_factor
+    (torch_arange(1L, seq_len, device = device, dtype = dtype) + offset -1L) / self$interpolate_factor
   },
 
   # Rotate queries or keys independently
@@ -296,8 +298,8 @@ RotaryEmbedding <- torch::nn_module(
     device <- q$device
     seq_dim <- .default(seq_dim, self$default_seq_dim)
 
-    q_len <- q$shape[seq_dim]
-    k_len <- k$shape[seq_dim]
+    q_len <- q$shape[q$ndim + seq_dim]
+    k_len <- k$shape[k$ndim + seq_dim]
 
     if (q_len > k_len) {
       value_error("query length {q_len} must be <= key length {k_len}")

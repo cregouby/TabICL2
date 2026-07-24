@@ -400,7 +400,7 @@ QuantileDistribution <- nn_module(
     self$.setup_tails()
   },
 
-    #' @description Setup linear spline segments
+    # @description Setup linear spline segments
     .setup_spline = function() {
       # Expand alpha_levels for batch operations
       alpha <- self$alpha_levels
@@ -438,7 +438,7 @@ QuantileDistribution <- nn_module(
       self$alpha_hi_1d <- self$alpha_levels[2:n]
     },
 
-    #' @description Setup tail parameters
+    # @description Setup tail parameters
     .setup_tails = function() {
       cfg <- self$cfg
       device <- self$quantiles$device
@@ -484,9 +484,9 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description Compute quantile function Q(α) = F^(-1)(α)
-    #' @param alpha Tensor. Probability levels.
-    #' @return Tensor. Quantile values Q(α).
+    # @description Compute quantile function Q(α) = F^(-1)(α)
+    # @param alpha Tensor. Probability levels.
+    # @return Tensor. Quantile values Q(α).
     icdf = function(alpha) {
       squeeze_output <- FALSE
       if (alpha$dim() == 0) {
@@ -534,9 +534,9 @@ QuantileDistribution <- nn_module(
       result
     },
 
-    #' @description Expand batch parameter to match alpha shape
-    #' @param param Tensor. Parameter estimates of the tail function.
-    #' @param alpha Tensor. Probability levels.
+    # @description Expand batch parameter to match alpha shape
+    # @param param Tensor. Parameter estimates of the tail function.
+    # @param alpha Tensor. Probability levels.
     .expand_to_alpha = function(param, alpha) {
       n_expand <- alpha$dim() - param$dim()
       result <- param
@@ -546,8 +546,8 @@ QuantileDistribution <- nn_module(
       result$expand_as(alpha)
     },
 
-    #' @description Left tail quantile
-    #' @param alpha Tensor. Probability levels.
+    # @description Left tail quantile
+    # @param alpha Tensor. Probability levels.
     .icdf_left_tail = function(alpha) {
       if (self$tail_type == "exp") {
         a <- self$.expand_to_alpha(self$tail_a_l, alpha)
@@ -559,8 +559,8 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description Right tail quantile
-    #' @param alpha Tensor. Probability levels.
+    # @description Right tail quantile
+    # @param alpha Tensor. Probability levels.
     .icdf_right_tail = function(alpha) {
       if (self$tail_type == "exp") {
         a <- self$.expand_to_alpha(self$tail_a_r, alpha)
@@ -572,8 +572,8 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description GPD left tail
-    #' @param alpha Tensor. Probability levels.
+    # @description GPD left tail
+    # @param alpha Tensor. Probability levels.
     .icdf_gpd_left = function(alpha) {
       cfg <- self$cfg
       eta <- self$.expand_to_alpha(self$eta_l, alpha)
@@ -598,8 +598,8 @@ QuantileDistribution <- nn_module(
       torch_where(is_exp_approx, exp_result, gpd_result)
     },
 
-    #' @description GPD right tail
-    #' @param alpha Tensor. Probability levels.
+    # @description GPD right tail
+    # @param alpha Tensor. Probability levels.
     .icdf_gpd_right = function(alpha) {
       cfg <- self$cfg
       eta <- self$.expand_to_alpha(self$eta_r, alpha)
@@ -624,8 +624,8 @@ QuantileDistribution <- nn_module(
       torch_where(is_exp_approx, exp_result, gpd_result)
     },
 
-    #' @description Piecewise linear quantile interpolation
-    #' @param alpha Tensor. Probability levels.
+    # @description Piecewise linear quantile interpolation
+    # @param alpha Tensor. Probability levels.
     .icdf_spline = function(alpha) {
       seg_idx <- (
         torch_searchsorted(
@@ -648,9 +648,9 @@ QuantileDistribution <- nn_module(
       torch_where(alpha >= self$alpha_r, q_r_exp, result)
     },
 
-    #' @description Compute CDF F(z) = P(Z ≤ z)
-    #' @param z Tensor. Values at which to evaluate CDF.
-    #' @return Tensor. CDF values in \[0, 1\].
+    # @description Compute CDF F(z) = P(Z ≤ z)
+    # @param z Tensor. Values at which to evaluate CDF.
+    # @return Tensor. CDF values in \[0, 1\].
     cdf = function(z) {
       # Handle 1D input by broadcasting
       if (z$dim() == 1 && length(self$batch_shape) > 0) {
@@ -679,9 +679,9 @@ QuantileDistribution <- nn_module(
       )
     },
 
-    #' @description Expand batch parameter to match z shape
-    #' @param param Tensor. Parameter estimates of the tail function.
-    #' @param z Tensor. Values at which to evaluate CDF.
+    # @description Expand batch parameter to match z shape
+    # @param param Tensor. Parameter estimates of the tail function.
+    # @param z Tensor. Values at which to evaluate CDF.
     .expand_to_z = function(param, z) {
       n_expand <- z$dim() - param$dim()
       result <- param
@@ -691,8 +691,8 @@ QuantileDistribution <- nn_module(
       result$expand_as(z)
     },
 
-    #' @description CDF in left tail region
-    #' @param z Tensor. Values at which to evaluate CDF.
+    # @description CDF in left tail region
+    # @param z Tensor. Values at which to evaluate CDF.
     .cdf_left_tail = function(z) {
       cfg <- self$cfg
       if (self$tail_type == "exp") {
@@ -726,8 +726,8 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description CDF in right tail region
-    #' @param z Tensor. Values at which to evaluate CDF.
+    # @description CDF in right tail region
+    # @param z Tensor. Values at which to evaluate CDF.
     .cdf_right_tail = function(z) {
       cfg <- self$cfg
       if (self$tail_type == "exp") {
@@ -762,8 +762,8 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description CDF in spline region
-    #' @param z Tensor. Values at which to evaluate CDF.
+    # @description CDF in spline region
+    # @param z Tensor. Values at which to evaluate CDF.
     .cdf_spline = function(z) {
       # Handle z: (*batch_shape,) or (*batch_shape, n)
       added_dim <- z$dim() == length(self$batch_shape)
@@ -801,8 +801,8 @@ QuantileDistribution <- nn_module(
       result
     },
 
-    #' @description Compute dQ/dα derivative
-    #' @param alpha Tensor. Probability levels.
+    # @description Compute dQ/dα derivative
+    # @param alpha Tensor. Probability levels.
     .icdf_derivative = function(alpha) {
       cfg <- self$cfg
 
@@ -840,8 +840,8 @@ QuantileDistribution <- nn_module(
       torch_clamp(deriv, min = cfg$MIN_SLOPE, max = cfg$MAX_SLOPE)
     },
 
-    #' @description Left tail derivative
-    #' @param alpha Tensor. Probability levels.
+    # @description Left tail derivative
+    # @param alpha Tensor. Probability levels.
     .deriv_left_tail = function(alpha) {
       if (self$tail_type == "exp") {
         a <- self$.expand_to_alpha(self$tail_a_l, alpha)
@@ -866,8 +866,8 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description Right tail derivative
-    #' @param alpha Tensor. Probability levels.
+    # @description Right tail derivative
+    # @param alpha Tensor. Probability levels.
     .deriv_right_tail = function(alpha) {
       if (self$tail_type == "exp") {
         a <- self$.expand_to_alpha(self$tail_a_r, alpha)
@@ -892,8 +892,8 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description Spline derivative
-    #' @param alpha Tensor. Probability levels.
+    # @description Spline derivative
+    # @param alpha Tensor. Probability levels.
     .deriv_spline = function(alpha) {
       added_dim <- alpha$dim() == length(self$batch_shape)
       if (added_dim) {
@@ -921,9 +921,9 @@ QuantileDistribution <- nn_module(
       result
     },
 
-    #' @description Compute log PDF
-    #' @param z Tensor. Values at which to evaluate log density.
-    #' @return Tensor. Log probability density values.
+    # @description Compute log PDF
+    # @param z Tensor. Values at which to evaluate log density.
+    # @return Tensor. Log probability density values.
     log_prob = function(z) {
       # Handle 1D input
       if (z$dim() == 1 && length(self$batch_shape) > 0) {
@@ -937,15 +937,15 @@ QuantileDistribution <- nn_module(
       -torch_log(q_deriv)
     },
 
-    #' @description Compute PDF
-    #' @param z Tensor. Values at which to evaluate PDF.
-    #' @return Tensor. PDF values (non-negative).
+    # @description Compute PDF
+    # @param z Tensor. Values at which to evaluate PDF.
+    # @return Tensor. PDF values (non-negative).
     pdf = function(z) {
       torch_exp(self$log_prob(z))
     },
 
-    #' @description Compute mean E\[Z\]
-    #' @return Tensor. Expected value. Shape: `(*batch_shape,)`.
+    # @description Compute mean E\[Z\]
+    # @return Tensor. Expected value. Shape: `(*batch_shape,)`.
     mean = function() {
       if (self$tail_type == "exp") {
         self$.mean_exp_analytical()
@@ -954,7 +954,7 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description Analytical mean for exponential tails
+    # @description Analytical mean for exponential tails
     .mean_exp_analytical = function() {
       # Left tail
       left_int <- self$alpha_l * (self$q_l - self$tail_a_l)
@@ -968,7 +968,7 @@ QuantileDistribution <- nn_module(
       left_int + spline_int + right_int
     },
 
-    #' @description Analytical mean for GPD tails
+    # @description Analytical mean for GPD tails
     .mean_gpd_analytical = function() {
       cfg <- self$cfg
 
@@ -987,8 +987,8 @@ QuantileDistribution <- nn_module(
       left_int + spline_int + right_int
     },
 
-    #' @description Compute variance
-    #' @return Tensor. Variance (non-negative). Shape: `(*batch_shape,)`.
+    # @description Compute variance
+    # @return Tensor. Variance (non-negative). Shape: `(*batch_shape,)`.
     variance = function() {
       if (self$tail_type == "exp") {
         self$.variance_exp_analytical()
@@ -997,7 +997,7 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description Analytical variance for exponential tails
+    # @description Analytical variance for exponential tails
     .variance_exp_analytical = function() {
       a_l <- self$tail_a_l
       a_r <- self$tail_a_r
@@ -1017,7 +1017,7 @@ QuantileDistribution <- nn_module(
       torch_clamp(e_z2 - e_z^2, min = 0.0)
     },
 
-    #' @description Analytical variance for GPD tails
+    # @description Analytical variance for GPD tails
     .variance_gpd_analytical = function() {
       cfg <- self$cfg
 
@@ -1047,15 +1047,15 @@ QuantileDistribution <- nn_module(
       torch_clamp(e_z2 - e_z^2, min = 0.0)
     },
 
-    #' @description Compute standard deviation
-    #' @return Tensor. Standard deviation. Shape: `(*batch_shape,)`.
+    # @description Compute standard deviation
+    # @return Tensor. Standard deviation. Shape: `(*batch_shape,)`.
     stddev = function() {
       torch_sqrt(torch_clamp(self$variance(), min = self$tol))
     },
 
-    #' @description Compute analytical CRPS (Continuous Ranked Probability Score)
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
-    #' @return Tensor. CRPS values (non-negative, lower is better). Shape: same as z.
+    # @description Compute analytical CRPS (Continuous Ranked Probability Score)
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    # @return Tensor. CRPS values (non-negative, lower is better). Shape: same as z.
     crps = function(z) {
       cfg <- self$cfg
 
@@ -1068,9 +1068,9 @@ QuantileDistribution <- nn_module(
       torch_clamp(crps_left + crps_spline + crps_right, min = 0.0, max = cfg$MAX_CRPS)$view(z$shape)
     },
 
-    #' @description CRPS contribution from left tail
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
-    #' @param alpha_z Tensor. Probability levels.
+    # @description CRPS contribution from left tail
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    # @param alpha_z Tensor. Probability levels.
     .crps_left_tail = function(z, alpha_z) {
       if (self$tail_type == "exp") {
         self$.crps_left_tail_exp(z, alpha_z)
@@ -1079,9 +1079,9 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description Exponential left tail CRPS
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
-    #' @param alpha_z Tensor. Probability levels.
+    # @description Exponential left tail CRPS
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    # @param alpha_z Tensor. Probability levels.
     .crps_left_tail_exp = function(z, alpha_z) {
       a <- self$.expand_to_z(self$tail_a_l, z)
       b <- self$.expand_to_z(self$tail_b_l, z)
@@ -1104,9 +1104,9 @@ QuantileDistribution <- nn_module(
       term1 + term2
     },
 
-    #' @description GPD left tail CRPS
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
-    #' @param alpha_z Tensor. Probability levels.
+    # @description GPD left tail CRPS
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    # @param alpha_z Tensor. Probability levels.
     .crps_left_tail_gpd = function(z, alpha_z) {
       cfg <- self$cfg
 
@@ -1143,9 +1143,9 @@ QuantileDistribution <- nn_module(
       torch_where(in_tail, gpd_crps, simple_crps)
     },
 
-    #' @description CRPS contribution from right tail
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
-    #' @param alpha_z Tensor. Probability levels.
+    # @description CRPS contribution from right tail
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    # @param alpha_z Tensor. Probability levels.
     .crps_right_tail = function(z, alpha_z) {
       if (self$tail_type == "exp") {
         self$.crps_right_tail_exp(z, alpha_z)
@@ -1154,9 +1154,9 @@ QuantileDistribution <- nn_module(
       }
     },
 
-    #' @description Exponential right tail CRPS
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
-    #' @param alpha_z Tensor. Probability levels.
+    # @description Exponential right tail CRPS
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    # @param alpha_z Tensor. Probability levels.
     .crps_right_tail_exp = function(z, alpha_z) {
       a <- self$.expand_to_z(self$tail_a_r, z)
       b <- self$.expand_to_z(self$tail_b_r, z)
@@ -1180,9 +1180,9 @@ QuantileDistribution <- nn_module(
       term1 + term2
     },
 
-    #' @description GPD right tail CRPS
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
-    #' @param alpha_z Tensor. Probability levels.
+    # @description GPD right tail CRPS
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    # @param alpha_z Tensor. Probability levels.
     .crps_right_tail_gpd = function(z, alpha_z) {
       cfg <- self$cfg
 
@@ -1221,9 +1221,9 @@ QuantileDistribution <- nn_module(
       torch_where(in_tail, gpd_crps, simple_crps)
     },
 
-    #' @description CRPS contribution from spline region
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
-    #' @param alpha_z Tensor. Probability levels.
+    # @description CRPS contribution from spline region
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)` or `(*batch_shape, ...)`.
+    # @param alpha_z Tensor. Probability levels.
     .crps_spline = function(z, alpha_z) {
       z_shape <- z$shape
       if (z$ndim < alpha_z$ndim) {
@@ -1293,10 +1293,10 @@ QuantileDistribution <- nn_module(
       seg_crps$sum(dim = seg_dim)
     },
 
-    #' @description Numerical CRPS via pinball loss (for validation)
-    #' @param z Tensor. Observation values. Shape: `(*batch_shape,)`.
-    #' @param num_quantiles Integer. Number of quantile levels for integration.
-    #' @return Tensor. Approximate CRPS values. Shape: `(*batch_shape,)`.
+    # @description Numerical CRPS via pinball loss (for validation)
+    # @param z Tensor. Observation values. Shape: `(*batch_shape,)`.
+    # @param num_quantiles Integer. Number of quantile levels for integration.
+    # @return Tensor. Approximate CRPS values. Shape: `(*batch_shape,)`.
     pinball = function(z, num_quantiles = 999L) {
       device <- z$device
       dtype <- z$dtype
@@ -1308,9 +1308,9 @@ QuantileDistribution <- nn_module(
       2 * loss$mean(dim = -1L)
     },
 
-    #' @description Draw samples from the distribution
-    #' @param sample_shape torch.Size. Shape of the sample.
-    #' @return Tensor. Samples from the distribution.
+    # @description Draw samples from the distribution
+    # @param sample_shape torch.Size. Shape of the sample.
+    # @return Tensor. Samples from the distribution.
     sample = function(sample_shape = NULL) {
       if (is.null(sample_shape)) {
         n_samples <- 1L

@@ -23,39 +23,6 @@ Shape: \verb{(*batch_shape, num_quantiles)}.}
 \item{fix_crossing}{Logical. Enforce monotonicity?}
 
 \item{crossing_method}{Character. Method for fixing crossing.}
-
-\item{param}{Tensor. Parameter estimates of the tail function.}
-
-\item{alpha}{Tensor. Probability levels.}
-
-\item{alpha_z}{Tensor. Probability levels.}
-
-\item{z}{Tensor. Observation values. Shape: \verb{(*batch_shape,)}.}
-
-\item{num_quantiles}{Integer. Number of quantile levels for integration.}
-
-\item{sample_shape}{torch.Size. Shape of the sample.}
-}
-\value{
-Tensor. Quantile values Q(α).
-
-Tensor. CDF values in [0, 1].
-
-Tensor. Log probability density values.
-
-Tensor. PDF values (non-negative).
-
-Tensor. Expected value. Shape: \verb{(*batch_shape,)}.
-
-Tensor. Variance (non-negative). Shape: \verb{(*batch_shape,)}.
-
-Tensor. Standard deviation. Shape: \verb{(*batch_shape,)}.
-
-Tensor. CRPS values (non-negative, lower is better). Shape: same as z.
-
-Tensor. Approximate CRPS values. Shape: \verb{(*batch_shape,)}.
-
-Tensor. Samples from the distribution.
 }
 \description{
 Wraps a set of predicted quantiles into a proper distribution with:
@@ -64,78 +31,4 @@ Wraps a set of predicted quantiles into a proper distribution with:
 \item Tail extrapolation (exponential or GPD) with data-inferred parameters
 \item Analytical statistics (CDF, PDF, CRPS, mean, variance)
 }
-
-Setup linear spline segments
-
-Setup tail parameters
-
-Compute quantile function Q(α) = F^(-1)(α)
-
-Expand batch parameter to match alpha shape
-
-Left tail quantile
-
-Right tail quantile
-
-GPD left tail
-
-GPD right tail
-
-Piecewise linear quantile interpolation
-
-Compute CDF F(z) = P(Z ≤ z)
-
-Expand batch parameter to match z shape
-
-CDF in left tail region
-
-CDF in right tail region
-
-CDF in spline region
-
-Compute dQ/dα derivative
-
-Left tail derivative
-
-Right tail derivative
-
-Spline derivative
-
-Compute log PDF
-
-Compute PDF
-
-Compute mean E[Z]
-
-Analytical mean for exponential tails
-
-Analytical mean for GPD tails
-
-Compute variance
-
-Analytical variance for exponential tails
-
-Analytical variance for GPD tails
-
-Compute standard deviation
-
-Compute analytical CRPS (Continuous Ranked Probability Score)
-
-CRPS contribution from left tail
-
-Exponential left tail CRPS
-
-GPD left tail CRPS
-
-CRPS contribution from right tail
-
-Exponential right tail CRPS
-
-GPD right tail CRPS
-
-CRPS contribution from spline region
-
-Numerical CRPS via pinball loss (for validation)
-
-Draw samples from the distribution
 }

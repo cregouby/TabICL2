@@ -194,13 +194,13 @@ QASSMaxMLP <- nn_module(
     nn_init_zeros_(last_layer$bias)
   },
 
-  #' @description Apply QASSMax scaling to queries.
-  #'
-  #' @param q `tensor` of shape \code{(bs, n_heads, seq_len, head_dim)}.
-  #'   Query tensor after projection.
-  #' @param n `integer(1)` Source sequence length.
-  #'
-  #' @return Scaled query tensor, same shape as \code{q}.
+  # @description Apply QASSMax scaling to queries.
+  #
+  # @param q `tensor` of shape \code{(bs, n_heads, seq_len, head_dim)}.
+  #   Query tensor after projection.
+  # @param n `integer(1)` Source sequence length.
+  #
+  # @return Scaled query tensor, same shape as \code{q}.
   forward = function(q, n) {
     logn <- .logn(n, q$device, q$dtype)$view(c(1L, 1L))
 

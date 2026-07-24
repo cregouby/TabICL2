@@ -142,7 +142,7 @@ test_that("RotaryEmbedding rotate_queries_or_keys works", {
 
 test_that("RotaryEmbedding rotate_queries_and_keys works with XPOS", {
   rope <- RotaryEmbedding(dim = 64L, use_xpos = TRUE)
-  q <- torch_randn(2L, 8L, 64L)
+  q <- torch_randn(2L, 10L, 64L)
   k <- torch_randn(2L, 10L, 64L)
 
   result <- rope$rotate_queries_and_keys(q, k)
@@ -157,6 +157,19 @@ test_that("RotaryEmbedding rotate_queries_and_keys works with XPOS", {
   expect_tensor_shape(rotated_k, k$shape)
   expect_tensor_dtype(rotated_q, q$dtype)
   expect_tensor_dtype(rotated_k, k$dtype)
+})
+
+test_that("RotaryEmbedding rotate_queries_with_cached_keys handles different lengths", {
+  rope <- RotaryEmbedding(dim = 64L, use_xpos = TRUE)
+  q <- torch_randn(2L, 4L, 64L)   # q shorter
+  k <- torch_randn(2L, 10L, 64L)  # k longer
+
+  result <- rope$rotate_queries_with_cached_keys(q, k)
+
+  expect_type(result, "list")
+  expect_equal(length(result), 2L)
+  expect_tensor_shape(result[[1L]], q$shape)
+  expect_tensor_shape(result[[2L]], k$shape)
 })
 
 test_that("RotaryEmbedding rotate_queries_and_keys throws error without XPOS", {

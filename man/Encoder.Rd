@@ -63,47 +63,12 @@ Options include: \code{"none"}, \code{"ssmax"}, \code{"ssmax-mlp"},
 
 \item{recompute}{Logical, default \code{FALSE}. If \code{TRUE}, uses gradient
 checkpointing to save memory at the cost of additional computation.}
-
-\item{src}{Input tensor of shape \code{(..., seq_len, d_model)}.}
-
-\item{icl_cache}{A \code{KVCache} object for storing/retrieving K/V
-projections per layer.}
-
-\item{train_size}{Positive integer or \code{NULL}. When provided, queries
-attend only to the first \code{train_size} positions.}
-
-\item{use_cache}{Logical, default \code{FALSE}. Whether to use cached values
-to avoid redundant computation.}
-
-\item{store_cache}{Logical, default \code{TRUE}. Whether to store computed
-values in cache.}
 }
 \value{
 An \code{nn_module} instance of class \code{Encoder}.
-
-Output tensor with same shape as \code{src}.
-
-Output tensor with same shape as \code{src}.
 }
 \description{
 Stack of multihead attention blocks.
-
-Process input through the stacked blocks.
-
-Process input through the stacked blocks with KV caching
-support.
-
-When \code{store_cache = TRUE}, this method processes the full sequence and
-stores K/V projections from training data (positions \code{1:train_size}) at
-each layer.
-
-When \code{use_cache = TRUE}, this method assumes \code{src} only contains
-test data and uses cached K/V from training data for attention at each layer.
-}
-\details{
-Exactly one of \code{use_cache} or \code{store_cache} must be
-\code{TRUE}. \code{train_size} must be provided when
-\code{store_cache = TRUE}.
 }
 \section{Methods}{
 

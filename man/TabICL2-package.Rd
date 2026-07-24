@@ -2,7 +2,6 @@
 % Please edit documentation in R/tab_icl2_package.R
 \docType{package}
 \name{TabICL2-package}
-\alias{TabICL2}
 \alias{TabICL2-package}
 \title{TabICL2: A TabICL2 tabular foundation model}
 \description{
