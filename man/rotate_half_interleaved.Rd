@@ -7,13 +7,13 @@
 rotate_half_interleaved(x)
 }
 \arguments{
-\item{x}{Input tensor of shape \verb{[..., d]} where \code{d} is even.}
+\item{x}{Input tensor of shape \verb{[.., d]} where \code{d} is even.}
 }
 \value{
 Rotated tensor with same shape as \code{x}.
 }
 \description{
-Given input \verb{[..., d]}, rearranges to \verb{[..., d/2, 2]} and rotates pairs.
+Given input \verb{[.., d]}, rearranges to \verb{[.., d/2, 2]} and rotates pairs.
 Used by default in most RoPE implementations (e.g., LLaMA).
 }
 \keyword{internal}

@@ -7,13 +7,13 @@
 rotate_half_contiguous(x)
 }
 \arguments{
-\item{x}{Input tensor of shape \verb{[..., d]} where \code{d} is even.}
+\item{x}{Input tensor of shape \verb{[.., d]} where \code{d} is even.}
 }
 \value{
 Rotated tensor with same shape as \code{x}.
 }
 \description{
-Given input \verb{[..., d]}, splits into \verb{[..., 1:(d/2)]} and \verb{[..., (d/2+1):d]}
+Given input \verb{[.., d]}, splits into \verb{[.., 1:(d/2)]} and \verb{[.., (d/2+1):d]}
 and rotates. Returns \verb{[-x2, x1]}.
 }
 \keyword{internal}
